@@ -1,0 +1,170 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  fullName      String
+  email     String   @unique
+  password  String
+  role UserRole @default(USER)
+  verified DateTime
+
+  provider String?
+  providerId String?
+
+  cart  Cart?
+  orders Order[] // множество заказов у пользователя но у пользователя один заказ 
+  verificationCode VerificationCode?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String @unique
+  products Product[] //  связь категории с продуктами 1 к многим
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  name      String
+  imageUrl   String
+  price     Int
+
+  ingredients Ingredient[] //  связь продукта с ингредиентами 1 к многим ингредиентам
+  items       ProductItem[] // у одного продукта разные вариации 
+
+  category Category @relation(fields: [categoryId], references: [id]) //  связь продукта с категорией 1 к 1
+  categoryId Int // ссылка на категорию в базе данных
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductItem{
+  id        Int      @id @default(autoincrement())
+
+  price Int
+  size  Int?
+  profileType Int? // профиль пластик алюминий 
+
+  cartItem CartItem[]
+
+  product Product @relation(fields: [productId], references: [id]) // у одно вариации есть один продукт 
+  productId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
+}
+
+model Ingredient {
+  id        Int      @id @default(autoincrement())
+
+  name      String
+  price     Int
+  imageUrl   String
+
+  products Product[] // связь ингредиента с продуктами 1 к многим продуктами
+  cartItem CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+}
+
+model Cart {
+  id Int @id @default(autoincrement())
+
+  user  User? @relation(fields: [userId], references: [id]) // связь 1 к 1 одна корзина у одного пользователя и один пользователь у одной карзины 
+  userId  Int? @unique
+
+  totalAmount Int @default(0)
+
+  items CartItem[] // множество CartItem
+
+  token String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartItem {
+   id Int @id @default(autoincrement())
+   
+   cart Cart @relation(fields: [cartId], references: [id])// только олдна карзина 
+   cartId Int
+
+   productItem ProductItem @relation(fields: [productItemId], references: [id])
+   productItemId Int
+
+
+   quantity Int
+   ingredients Ingredient[]
+  //  profileSize Int?
+  //  profileType Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+  
+  user User? @relation(fields: [userId], references: [id])//у пользователя один заказ
+  userId Int?
+
+  token String
+
+  totalAmount Int 
+  status OrderStatus 
+  paymantId String?
+
+  items Json
+
+  fullName String
+  email   String
+  phone   String
+  address  String
+  comment  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationCode{
+  id Int @id @default(autoincrement())
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int @unique
+
+  code String 
+
+  createdAt DateTime @default(now())
+
+  @@unique([code, userId])
+}
+
+enum OrderStatus {
+  PENDING
+  SUCCEEDED
+  CANCELLED
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+
+
+
+
