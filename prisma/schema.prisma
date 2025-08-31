@@ -39,7 +39,7 @@ model Product {
   id        Int      @id @default(autoincrement())
   name      String
   imageUrl   String
-  price     Int
+  price     Int?
 
   ingredients Ingredient[] //  связь продукта с ингредиентами 1 к многим ингредиентам
   items       ProductItem[] // у одного продукта разные вариации 
