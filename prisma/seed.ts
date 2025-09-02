@@ -74,6 +74,7 @@ async function up() {
     data: {
       name: 'REHAU 245536',
       imageUrl: 'public/assets/REHAU 245536.png',
+      price: randomDecimalNumber(1900, 2500),
       categoryId: 1,
       ingredients: {
         connect: ingredients.slice(0, 7).map((i) => ({ id: i.id })),
@@ -84,6 +85,7 @@ async function up() {
     data: {
       name: 'Труба сварная 40х50х2мм (6м)',
       imageUrl: 'public/assets/труба-сварная-40х50х2мм-6м.jpg',
+      price: randomDecimalNumber(1900, 2500),
       categoryId: 1,
       ingredients: {
         connect: ingredients.slice(7, 13).map((i) => ({ id: i.id })),
@@ -94,6 +96,7 @@ async function up() {
     data: {
       name: 'Полоса оцинкованная 100х6мм (6м)',
       imageUrl: 'public/assets/Полоса оцинкованная 100х6мм (6м).jpg',
+      price: randomDecimalNumber(1900, 2500),
       categoryId: 1,
       ingredients: {
         connect: ingredients.slice(14, 21).map((i) => ({ id: i.id })),
@@ -185,11 +188,37 @@ async function up() {
       generateProductItem({ productId: 17 }),
     ],
   });
+
+  await prisma.cart.createMany({
+    data: [
+      {
+        userId: 1,
+        token: 'token1',
+        totalAmount: 0,
+      },
+      {
+        userId: 2,
+        token: 'token2',
+        totalAmount: 0,
+      },
+    ],
+  });
+
+  await prisma.cartItem.create({
+    data: {
+      productItemId: 1,
+      cartId: 1,
+      quantity: 2,
+      ingredients: {
+        connect: [{ id: 1 }, { id: 2 }, { id: 3 }],
+      },
+    },
+  });
 }
 
 async function down() {
   await prisma.$executeRawUnsafe(
-    `TRUNCATE TABLE "ProductItem", "Product", "Ingredient", "Category", "User" RESTART IDENTITY CASCADE`
+    `TRUNCATE TABLE "ProductItem", "Product", "Ingredient", "Category", "Cart", "CartItem", "User" RESTART IDENTITY CASCADE`
   );
 }
 
