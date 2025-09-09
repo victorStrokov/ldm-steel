@@ -2,23 +2,48 @@
 
 import React from 'react';
 import { Title } from './title';
-import { FilterCheckbox } from './filter-checkbox';
 import { Input } from '../ui';
 import { RangeSlider } from './range-slider';
 import { CheckboxFiltersGroup } from './checkbox-filters-group';
 import { useFilterIngredients } from '@/hooks/use-filter-ingredients';
+import { useSet } from 'react-use';
 
 interface Props {
   className?: string;
 }
 
+interface PriceProps {
+  priceFrom?: number;
+  priceTo?: number;
+  onChangePriceFrom?: (value: number) => void;
+  onChangePriceTo?: (value: number) => void;
+  className?: string;
+}
+
 export const Filters: React.FC<Props> = ({ className }) => {
-  const { ingredients, loading } = useFilterIngredients();
+  const { ingredients, loading, onAddId, selectedIds } = useFilterIngredients();
+
+  const [sizes, { toggle: togglesizes }] = useSet(new Set<string>([]));
+  const [materialsTypes, { toggle: toggleMaterialsTypes }] = useSet(
+    new Set<string>([])
+  );
+
+  const [prices, setPrice] = React.useState<PriceProps>({
+    priceFrom: 0,
+    priceTo: 300000,
+  });
 
   const items = ingredients.map((item) => ({
     value: String(item.id),
     text: String(item.name),
   }));
+
+  const updatePrice = (name: keyof PriceProps, value: number) => {
+    setPrice({
+      ...prices,
+      [name]: value,
+    });
+  };
 
   return (
     <div className={className}>
@@ -28,14 +53,52 @@ export const Filters: React.FC<Props> = ({ className }) => {
         className='mb font-bold'
       />
       {/* верхние чекбоксы */}
+
       <div className='flex flex-col gap-4'>
-        <FilterCheckbox
-          text='Можно Собиррать'
-          value='1'
+        <CheckboxFiltersGroup
+          name='materials'
+          className='mt-5'
+          title='Материалы'
+          selected={materialsTypes}
+          onClickCheckbox={toggleMaterialsTypes}
+          limit={5}
+          loading={false}
+          searchInputPlaceholder='Поиск материалов...'
+          items={[
+            { text: 'Сталь', value: 'steel' },
+            { text: 'Алюминий', value: 'aluminum' },
+            { text: 'Пластик', value: 'plastic' },
+          ]}
         />
-        <FilterCheckbox
-          text='Новинки'
-          value='2'
+      </div>
+      <div className='flex flex-col gap-4'>
+        <CheckboxFiltersGroup
+          name='sizes'
+          className='mt-5'
+          title='Размеры'
+          onClickCheckbox={togglesizes}
+          selected={sizes}
+          limit={5}
+          loading={false}
+          searchInputPlaceholder='Поиск размеров...'
+          items={[
+            { text: '1.2', value: '1.2' },
+            { text: '1.25', value: '1.25' },
+            { text: '1.3', value: '1.3' },
+            { text: '1.35', value: '1.35' },
+            { text: '1.4', value: '1.4' },
+            { text: '1.45', value: '1.45' },
+            { text: '1.5', value: '1.5' },
+            { text: '1.8', value: '1.8' },
+            { text: '2.0', value: '2.0' },
+            { text: '2.5', value: '2.5' },
+            { text: '3.0', value: '3.0' },
+            { text: '4.0', value: '4.0' },
+            { text: '4.5', value: '4.5' },
+            { text: '5.0', value: '5.0' },
+            { text: '5.5', value: '5.5' },
+            { text: '6.0', value: '6.0' },
+          ]}
         />
       </div>
       {/* фильтр цен */}
@@ -47,29 +110,39 @@ export const Filters: React.FC<Props> = ({ className }) => {
             placeholder='0'
             min={0}
             max={300000}
-            defaultValue={0}
+            value={String(prices.priceFrom)}
+            onChange={(e) => updatePrice('priceFrom', Number(e.target.value))}
           />
           <Input
             type='number'
             min={0}
             max={300000}
             placeholder='300000'
+            value={String(prices.priceTo)}
+            onChange={(e) => updatePrice('priceTo', Number(e.target.value))}
           />
         </div>
         <RangeSlider
           min={0}
           max={300000}
           step={10}
-          value={[0, 300000]}
+          value={[prices.priceFrom || 0, prices.priceTo || 300000]}
+          onValueChange={([priceFrom, priceTo]) =>
+            setPrice({ priceFrom, priceTo })
+          }
         />
       </div>
       <CheckboxFiltersGroup
         loading={loading}
         title='Комплектующие'
+        name='ingredients'
         className='mt-5'
         limit={6}
         defaultItems={items.slice(0, 6)}
         items={items}
+        onClickCheckbox={onAddId}
+        searchInputPlaceholder='Поиск комплектующих...'
+        selected={selectedIds}
       />
     </div>
   );
