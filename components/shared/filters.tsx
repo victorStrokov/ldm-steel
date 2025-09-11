@@ -7,6 +7,8 @@ import { RangeSlider } from './range-slider';
 import { CheckboxFiltersGroup } from './checkbox-filters-group';
 import { useFilterIngredients } from '@/hooks/use-filter-ingredients';
 import { useSet } from 'react-use';
+import qs from 'qs';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   className?: string;
@@ -21,7 +23,10 @@ interface PriceProps {
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
-  const { ingredients, loading, onAddId, selectedIds } = useFilterIngredients();
+  const { ingredients, loading, onAddId, selectedIngredients } =
+    useFilterIngredients();
+
+  const router = useRouter();
 
   const [sizes, { toggle: togglesizes }] = useSet(new Set<string>([]));
   const [materialsTypes, { toggle: toggleMaterialsTypes }] = useSet(
@@ -45,6 +50,23 @@ export const Filters: React.FC<Props> = ({ className }) => {
     });
   };
 
+  React.useEffect(() => {
+    const filters = {
+      ...prices,
+      sizes: Array.from(sizes),
+      materialsTypes: Array.from(materialsTypes),
+      ingredients: Array.from(selectedIngredients),
+    };
+
+    const query = qs.stringify(filters, {
+      skipNulls: true,
+      arrayFormat: 'comma',
+    });
+    // const newUrl = `${window.location.pathname}?${query}`;
+    // window.history.replaceState(null, '', newUrl);
+    router.push(`?${query}`);
+  }, [prices, sizes, materialsTypes, selectedIngredients, router]);
+  // TODO: добавить ВЫВОД ВЫБРАННЫХ ЧЕКБОКСОВ НА ВЕРХ ЕСЛИ СПИСОК СКРЫТ И ТАМ ЕСТЬ ВЫБРАННЫЕ
   return (
     <div className={className}>
       <Title
@@ -67,7 +89,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
           items={[
             { text: 'Сталь', value: 'steel' },
             { text: 'Алюминий', value: 'aluminum' },
-            { text: 'Пластик', value: 'plastic' },
+            { text: 'ПВХ', value: 'plastic' },
           ]}
         />
       </div>
@@ -142,7 +164,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
         items={items}
         onClickCheckbox={onAddId}
         searchInputPlaceholder='Поиск комплектующих...'
-        selected={selectedIds}
+        selected={selectedIngredients}
       />
     </div>
   );
