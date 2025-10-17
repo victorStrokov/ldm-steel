@@ -43,33 +43,33 @@ export const useFilters = (): ReturnProps => {
         string
       >;
 /* фильтрация ингредиентов */
-        const [selectedIngredients, { toggle: toggleIngredients }] = useSet(new Set<string>(searchParams.get("ingredients")?.split(",") || []));
+       const [selectedIngredients, { toggle: toggleIngredients }] = useSet(
+       new Set(searchParams.get("ingredients")?.split(",") ?? []));
+
   
 /* фильтрация размеров */
    const [sizes, { toggle: toggleSizes }] = useSet(
-      new Set<string>(
-        searchParams.has("sizes") ? searchParams.get("sizes")?.split(",") : []
-      )
-    );
+  new Set(searchParams.get("sizes")?.split(",") ?? [])
+);
 /* фильтрация типов профиля */
     const [materialsTypes, { toggle: toggleMaterialsTypes }] = useSet(
-        new Set<string>(
-          searchParams.has("profileType")
-            ? searchParams.get("profileType")?.split(",")
-            : []
-        )
-      );
+  new Set(searchParams.get("profileType")?.split(",") ?? [])
+);
 /* фильтрация по цене */
-        const [prices, setPrices] = React.useState<PriceProps>({
-    priceFrom: Number(searchParams.get("priceFrom")) || undefined,
-    priceTo: Number(searchParams.get("priceTo")) || undefined,
-  });
+      const [prices, setPrices] = React.useState<PriceProps>(() => ({
+  priceFrom: searchParams.get("priceFrom")
+    ? Number(searchParams.get("priceFrom"))
+    : undefined,
+  priceTo: searchParams.get("priceTo")
+    ? Number(searchParams.get("priceTo"))
+    : undefined,
+}));
 
    const updatePrice = (name: keyof PriceProps, value: number) => {
-      setPrices({
-        ...prices,
+      setPrices((prev) => ({
+        ...prev,
         [name]: value,
-      });
+      }));
     };
 
     

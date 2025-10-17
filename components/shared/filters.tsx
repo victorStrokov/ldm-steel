@@ -9,6 +9,7 @@ import { useQueryFilters,useFilters,useIngredients } from "@/hooks";
 
 
 
+
 interface Props {
   className?: string;
 }
@@ -25,7 +26,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
     text: String(item.name),
   }));
 
-  const updatePrice = (prices: number[]) => {
+  const updatePrice = (prices: number[]) => { 
     filters.setPrices("priceFrom", prices[0]);
     filters.setPrices("priceTo", prices[1]);
   }
