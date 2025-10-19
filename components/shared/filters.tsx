@@ -33,10 +33,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
     new Set<string>([])
   );
 
-  const [prices, setPrice] = React.useState<PriceProps>({
-    priceFrom: 0,
-    priceTo: 300000,
-  });
+  const [prices, setPrice] = React.useState<PriceProps>({});
 
   const items = ingredients.map((item) => ({
     value: String(item.id),
@@ -137,7 +134,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
           />
           <Input
             type='number'
-            min={0}
+            min={100}
             max={300000}
             placeholder='300000'
             value={String(prices.priceTo)}
