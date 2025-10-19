@@ -12,24 +12,14 @@ interface Props {
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
-  const { ingredients, loading, onAddId, selectedIngredients } = useFilterIngredients();
+  const { ingredients, loading } = useIngredients();
+  const filters = useFilters();
 
-  const router = useRouter();
+  useQueryFilters(filters);
 
-  const [sizes, { toggle: togglesizes }] = useSet(new Set<string>([]));
-  const [materialsTypes, { toggle: toggleMaterialsTypes }] = useSet(new Set<string>([]));
+  const items = ingredients.map((item) => ({ value: String(item.id), text: item.name }));
 
-  const [prices, setPrice] = React.useState<PriceProps>({
-    priceFrom: 0,
-    priceTo: 300000,
-  });
-
-  const items = ingredients.map((item) => ({
-    value: String(item.id),
-    text: String(item.name),
-  }));
-
-  const updatePrice = (prices: number[]) => {
+  const updatePrices = (prices: number[]) => {
     filters.setPrices('priceFrom', prices[0]);
     filters.setPrices('priceTo', prices[1]);
   };
@@ -52,9 +42,9 @@ export const Filters: React.FC<Props> = ({ className }) => {
           loading={false}
           searchInputPlaceholder="Поиск материалов..."
           items={[
-            { text: 'Сталь', value: 'steel' },
-            { text: 'Алюминий', value: 'aluminum' },
-            { text: 'ПВХ', value: 'plastic' },
+            { text: 'Армирование', value: 'Армирование' },
+            { text: 'Алюминий', value: 'Алюминий' },
+            { text: 'ПВХ', value: 'ПВХ' },
           ]}
         />
       </div>
@@ -111,7 +101,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
           max={300000}
           step={10}
           value={[filters.prices.priceFrom || 0, filters.prices.priceTo || 300000]}
-          onValueChange={updatePrice}
+          onValueChange={updatePrices}
         />
       </div>
       <CheckboxFiltersGroup
