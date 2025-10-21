@@ -1,37 +1,28 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Title } from "./title";
-import { Input } from "../ui";
-import { RangeSlider } from "./range-slider";
-import { CheckboxFiltersGroup } from "./checkbox-filters-group";
-import { useQueryFilters,useFilters,useIngredients } from "@/hooks";
-
-
-
+import React from 'react';
+import { Title } from './title';
+import { Input } from '../ui';
+import { RangeSlider } from './range-slider';
+import { CheckboxFiltersGroup } from './checkbox-filters-group';
+import { useQueryFilters, useFilters, useIngredients } from '@/hooks';
 
 interface Props {
   className?: string;
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
-
-  const {ingredients, loading}= useIngredients();
+  const { ingredients, loading } = useIngredients();
   const filters = useFilters();
 
   useQueryFilters(filters);
 
-  const items = ingredients.map((item) => ({
-    value: String(item.id),
-    text: String(item.name),
-  }));
+  const items = ingredients.map((item) => ({ value: String(item.id), text: item.name }));
 
-  const updatePrice = (prices: number[]) => { 
-    filters.setPrices("priceFrom", prices[0]);
-    filters.setPrices("priceTo", prices[1]);
-  }
-
-
+  const updatePrices = (prices: number[]) => {
+    filters.setPrices('priceFrom', prices[0]);
+    filters.setPrices('priceTo', prices[1]);
+  };
 
   // TODO: добавить ВЫВОД ВЫБРАННЫХ ЧЕКБОКСОВ НА ВЕРХ ЕСЛИ СПИСОК СКРЫТ И ТАМ ЕСТЬ ВЫБРАННЫЕ
 
@@ -51,9 +42,9 @@ export const Filters: React.FC<Props> = ({ className }) => {
           loading={false}
           searchInputPlaceholder="Поиск материалов..."
           items={[
-            { text: "Сталь", value: "steel" },
-            { text: "Алюминий", value: "aluminum" },
-            { text: "ПВХ", value: "plastic" },
+            { text: 'Армирование', value: 'Армирование' },
+            { text: 'Алюминий', value: 'Алюминий' },
+            { text: 'ПВХ', value: 'ПВХ' },
           ]}
         />
       </div>
@@ -68,20 +59,20 @@ export const Filters: React.FC<Props> = ({ className }) => {
           loading={false}
           searchInputPlaceholder="Поиск размеров..."
           items={[
-            { text: "1.2", value: "1.2" },
-            { text: "1.3", value: "1.3" },
-            { text: "1.4", value: "1.4" },
-            { text: "1.5", value: "1.5" },
-            { text: "1.8", value: "1.8" },
-            { text: "2.0", value: "2.0" },
-            { text: "2.5", value: "2.5" },
-            { text: "3.0", value: "3.0" },
-            { text: "4.0", value: "4.0" },
-            { text: "4.5", value: "4.5" },
-            { text: "5.0", value: "5.0" },
-            { text: "5.5", value: "5.5" },
-            { text: "6.0", value: "6.0" },
-          ]} 
+            { text: '1.2', value: '1.2' },
+            { text: '1.3', value: '1.3' },
+            { text: '1.4', value: '1.4' },
+            { text: '1.5', value: '1.5' },
+            { text: '1.8', value: '1.8' },
+            { text: '2.0', value: '2.0' },
+            { text: '2.5', value: '2.5' },
+            { text: '3.0', value: '3.0' },
+            { text: '4.0', value: '4.0' },
+            { text: '4.5', value: '4.5' },
+            { text: '5.0', value: '5.0' },
+            { text: '5.5', value: '5.5' },
+            { text: '6.0', value: '6.0' },
+          ]}
         />
       </div>
       {/* фильтр цен */}
@@ -94,7 +85,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
             min={0}
             max={300000}
             value={String(filters.prices.priceFrom)}
-            onChange={(e) =>filters.setPrices("priceFrom", Number(e.target.value))}
+            onChange={(e) => filters.setPrices('priceFrom', Number(e.target.value))}
           />
           <Input
             type="number"
@@ -102,7 +93,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
             max={300000}
             placeholder="300000"
             value={String(filters.prices.priceTo)}
-            onChange={(e) => filters.setPrices("priceTo", Number(e.target.value))}
+            onChange={(e) => filters.setPrices('priceTo', Number(e.target.value))}
           />
         </div>
         <RangeSlider
@@ -110,7 +101,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
           max={300000}
           step={10}
           value={[filters.prices.priceFrom || 0, filters.prices.priceTo || 300000]}
-          onValueChange={updatePrice}
+          onValueChange={updatePrices}
         />
       </div>
       <CheckboxFiltersGroup

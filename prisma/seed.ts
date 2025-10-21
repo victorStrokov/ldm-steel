@@ -73,7 +73,7 @@ async function up() {
   const profile1 = await prisma.product.create({
     data: {
       name: 'REHAU 245536',
-      imageUrl: 'public/assets/REHAU_245536.png',
+      imageUrl: 'assets/REHAU_245536.png',
       price: randomDecimalNumber(1900, 2500),
       categoryId: 1,
       ingredients: {
@@ -95,7 +95,7 @@ async function up() {
   const profile3 = await prisma.product.create({
     data: {
       name: 'Полоса оцинкованная 100х6мм (6м)',
-      imageUrl: 'public/assets/Polosa_cink_100х6мм_(6м).jpg',
+      imageUrl: 'assets/Polosa_cink_100х6мм_(6м).jpg',
       price: randomDecimalNumber(1900, 2500),
       categoryId: 1,
       ingredients: {
@@ -218,7 +218,7 @@ async function up() {
 
 async function down() {
   await prisma.$executeRawUnsafe(
-    `TRUNCATE TABLE "ProductItem", "Product", "Ingredient", "Category", "Cart", "CartItem", "User" RESTART IDENTITY CASCADE`
+    `TRUNCATE TABLE "ProductItem", "Product", "Ingredient", "Category", "Cart", "CartItem", "User" RESTART IDENTITY CASCADE`,
   );
 }
 

@@ -59,26 +59,22 @@ export const ingredients = [
   {
     name: 'Шнур ПВХ',
     price: 110,
-    imageUrl:
-      'http://ldm-steel.com/wp-content/uploads/image/moskitos/shnurpvc.jpg',
+    imageUrl: 'http://ldm-steel.com/wp-content/uploads/image/moskitos/shnurpvc.jpg',
   },
   {
     name: 'Крепеж длинный',
     price: 79,
-    imageUrl:
-      'http://ldm-steel.com/wp-content/uploads/image/moskitos/kr_dl_m.png',
+    imageUrl: 'http://ldm-steel.com/wp-content/uploads/image/moskitos/kr_dl_m.png',
   },
   {
     name: 'Крепеж короткий',
     price: 79,
-    imageUrl:
-      'http://ldm-steel.com/wp-content/uploads/image/moskitos/kr_kr_m.png',
+    imageUrl: 'http://ldm-steel.com/wp-content/uploads/image/moskitos/kr_kr_m.png',
   },
   {
     name: 'Сетка москитная',
     price: 79,
-    imageUrl:
-      'http://ldm-steel.com/wp-content/uploads/image/moskitos/setka_rul.jpg',
+    imageUrl: 'http://ldm-steel.com/wp-content/uploads/image/moskitos/setka_rul.jpg',
   },
   {
     name: 'Уголок для маскитной сетки серый',
@@ -145,7 +141,7 @@ export const ingredients = [
 export const products = [
   {
     name: 'Труба 40х50х2мм с вырубкой под замок (2,2м)',
-    imageUrl: 'public/assets/truba_s_varubka.png',
+    imageUrl: '/assets/truba_s_varubka.png',
     price: 1500,
     categoryId: 1,
   },
@@ -385,7 +381,7 @@ export const products = [
   },
   {
     name: 'Комплект (Петля верхняя+штифт+декор накладки) аналог Roto NT',
-    imageUrl: 'assets/Komplect_Roto_NT.jpg',
+    imageUrl: '/assets/Komplect_Roto_NT.jpg',
     price: 750,
     categoryId: 5,
   },
