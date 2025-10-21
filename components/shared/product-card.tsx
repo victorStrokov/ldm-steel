@@ -15,7 +15,7 @@ interface Props {
 export const ProductCard: React.FC<Props> = ({ id, name, price, imageUrl, className }) => {
   return (
     <div className={`${className} h-full`}>
-      <Link href={`/products/${id}`} className="flex flex-col justify-between h-full">
+      <Link href={`/product/${id}`} className="flex flex-col justify-between h-full">
         {/* Верхняя часть */}
         <div>
           <div className="bg-secondary rounded-lg aspect-[3/2] flex items-center justify-center">

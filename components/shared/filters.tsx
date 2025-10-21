@@ -84,7 +84,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
             placeholder="0"
             min={0}
             max={300000}
-            value={String(filters.prices.priceFrom)}
+            value={filters.prices.priceFrom ?? 0}
             onChange={(e) => filters.setPrices('priceFrom', Number(e.target.value))}
           />
           <Input
@@ -92,7 +92,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
             min={0}
             max={300000}
             placeholder="300000"
-            value={String(filters.prices.priceTo)}
+            value={filters.prices.priceTo ?? 300000}
             onChange={(e) => filters.setPrices('priceTo', Number(e.target.value))}
           />
         </div>

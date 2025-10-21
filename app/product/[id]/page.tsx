@@ -1,4 +1,4 @@
-import { Container } from '@/components/shared';
+import { Container, ProductImage } from '@/components/shared';
 import { prisma } from '@/prisma/prisma-client';
 import { notFound } from 'next/navigation';
 
@@ -10,7 +10,7 @@ export default async function ProductPage({ params: { id } }: { params: { id: st
   if (!product) return notFound();
   return (
     <Container className="flex flex-col my-10">
-      <ProductImage src={product.imageUrl} />
+      <ProductImage imageUrl={product.imageUrl} size={40} />
     </Container>
   );
 }
