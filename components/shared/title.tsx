@@ -4,12 +4,13 @@ import React from 'react';
 type TitleSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
 interface Props {
-  text: string;
+  text?: string;
   size?: TitleSize;
   className?: string;
+  children?: React.ReactNode;
 }
 
-export const Title: React.FC<Props> = ({ size = 'sm', text, className }) => {
+export const Title: React.FC<Props> = ({ size = 'sm', text, className, children }) => {
   const mapTagBySize = {
     xs: 'h6',
     sm: 'h5',
@@ -31,6 +32,6 @@ export const Title: React.FC<Props> = ({ size = 'sm', text, className }) => {
   return React.createElement(
     mapTagBySize[size],
     { className: clsx(mapClassNameBySize[size], className) },
-    text,
+    children ?? text,
   );
 };

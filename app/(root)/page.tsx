@@ -16,7 +16,9 @@ export default async function Home() {
   return (
     <>
       <Container className="mt-10">
-        <Title text="Вся продукция" size="lg" className="font-extrabold" />
+        <Title size="lg" className="font-extrabold">
+          Наша <span className="text-violet-500">продукция</span>
+        </Title>
       </Container>
       <TopBar categories={categories.filter((category) => category.products.length > 0)} />
       <Container className="mt-10 mb-4">
