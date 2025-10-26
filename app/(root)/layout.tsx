@@ -1,12 +1,13 @@
-import { Header } from "@/components/shared";
-import type { Metadata } from "next";
+import { Header } from '@/components/shared';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "LDM Steel | Главная",
+  title: 'LDM Steel | Главная',
 };
 
 export default function HomeLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
   modal: React.ReactNode;
@@ -14,8 +15,8 @@ export default function HomeLayout({
   return (
     <main className="min-h-screen">
       <Header />
-
       {children}
+      {modal}
     </main>
   );
 }

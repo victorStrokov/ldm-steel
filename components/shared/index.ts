@@ -13,3 +13,6 @@ export { ProductCard } from '@/components/shared/product-card';
 export { ProductsGroupList } from '@/components/shared/products-group-list';
 export { SearchInput } from '@/components/shared/search-input';
 export { ProductImage } from '@/components/shared/product-image';
+export { GroupVariants } from '@/components/shared/group-variants';
+export { ChooseProfileForm } from '@/components/shared/choose-profile-form';
+export * from './modals';
