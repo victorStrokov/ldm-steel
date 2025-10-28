@@ -14,5 +14,5 @@ export { ProductsGroupList } from '@/components/shared/products-group-list';
 export { SearchInput } from '@/components/shared/search-input';
 export { ProductImage } from '@/components/shared/product-image';
 export { GroupVariants } from '@/components/shared/group-variants';
-export { ChooseProfileForm } from '@/components/shared/choose-profile-form';
+export { ChooseProductForm } from '@/components/shared/choose-product-form';
 export * from './modals';

@@ -1,4 +1,4 @@
-import { ChooseProductModal, Container, GroupVariants, ProductImage, Title } from '@/components/shared';
+import { ChooseProductModal } from '@/components/shared';
 import { prisma } from '@/prisma/prisma-client';
 import { notFound } from 'next/navigation';
 
