@@ -1,4 +1,4 @@
-import { Container, GroupVariants, ProductImage, Title } from '@/components/shared';
+import { Container, GroupVariants, ProductImage, Title } from '@/shared/components/shared';
 import { prisma } from '@/prisma/prisma-client';
 import { notFound } from 'next/navigation';
 
@@ -20,13 +20,13 @@ export default async function ProductPage({ params: { id } }: { params: { id: st
             culpa in maiores
           </p>
           <p className="text-2xl font-semibold text-violet-600">{product.price} ₽</p>
-          <p className="text-2xl font-semibold">Толщина:</p>
+          <p className="text-2xl font-semibold">Длина профиля:</p>
           <GroupVariants
             selectedValue="3"
             items={[
-              { name: ' тонкий ', value: '1', disable: true },
-              { name: ' средний ', value: '2' },
-              { name: ' толстый ', value: '3' },
+              { name: ' 2м ', value: '1', disable: true },
+              { name: ' 6м ', value: '2' },
+              { name: ' 6.5м ', value: '3' },
             ]}
           />
         </div>

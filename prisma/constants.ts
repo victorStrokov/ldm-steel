@@ -11,44 +11,37 @@ export const ingredients = [
   {
     name: 'Соединитель механический импоста Montblanc Eco 60',
     price: 1500,
-    imageUrl:
-      'https://avatars.mds.yandex.net/i?id=fb8cc41a6288f70cc70ae82cc16d9c93c535f8f5-5214146-images-thumbs&n=13',
+    imageUrl: 'https://avatars.mds.yandex.net/i?id=fb8cc41a6288f70cc70ae82cc16d9c93c535f8f5-5214146-images-thumbs&n=13',
   },
   {
     name: 'Саморезы оконные SG 3,9*16 белые плоские Phillips',
     price: 100,
-    imageUrl:
-      'https://avatars.mds.yandex.net/i?id=a35d0bca683f2a9cd2c72f2be9cc79c6e4f44abf-8487401-images-thumbs&n=13',
+    imageUrl: 'https://avatars.mds.yandex.net/i?id=a35d0bca683f2a9cd2c72f2be9cc79c6e4f44abf-8487401-images-thumbs&n=13',
   },
   {
     name: 'Саморезы оконные SG 3,9*19 белые плоские Phillips',
     price: 100,
-    imageUrl:
-      'https://avatars.mds.yandex.net/i?id=a35d0bca683f2a9cd2c72f2be9cc79c6e4f44abf-8487401-images-thumbs&n=13',
+    imageUrl: 'https://avatars.mds.yandex.net/i?id=a35d0bca683f2a9cd2c72f2be9cc79c6e4f44abf-8487401-images-thumbs&n=13',
   },
   {
     name: 'Саморез для импоста 6,3*70',
     price: 160,
-    imageUrl:
-      'https://avatars.mds.yandex.net/i?id=e322c16d31c97d80ae1889e0ebd60e732608f959-4231391-images-thumbs&n=13',
+    imageUrl: 'https://avatars.mds.yandex.net/i?id=e322c16d31c97d80ae1889e0ebd60e732608f959-4231391-images-thumbs&n=13',
   },
   {
     name: 'Саморез с прессшайбой острый 4,2*38',
     price: 100,
-    imageUrl:
-      'https://avatars.mds.yandex.net/i?id=08360bdc63f11c267b05c8745601f447037f23d2-5239800-images-thumbs&n=13',
+    imageUrl: 'https://avatars.mds.yandex.net/i?id=08360bdc63f11c267b05c8745601f447037f23d2-5239800-images-thumbs&n=13',
   },
   {
     name: 'Держатель магнитный',
     price: 100,
-    imageUrl:
-      'https://avatars.mds.yandex.net/i?id=564e6142cb39f7a899c9a81d3533f944946458f9-4628144-images-thumbs&n=13',
+    imageUrl: 'https://avatars.mds.yandex.net/i?id=564e6142cb39f7a899c9a81d3533f944946458f9-4628144-images-thumbs&n=13',
   },
   {
     name: 'Ручка для москитной сетки',
     price: 100,
-    imageUrl:
-      'https://avatars.mds.yandex.net/i?id=0e2c79d5b6c2a54c0c5a00bd10eae99674bb3c14-4576389-images-thumbs&n=13',
+    imageUrl: 'https://avatars.mds.yandex.net/i?id=0e2c79d5b6c2a54c0c5a00bd10eae99674bb3c14-4576389-images-thumbs&n=13',
   },
   {
     name: 'Штифт пружинный с капсулой',
@@ -79,14 +72,12 @@ export const ingredients = [
   {
     name: 'Уголок для маскитной сетки серый',
     price: 79,
-    imageUrl:
-      'https://avatars.mds.yandex.net/i?id=939e791ca531d61d4693204120d87030f1a1b7f7-5521840-images-thumbs&n=13',
+    imageUrl: 'https://avatars.mds.yandex.net/i?id=939e791ca531d61d4693204120d87030f1a1b7f7-5521840-images-thumbs&n=13',
   },
   {
     name: 'Уголок для маскитной сетки белый',
     price: 79,
-    imageUrl:
-      'https://avatars.mds.yandex.net/i?id=2a5fccb9faf458c597c007c7322da0bcbbf35d55-6291274-images-thumbs&n=13',
+    imageUrl: 'https://avatars.mds.yandex.net/i?id=2a5fccb9faf458c597c007c7322da0bcbbf35d55-6291274-images-thumbs&n=13',
   },
   {
     name: 'Уголок для маскитной сетки коричневый',
@@ -103,14 +94,12 @@ export const ingredients = [
   {
     name: 'Крепления для москитной сетки белые',
     price: 79,
-    imageUrl:
-      'https://avatars.mds.yandex.net/i?id=528ef5ba2b38de79f2c747396b9367378fc2b5a8-5167369-images-thumbs&n=13',
+    imageUrl: 'https://avatars.mds.yandex.net/i?id=528ef5ba2b38de79f2c747396b9367378fc2b5a8-5167369-images-thumbs&n=13',
   },
   {
     name: 'Крепление поперечного профиля москитной сетки',
     price: 79,
-    imageUrl:
-      'https://avatars.mds.yandex.net/i?id=26c617aac13425b9a908d774c7562a19cd3875d1-5221624-images-thumbs&n=13',
+    imageUrl: 'https://avatars.mds.yandex.net/i?id=26c617aac13425b9a908d774c7562a19cd3875d1-5221624-images-thumbs&n=13',
   },
   {
     name: 'Ручка малая для москитной сетки коричневая',
@@ -127,20 +116,19 @@ export const ingredients = [
   {
     name: 'Петля для москитной сетки коричневая',
     price: 79,
-    imageUrl:
-      'https://avatars.mds.yandex.net/i?id=8a15ea3d50514247ef8da8769e1687e3c416c164-3725564-images-thumbs&n=13',
+    imageUrl: 'https://avatars.mds.yandex.net/i?id=8a15ea3d50514247ef8da8769e1687e3c416c164-3725564-images-thumbs&n=13',
   },
   {
     name: 'Петля для москитной сетки белая',
     price: 79,
-    imageUrl:
-      'https://avatars.mds.yandex.net/i?id=81bc11268994b2db9fa6e8e6ecdd844599c98e58-5288655-images-thumbs&n=13',
+    imageUrl: 'https://avatars.mds.yandex.net/i?id=81bc11268994b2db9fa6e8e6ecdd844599c98e58-5288655-images-thumbs&n=13',
   },
 ].map((obj, index) => ({ id: index + 1, ...obj }));
 
 export const products = [
   {
-    name: 'Труба 40х50х2мм с вырубкой под замок (2,2м)',
+    name: 'Труба 40х50х2мм с вырубкой под замок',
+
     imageUrl: '/assets/truba_s_varubka.png',
     price: 1500,
     categoryId: 1,

@@ -11,32 +11,19 @@ const generateProductItem = ({
   productId,
   profileType,
   size,
+  length,
 }: {
   productId: number;
-  profileType?: 1 | 2;
-  size?:
-    | 1.2
-    | 1.25
-    | 1.3
-    | 1.35
-    | 1.4
-    | 1.45
-    | 1.5
-    | 1.8
-    | 2.0
-    | 2.5
-    | 3.0
-    | 4.0
-    | 4.5
-    | 5.0
-    | 5.5
-    | 6.0;
+  profileType?: 1 | 2 | 3;
+  size?: 1 | 2 | 3;
+  length?: 1 | 2 | 3;
 }) => {
   return {
     productId,
     price: randomDecimalNumber(190, 600),
     profileType,
     size,
+    length,
   } as Prisma.ProductItemUncheckedCreateInput;
 };
 
@@ -110,62 +97,61 @@ async function up() {
       generateProductItem({
         productId: profile1.id,
         profileType: 1,
-        size: 1.2,
+        length: 2,
       }),
       generateProductItem({
         productId: profile1.id,
         profileType: 1,
-        size: 1.45,
+        length: 2,
       }),
       generateProductItem({
         productId: profile1.id,
         profileType: 1,
-        size: 1.8,
+        length: 2,
       }),
 
       generateProductItem({
         productId: profile1.id,
         profileType: 2,
-        size: 1.35,
+        length: 2,
       }),
       generateProductItem({
         productId: profile1.id,
         profileType: 2,
-        size: 1.5,
+        length: 2,
       }),
       generateProductItem({
         productId: profile1.id,
         profileType: 2,
-        size: 1.8,
+        length: 2,
       }),
       generateProductItem({
         productId: profile1.id,
         profileType: 2,
-        size: 2.0,
+        length: 2,
       }),
 
       // Труба сварная 40х50х2мм (6м)
       generateProductItem({
         productId: profile2.id,
         profileType: 2,
-        size: 1.8,
+        length: 1,
       }),
       generateProductItem({
         productId: profile2.id,
         profileType: 2,
         size: 2.0,
+        length: 1,
       }),
 
       // Полоса оцинкованная 100х6мм (6м)
       generateProductItem({
         productId: profile3.id,
-
-        size: 5.5,
+        length: 2,
       }),
       generateProductItem({
         productId: profile3.id,
-
-        size: 6.0,
+        length: 2,
       }),
 
       // Остальные продукты
