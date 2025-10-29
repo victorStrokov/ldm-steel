@@ -30,7 +30,14 @@ export const ChooseProfileForm: React.FC<Props> = ({ imageUrl, name, className, 
         <Title text={name} size="md" className="font-extrabold mb-1 mt-5" />
         <p className="text-gray-500 mt-5">{textDetails}</p>
 
-        <GroupVariants items={profileSizes} />
+        <GroupVariants
+          items={
+            items?.map((i) => ({
+              name: `${i.size ? `Размер ${i.size}` : ''} ${i.length ? `Длина ${i.length}м` : ''}`.trim(),
+              value: i.id.toString(),
+            })) ?? []
+          }
+        />
 
         <Button
           //   loading={loading}

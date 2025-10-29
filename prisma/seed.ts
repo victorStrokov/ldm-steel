@@ -61,7 +61,6 @@ async function up() {
     data: {
       name: 'REHAU 245536',
       imageUrl: 'assets/REHAU_245536.png',
-      price: randomDecimalNumber(1900, 2500),
       categoryId: 1,
       ingredients: {
         connect: ingredients.slice(0, 7).map((i) => ({ id: i.id })),
@@ -72,7 +71,6 @@ async function up() {
     data: {
       name: 'Труба сварная 40х50х2мм (6м)',
       imageUrl: '/assets/Truba_svsrnaia40х50х2мм_(6м).jpg',
-      price: randomDecimalNumber(1900, 2500),
       categoryId: 1,
       ingredients: {
         connect: ingredients.slice(7, 13).map((i) => ({ id: i.id })),
@@ -83,7 +81,6 @@ async function up() {
     data: {
       name: 'Полоса оцинкованная 100х6мм (6м)',
       imageUrl: 'assets/Polosa_cink_100х6мм_(6м).jpg',
-      price: randomDecimalNumber(1900, 2500),
       categoryId: 1,
       ingredients: {
         connect: ingredients.slice(14, 21).map((i) => ({ id: i.id })),
@@ -93,42 +90,80 @@ async function up() {
 
   await prisma.productItem.createMany({
     data: [
-      // Профиль REHAU 245536
+      // Профиль REHAU 245536 — разные типы профиля и длины
       generateProductItem({
         productId: profile1.id,
         profileType: 1,
+        size: 1,
+        length: 1,
+      }),
+      generateProductItem({
+        productId: profile1.id,
+        profileType: 1,
+        size: 2,
         length: 2,
       }),
       generateProductItem({
         productId: profile1.id,
         profileType: 1,
-        length: 2,
-      }),
-      generateProductItem({
-        productId: profile1.id,
-        profileType: 1,
-        length: 2,
+        size: 3,
+        length: 3,
       }),
 
       generateProductItem({
         productId: profile1.id,
         profileType: 2,
+        size: 1,
         length: 2,
       }),
       generateProductItem({
         productId: profile1.id,
         profileType: 2,
-        length: 2,
+        size: 2,
+        length: 3,
       }),
       generateProductItem({
         productId: profile1.id,
+        profileType: 3,
+        size: 3,
+        length: 1,
+      }),
+
+      // Труба сварная 40х50х2мм (6м) — разные размеры и длины
+      generateProductItem({
+        productId: profile2.id,
         profileType: 2,
+        size: 1,
+        length: 1,
+      }),
+      generateProductItem({
+        productId: profile2.id,
+        profileType: 2,
+        size: 2,
         length: 2,
       }),
       generateProductItem({
-        productId: profile1.id,
+        productId: profile2.id,
         profileType: 2,
+        size: 3,
+        length: 3,
+      }),
+
+      // Полоса оцинкованная 100х6мм (6м) — разные длины
+      generateProductItem({
+        productId: profile3.id,
+        size: 1,
+        length: 1,
+      }),
+      generateProductItem({
+        productId: profile3.id,
+        size: 2,
         length: 2,
+      }),
+      generateProductItem({
+        productId: profile3.id,
+        size: 3,
+        length: 3,
       }),
 
       // Труба сварная 40х50х2мм (6м)
@@ -140,7 +175,7 @@ async function up() {
       generateProductItem({
         productId: profile2.id,
         profileType: 2,
-        size: 2.0,
+        size: 2,
         length: 1,
       }),
 
@@ -202,10 +237,20 @@ async function up() {
   });
 }
 
+// async function down() {
+//   await prisma.$executeRawUnsafe(
+//     `TRUNCATE TABLE "ProductItem", "Product", "Ingredient", "Category", "Cart", "CartItem", "User" RESTART IDENTITY CASCADE`,
+//   );
+// }
 async function down() {
-  await prisma.$executeRawUnsafe(
-    `TRUNCATE TABLE "ProductItem", "Product", "Ingredient", "Category", "Cart", "CartItem", "User" RESTART IDENTITY CASCADE`,
-  );
+  await prisma.$executeRawUnsafe(`
+    DO $$
+    BEGIN
+      IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'ProductItem') THEN
+        TRUNCATE TABLE "ProductItem", "Product", "Ingredient", "Category", "Cart", "CartItem", "User" RESTART IDENTITY CASCADE;
+      END IF;
+    END$$;
+  `);
 }
 
 async function main() {

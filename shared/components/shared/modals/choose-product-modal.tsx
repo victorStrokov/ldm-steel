@@ -21,7 +21,12 @@ export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
       <DialogContent className={cn('p-0 w-[1060] max-w-[1060] min-h-[500] bg-white overflow-hidden', className)}>
         <DialogTitle className="text-center hidden">{product.name}</DialogTitle>
         {isProfileForm ? (
-          <ChooseProfileForm name={product.name} imageUrl={product.imageUrl} ingredients={[]} />
+          <ChooseProfileForm
+            name={product.name}
+            imageUrl={product.imageUrl}
+            ingredients={product.ingredients}
+            items={product.items}
+          />
         ) : (
           <ChooseProductForm name={product.name} imageUrl={product.imageUrl} />
         )}

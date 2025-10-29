@@ -59,19 +59,26 @@ export const Filters: React.FC<Props> = ({ className }) => {
           loading={false}
           searchInputPlaceholder="Поиск размеров..."
           items={[
-            { text: '1.2', value: '1.2' },
-            { text: '1.3', value: '1.3' },
-            { text: '1.4', value: '1.4' },
-            { text: '1.5', value: '1.5' },
-            { text: '1.8', value: '1.8' },
-            { text: '2.0', value: '2.0' },
-            { text: '2.5', value: '2.5' },
-            { text: '3.0', value: '3.0' },
-            { text: '4.0', value: '4.0' },
-            { text: '4.5', value: '4.5' },
-            { text: '5.0', value: '5.0' },
-            { text: '5.5', value: '5.5' },
-            { text: '6.0', value: '6.0' },
+            { text: '30 x 30 ', value: '1' },
+            { text: '60 x 60', value: '2' },
+            { text: '70 x 70', value: '3' },
+          ]}
+        />
+      </div>
+      <div className="flex flex-col gap-4">
+        <CheckboxFiltersGroup
+          name="lengths"
+          className="mt-5"
+          title="Длинна"
+          onClickCheckbox={filters.setLength}
+          selected={filters.length}
+          limit={5}
+          loading={false}
+          searchInputPlaceholder="Поиск размеров..."
+          items={[
+            { text: '2 м', value: '1' },
+            { text: '6 м', value: '2' },
+            { text: '6.5 м', value: '3' },
           ]}
         />
       </div>

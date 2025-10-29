@@ -13,7 +13,8 @@ export const mapProfileType = {
 export const mapProfileSize = {
   1: '30 x 30 ',
   2: '60 x 60',
-  3: '70 x 70',
+  3: '50 x 50',
+  4: '70 x 70',
 } as const;
 
 export const profileSizes = Object.entries(mapProfileSize).map(([name, value]) => ({
