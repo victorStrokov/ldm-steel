@@ -49,11 +49,12 @@ model Product {
 
 model ProductItem {
   id          Int        @id @default(autoincrement())
-
   price       Int?
   size        Int?
   profileType Int?
   length      Int?
+  color       Int?       
+  shape       Int?       
 
   cartItem    CartItem[]
 

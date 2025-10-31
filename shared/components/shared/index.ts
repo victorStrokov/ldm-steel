@@ -16,4 +16,5 @@ export { ProductImage } from '@/shared/components/shared/product-image';
 export { GroupVariants } from '@/shared/components/shared/group-variants';
 export { ChooseProductForm } from '@/shared/components/shared/choose-product-form';
 export { ChooseProfileForm } from '@/shared/components/shared/choose-profile-form';
+export { ProductVariants } from '@/shared/components/shared/product-variants';
 export * from './modals';

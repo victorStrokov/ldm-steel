@@ -15,7 +15,7 @@ const generateProductItem = ({
 }: {
   productId: number;
   profileType?: 1 | 2 | 3;
-  size?: 1 | 2 | 3;
+  size?: 1 | 2 | 3 | 4;
   length?: 1 | 2 | 3;
 }) => {
   return {
@@ -60,7 +60,7 @@ async function up() {
   const profile1 = await prisma.product.create({
     data: {
       name: 'REHAU 245536',
-      imageUrl: 'assets/REHAU_245536.png',
+      imageUrl: '/assets/REHAU_245536.png',
       categoryId: 1,
       ingredients: {
         connect: ingredients.slice(0, 7).map((i) => ({ id: i.id })),
@@ -69,7 +69,7 @@ async function up() {
   });
   const profile2 = await prisma.product.create({
     data: {
-      name: 'Труба сварная 40х50х2мм (6м)',
+      name: 'Труба сварная',
       imageUrl: '/assets/Truba_svsrnaia40х50х2мм_(6м).jpg',
       categoryId: 1,
       ingredients: {
@@ -79,8 +79,8 @@ async function up() {
   });
   const profile3 = await prisma.product.create({
     data: {
-      name: 'Полоса оцинкованная 100х6мм (6м)',
-      imageUrl: 'assets/Polosa_cink_100х6мм_(6м).jpg',
+      name: 'Полоса оцинкованная',
+      imageUrl: '/assets/Polosa_cink_100х6мм_(6м).jpg',
       categoryId: 1,
       ingredients: {
         connect: ingredients.slice(14, 21).map((i) => ({ id: i.id })),
@@ -88,44 +88,132 @@ async function up() {
     },
   });
 
+  const profilePvh1 = await prisma.product.create({
+    data: {
+      name: 'ПВХ профиль REACHMONT Рама',
+      imageUrl: '/assets/REACHMONT_Rama_60мм.jpg',
+      categoryId: 3,
+      ingredients: {
+        connect: ingredients.slice(14, 17).map((i) => ({ id: i.id })),
+      },
+    },
+  });
+  const profilePvh2 = await prisma.product.create({
+    data: {
+      name: 'ПВХ профиль REACHMONT Импост',
+      imageUrl: '/assets/REACHMONT_Inpost_60мм.jpg',
+      categoryId: 3,
+      ingredients: {
+        connect: ingredients.slice(18, 19).map((i) => ({ id: i.id })),
+      },
+    },
+  });
+  const profilePvh3 = await prisma.product.create({
+    data: {
+      name: 'ПВХ профиль REACHMONT Створка',
+      imageUrl: '/assets/REACHMONT_Stvorka_60мм.jpg',
+      categoryId: 3,
+      ingredients: {
+        connect: ingredients.slice(19, 20).map((i) => ({ id: i.id })),
+      },
+    },
+  });
+  const profilePvh4 = await prisma.product.create({
+    data: {
+      name: 'ПВХ профиль REACHMONT Соединительный 60мм',
+      imageUrl: '/assets/REACHMONT_Profile_Soedenetel_60мм.jpg',
+      categoryId: 3,
+      ingredients: {
+        connect: ingredients.slice(20, 21).map((i) => ({ id: i.id })),
+      },
+    },
+  });
+
   await prisma.productItem.createMany({
     data: [
+      //ПВХ профиль REACHMONT Рама 60мм
+      generateProductItem({
+        productId: profilePvh1.id,
+        size: 2,
+        length: 3,
+      }),
+      generateProductItem({
+        productId: profilePvh1.id,
+        size: 3,
+        length: 2,
+      }),
+      generateProductItem({
+        productId: profilePvh1.id,
+        size: 4,
+        length: 2,
+      }),
+      //ПВХ профиль REACHMONT Импост 60мм
+      generateProductItem({
+        productId: profilePvh2.id,
+        size: 1,
+        length: 3,
+      }),
+      generateProductItem({
+        productId: profilePvh2.id,
+        size: 3,
+        length: 2,
+      }),
+      generateProductItem({
+        productId: profilePvh2.id,
+        size: 4,
+        length: 2,
+      }),
+      //ПВХ профиль REACHMONT Створка 60мм
+      generateProductItem({
+        productId: profilePvh3.id,
+        size: 2,
+        length: 2,
+      }),
+      generateProductItem({
+        productId: profilePvh3.id,
+        size: 3,
+        length: 3,
+      }),
+      generateProductItem({
+        productId: profilePvh3.id,
+        size: 4,
+        length: 3,
+      }),
+
+      generateProductItem({ productId: profilePvh4.id, size: 2, length: 2 }),
+      generateProductItem({ productId: profilePvh4.id, size: 3, length: 3 }),
+      generateProductItem({ productId: profilePvh4.id, size: 4, length: 3 }),
+
       // Профиль REHAU 245536 — разные типы профиля и длины
       generateProductItem({
         productId: profile1.id,
         profileType: 1,
-        size: 1,
         length: 1,
       }),
       generateProductItem({
         productId: profile1.id,
         profileType: 1,
-        size: 2,
         length: 2,
       }),
       generateProductItem({
         productId: profile1.id,
         profileType: 1,
-        size: 3,
         length: 3,
       }),
 
       generateProductItem({
         productId: profile1.id,
         profileType: 2,
-        size: 1,
         length: 2,
       }),
       generateProductItem({
         productId: profile1.id,
         profileType: 2,
-        size: 2,
         length: 3,
       }),
       generateProductItem({
         productId: profile1.id,
         profileType: 3,
-        size: 3,
         length: 1,
       }),
 
@@ -133,37 +221,34 @@ async function up() {
       generateProductItem({
         productId: profile2.id,
         profileType: 2,
-        size: 1,
         length: 1,
       }),
       generateProductItem({
         productId: profile2.id,
         profileType: 2,
-        size: 2,
         length: 2,
       }),
       generateProductItem({
         productId: profile2.id,
         profileType: 2,
-        size: 3,
         length: 3,
       }),
 
       // Полоса оцинкованная 100х6мм (6м) — разные длины
       generateProductItem({
         productId: profile3.id,
-        size: 1,
-        length: 1,
-      }),
-      generateProductItem({
-        productId: profile3.id,
-        size: 2,
+        profileType: 3,
         length: 2,
       }),
       generateProductItem({
         productId: profile3.id,
-        size: 3,
-        length: 3,
+        profileType: 2,
+        length: 2,
+      }),
+      generateProductItem({
+        productId: profile3.id,
+        profileType: 1,
+        length: 2,
       }),
 
       // Труба сварная 40х50х2мм (6м)
@@ -175,14 +260,13 @@ async function up() {
       generateProductItem({
         productId: profile2.id,
         profileType: 2,
-        size: 2,
-        length: 1,
+        length: 2,
       }),
 
       // Полоса оцинкованная 100х6мм (6м)
       generateProductItem({
         productId: profile3.id,
-        length: 2,
+        length: 1,
       }),
       generateProductItem({
         productId: profile3.id,

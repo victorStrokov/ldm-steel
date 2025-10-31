@@ -8,7 +8,7 @@ import { ProductCard } from './product-card';
 import { useCategoryStore } from '@/shared/store/category';
 
 interface ProductVariant {
-  price: number;
+  price: number | null;
 }
 
 interface ProductData {

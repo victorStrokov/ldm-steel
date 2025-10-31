@@ -1,10 +1,11 @@
 export const categories = [
-  { name: 'Армирование' },
-  { name: 'Алюминий' },
-  { name: 'ПВХ' },
-  { name: 'Уплотнение' },
-  { name: 'Фурнитура' },
-  { name: 'Комплектующие' },
+  { id: 1, name: 'Армирование' },
+  { id: 2, name: 'Алюминий' },
+  { id: 3, name: 'ПВХ' },
+  { id: 4, name: 'Уплотнение' },
+  { id: 5, name: 'Фурнитура' },
+  { id: 6, name: 'Комплектующие' },
+  { id: 7, name: 'Масла' },
 ];
 
 export const ingredients = [
@@ -205,21 +206,6 @@ export const products = [
     name: 'Ручка Hoppe (алюминиевая, 8-ми позиционная, штифт 35, 40 мм, белая, золото, корич, серебро)',
     imageUrl: '/assets/Ruchka_Hoppe.jpg',
     categoryId: 5,
-  },
-  {
-    name: 'ПВХ профиль REACHMONT Рама 60мм',
-    imageUrl: '/assets/REACHMONT_Rama_60мм.jpg',
-    categoryId: 3,
-  },
-  {
-    name: 'ПВХ профиль REACHMONT Створка 60мм',
-    imageUrl: '/assets/REACHMONT_Stvorka_60мм.jpg',
-    categoryId: 3,
-  },
-  {
-    name: 'ПВХ профиль REACHMONT Импост 60мм',
-    imageUrl: '/assets/REACHMONT_Inpost_60мм.jpg',
-    categoryId: 3,
   },
   {
     name: 'ПВХ профиль REACHMONT Профиль Соединительный 60мм',
