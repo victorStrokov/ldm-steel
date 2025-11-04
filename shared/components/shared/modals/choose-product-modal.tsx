@@ -20,15 +20,12 @@ export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
   if (!product) return null;
 
   const isProfileForm = hasVariations(product);
-  console.log('items in modal:', product.items);
-  console.log('modal product:', product);
 
   return (
     <Dialog open={Boolean(product)} onOpenChange={() => router.back()}>
       <DialogContent
         className={cn(
-          // ✅ адаптив: колонка на мобилке, строка на десктопе
-          'p-4 md:p-6 w-full max-w-[1060px] min-h-[500px] bg-white overflow-hidden rounded-2xl flex flex-col md:flex-row gap-6',
+          'w-full h-full md:h-auto md:max-w-[1060px] max-h-[90vh] bg-white overflow-hidden md:rounded-2xl rounded-none flex flex-col',
           className,
         )}
       >

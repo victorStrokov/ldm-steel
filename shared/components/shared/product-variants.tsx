@@ -2,6 +2,7 @@
 
 import { GroupVariants } from '@/shared/components/shared';
 import { useVariants } from '@/shared/hooks/use-variants';
+import type { ProfileMaterial } from '@/@types/profile.types';
 
 export const ProductVariants = ({ items }: { items: any[] }) => {
   const {
@@ -26,36 +27,36 @@ export const ProductVariants = ({ items }: { items: any[] }) => {
     <>
       {sizeVariants.length > 0 && (
         <>
-          <p className="text-2xl font-semibold">Размер:</p>
-          <GroupVariants items={sizeVariants} selectedValue={selectedSize} onClick={setSelectedSize} />
+          <p className="flex flex-col  text-2xl font-semibold">Размер:</p>
+          <GroupVariants items={sizeVariants} value={selectedSize} onClick={setSelectedSize} />
         </>
       )}
 
       {lengthVariants.length > 0 && (
         <>
           <p className="text-2xl font-semibold">Длина профиля:</p>
-          <GroupVariants items={lengthVariants} selectedValue={selectedLength} onClick={setSelectedLength} />
+          <GroupVariants items={lengthVariants} value={selectedLength} onClick={setSelectedLength} />
         </>
       )}
 
       {typeVariants.length > 0 && (
         <>
           <p className="text-2xl font-semibold">Толщина:</p>
-          <GroupVariants items={typeVariants} selectedValue={selectedType} onClick={setSelectedType} />
+          <GroupVariants items={typeVariants} value={selectedType} onClick={setSelectedType} />
         </>
       )}
 
       {colorVariants.length > 0 && (
         <>
           <p className="text-2xl font-semibold">Цвет:</p>
-          <GroupVariants items={colorVariants} selectedValue={selectedColor} onClick={setSelectedColor} />
+          <GroupVariants items={colorVariants} value={selectedColor} onClick={setSelectedColor} />
         </>
       )}
 
       {shapeVariants.length > 0 && (
         <>
           <p className="text-2xl font-semibold">Форма:</p>
-          <GroupVariants items={shapeVariants} selectedValue={selectedShape} onClick={setSelectedShape} />
+          <GroupVariants items={shapeVariants} value={selectedShape} onClick={setSelectedShape} />
         </>
       )}
     </>

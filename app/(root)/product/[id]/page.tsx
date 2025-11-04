@@ -18,7 +18,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   return (
     <Container className="flex flex-col my-10">
       <div className="flex flex-1">
-        <ProductImage imageUrl={product.imageUrl} size={6} />
+        <ProductImage imageUrl={product.imageUrl} />
         <div className="w-[490px] bg-[#F7F6F5] p-7">
           <Title text={product.name} size="md" className="font-extrabold mb-1" />
           <p className="text-gray-500">

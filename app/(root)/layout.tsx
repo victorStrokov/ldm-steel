@@ -13,9 +13,9 @@ export default function HomeLayout({
   modal: React.ReactNode;
 }>) {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen flex flex-col">
       <Header />
-      {children}
+      <div className="flex-1 container mx-auto px-4 md:px-6">{children}</div>
       {modal}
     </main>
   );

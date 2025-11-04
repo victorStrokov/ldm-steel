@@ -54,7 +54,8 @@ model ProductItem {
   profileType Int?
   length      Int?
   color       Int?       
-  shape       Int?       
+  shape       Int? 
+  material    ProfileMaterial?      
 
   cartItem    CartItem[]
 
@@ -178,4 +179,10 @@ enum OrderStatus {
 enum UserRole {
   USER
   ADMIN
+}
+
+enum ProfileMaterial {
+  STEEL
+  PVC
+  ALUMINIUM
 }

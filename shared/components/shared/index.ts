@@ -17,4 +17,5 @@ export { GroupVariants } from '@/shared/components/shared/group-variants';
 export { ChooseProductForm } from '@/shared/components/shared/choose-product-form';
 export { ChooseProfileForm } from '@/shared/components/shared/choose-profile-form';
 export { ProductVariants } from '@/shared/components/shared/product-variants';
+export { IngredientItem } from '@/shared/components/shared/ingredient-item';
 export * from './modals';

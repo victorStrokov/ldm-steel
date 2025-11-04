@@ -1,33 +1,36 @@
-// типы для вариантов
-export type VariantField = 'size' | 'length' | 'profileType' | 'color' | 'shape';
+import { ProfileMaterial, VariantConfig, VariantField } from '@/@types/profile.types';
+import { getMapByFieldAndMaterial } from '../constants/profile';
 
-export interface VariantConfig {
-  field: VariantField; // какое поле берём из items
-  prefix?: string; // текст перед значением
-  suffix?: string; // текст после значения
-  map?: Record<number, string>; // словарь для отображения числовых кодов
-}
-
-export const buildVariants = (items: any[], config: VariantConfig) => {
+// build-variants.ts
+export const buildVariants = (
+  items: any[],
+  config: Omit<VariantConfig, 'map'> & { material: ProfileMaterial },
+  filters: Partial<Record<VariantField, string | number | null>> = {},
+) => {
   if (!items) return [];
+  const { field, prefix = '', suffix = '', material } = config;
 
-  const { field, prefix = '', suffix = '', map } = config;
+  const map = getMapByFieldAndMaterial(field, material);
 
-  return Array.from(
-    new Map(
-      items
-        .filter((i) => i[field] !== null && i[field] !== undefined)
-        .map((i) => {
-          const rawValue = Number(i[field]); // приводим к числу
-          const displayValue = map ? map[rawValue] : rawValue;
-          return [
-            `${field}-${rawValue}`,
-            {
-              name: `${prefix}${displayValue}${suffix}`,
-              value: String(rawValue),
-            },
-          ] as const;
-        }),
-    ).values(),
-  );
+  const allValues = Array.from(new Set(items.map((i) => i[field]).filter((v) => v !== null && v !== undefined)));
+
+  return allValues.map((rawValue) => {
+    const displayValue = map?.[rawValue as any] ?? String(rawValue);
+
+    const isAvailable = items.some((item) => {
+      if (String(item[field]) !== String(rawValue)) return false;
+      return Object.entries(filters).every(([f, v]) => {
+        if (f === field) return true; // игнорируем текущий фильтр
+        if (v === null || v === undefined || v === '') return true;
+        return String(item[f]) === String(v);
+      });
+    });
+    console.log(field, rawValue, '=>', isAvailable);
+    return {
+      name: `${prefix}${displayValue}${suffix}`,
+      value: String(rawValue),
+      disable: false, // всегда кликабельно
+      available: isAvailable, // для подсветки
+    };
+  });
 };

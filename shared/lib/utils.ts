@@ -19,7 +19,13 @@ export const buildOptions = <T extends Record<string | number, string>>(map: T) 
  */
 export function hasVariations(
   product: ProductWithRelations,
-  variationKeys: (keyof NonNullable<ProductWithRelations['items']>[0])[] = ['profileType', 'size', 'color', 'length'],
+  variationKeys: (keyof NonNullable<ProductWithRelations['items']>[0])[] = [
+    'profileType',
+    'size',
+    'color',
+    'length',
+    'shape',
+  ],
 ): boolean {
   if (!product.items || product.items.length <= 1) {
     return false; // один item — вариаций нет

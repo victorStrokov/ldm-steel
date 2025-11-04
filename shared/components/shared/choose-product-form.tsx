@@ -14,8 +14,7 @@ interface Props {
 }
 
 export const ChooseProductForm: React.FC<Props> = ({ imageUrl, name, className, onClickAdd }) => {
-  const textDetails =
-    'профиль аррмирующий п-образный, профиль пвх 70 мм, двухкамерный стеклопакет, фурнитура стандарт, цвет белый, монтажная пена, доставка и установка включены в стоимость';
+  const textDetails = 'профиль аррмирующий п-образный, профиль пвх 70 мм';
 
   const totalPrice = 100; // Placeholder price
 
@@ -40,7 +39,7 @@ export const ChooseProductForm: React.FC<Props> = ({ imageUrl, name, className, 
         <p className="text-gray-500 mb-4">{textDetails}</p>
 
         <div className="mt-auto">
-          <Button onClick={onClickAdd} className="h-[55px] px-6 text-base rounded-[18px] w-full">
+          <Button onClick={onClickAdd} className="h-[55px] px-6 text-base rounded-[18px] w-full whitespace-normal">
             Добавить в корзину за {totalPrice} ₽
           </Button>
         </div>
