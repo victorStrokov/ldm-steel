@@ -150,16 +150,16 @@ async function up() {
   });
   const profileAl2 = await prisma.product.create({
     data: {
-      name: 'Рама Нижняя Provedal КПС 034',
-      imageUrl: '/assets/Rama_Niz_Provedal_КПС_034.jpg',
+      name: 'Provedal Рама Верхняя (КПС 035)',
+      imageUrl: '/assets/Provedal_Rama_Verh_(КПС_035).jpg',
       categoryId: 2,
       ingredients: { connect: ingredients.slice(11, 18).map((i) => ({ id: i.id })) },
     },
   });
   const profileAl3 = await prisma.product.create({
     data: {
-      name: 'Рама Нижняя Provedal КПС 034',
-      imageUrl: '/assets/Rama_Niz_Provedal_КПС_034.jpg',
+      name: 'Provedal Рама Боковая (КПС 036)',
+      imageUrl: '/assets/Provedal_Rama_Bock_(КПС_036).jpg',
       categoryId: 2,
       ingredients: { connect: ingredients.slice(19, 27).map((i) => ({ id: i.id })) },
     },
@@ -326,8 +326,15 @@ async function up() {
         material: 'STEEL',
       }),
       generateProductItem({ productId: profileAl1.id, color: 1, length: 1, material: 'ALUMINIUM' }),
-      generateProductItem({ productId: profileAl2.id, color: 2, length: 2, material: 'ALUMINIUM' }),
+      generateProductItem({ productId: profileAl1.id, color: 1, length: 2, material: 'ALUMINIUM' }),
+      generateProductItem({ productId: profileAl1.id, color: 2, length: 1, material: 'ALUMINIUM' }),
+      generateProductItem({ productId: profileAl2.id, color: 1, length: 1, material: 'ALUMINIUM' }),
+      generateProductItem({ productId: profileAl2.id, color: 2, length: 1, material: 'ALUMINIUM' }),
+      generateProductItem({ productId: profileAl2.id, color: 1, length: 2, material: 'ALUMINIUM' }),
+      generateProductItem({ productId: profileAl3.id, color: 1, length: 1, material: 'ALUMINIUM' }),
+      generateProductItem({ productId: profileAl3.id, color: 2, length: 1, material: 'ALUMINIUM' }),
       generateProductItem({ productId: profileAl3.id, color: 3, length: 2, material: 'ALUMINIUM' }),
+      generateProductItem({ productId: profileAl3.id, color: 2, length: 2, material: 'ALUMINIUM' }),
 
       // Остальные продукты
       generateProductItem({ productId: 1 }),

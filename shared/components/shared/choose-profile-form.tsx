@@ -6,22 +6,34 @@ import { Title } from './title';
 import { Button } from '../ui';
 import { ProductImage } from './product-image';
 import { ProductVariants } from './product-variants';
-import { Ingredient } from '@prisma/client';
+import { Ingredient, ProductItem } from '@prisma/client';
 import { IngredientItem } from './ingredient-item';
+import { useSet } from 'react-use';
 
 interface Props {
   imageUrl?: string;
   name: string;
   className?: string;
   ingredients?: Ingredient[];
-  items: any[];
-  onClickAdd?: VoidFunction;
+  items: ProductItem[];
+  onClickAddCart?: VoidFunction;
 }
 
-export const ChooseProfileForm: React.FC<Props> = ({ imageUrl, name, className, ingredients, items, onClickAdd }) => {
+export const ChooseProfileForm: React.FC<Props> = ({
+  imageUrl,
+  name,
+  className,
+  ingredients,
+  items,
+  onClickAddCart,
+}) => {
+  const [selectedIngredients, { toggle: addIngredient }] = useSet(new Set<number>([]));
   const textDetails = 'профиль аррмирующий п-образный, профиль пвх 70 мм';
-
-  const totalPrice = items?.reduce((sum, item) => sum + (item.price ?? 0), 0);
+  // Разобраться с ценообразованием профилей
+  const profilePrice = items.find(
+    (item) => item.profileType === items[0].profileType && item.size === items[0].size,
+  )?.price;
+  const totalPrice = profilePrice;
 
   return (
     <div className={cn('flex flex-col md:flex-row flex-1 gap-6', className)}>
@@ -53,7 +65,8 @@ export const ChooseProfileForm: React.FC<Props> = ({ imageUrl, name, className, 
                   imageUrl={ingredient.imageUrl || undefined}
                   name={ingredient.name || undefined}
                   price={ingredient.price}
-                  active={false}
+                  onClick={() => addIngredient(ingredient.id)}
+                  active={selectedIngredients.has(ingredient.id)}
                   className="mt-4"
                 />
               ))}
@@ -63,7 +76,7 @@ export const ChooseProfileForm: React.FC<Props> = ({ imageUrl, name, className, 
 
         {/* Кнопка всегда внизу */}
         <div className="sticky bottom-0 bg-[#f7f6f5] pt-4">
-          <Button onClick={onClickAdd} className="h-[55px] w-full rounded-[18px]">
+          <Button onClick={onClickAddCart} className="h-[55px] w-full rounded-[18px]">
             Добавить в корзину за {totalPrice} ₽
           </Button>
         </div>

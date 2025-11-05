@@ -2,8 +2,9 @@
 import { useState } from 'react';
 import type { ProfileMaterial, VariantField } from '@/@types/profile.types';
 import { buildVariants } from '../lib/build-variants';
+import { ProductItem } from '@prisma/client';
 
-export const useVariants = (items: any[], material?: ProfileMaterial) => {
+export const useVariants = (items: ProductItem[], material?: ProfileMaterial) => {
   const mat: ProfileMaterial = material ?? (items[0]?.material as ProfileMaterial) ?? 'STEEL';
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null);

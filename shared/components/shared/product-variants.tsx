@@ -2,9 +2,9 @@
 
 import { GroupVariants } from '@/shared/components/shared';
 import { useVariants } from '@/shared/hooks/use-variants';
-import type { ProfileMaterial } from '@/@types/profile.types';
+import { ProductItem } from '@prisma/client';
 
-export const ProductVariants = ({ items }: { items: any[] }) => {
+export const ProductVariants = ({ items }: { items: ProductItem[] }) => {
   const {
     sizeVariants,
     selectedSize,
@@ -22,6 +22,8 @@ export const ProductVariants = ({ items }: { items: any[] }) => {
     selectedShape,
     setSelectedShape,
   } = useVariants(items);
+
+  console.log(items);
 
   return (
     <>

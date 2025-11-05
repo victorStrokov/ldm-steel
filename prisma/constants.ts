@@ -213,21 +213,6 @@ export const products = [
     categoryId: 3,
   },
   {
-    name: 'Рама Нижняя Provedal КПС 034',
-    imageUrl: '/assets/Rama_Niz_Provedal_КПС_034.jpg',
-    categoryId: 2,
-  },
-  {
-    name: 'Provedal Рама Верхняя (КПС 035)',
-    imageUrl: '/assets/Provedal_Rama_Verh_(КПС_035).jpg',
-    categoryId: 2,
-  },
-  {
-    name: 'Provedal Рама Боковая (КПС 036)',
-    imageUrl: '/assets/Provedal_Rama_Bock_(КПС_036).jpg',
-    categoryId: 2,
-  },
-  {
     name: 'Рама Верхняя (арт. Provedal С640/01)',
     imageUrl: '/assets/Rama_Verh.jpg',
     categoryId: 2,

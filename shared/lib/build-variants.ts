@@ -1,36 +1,46 @@
 import { ProfileMaterial, VariantConfig, VariantField } from '@/@types/profile.types';
 import { getMapByFieldAndMaterial } from '../constants/profile';
+import { ProductItem } from '@prisma/client';
+
+type VariantValue = number | null;
 
 // build-variants.ts
 export const buildVariants = (
-  items: any[],
+  items: ProductItem[],
   config: Omit<VariantConfig, 'map'> & { material: ProfileMaterial },
   filters: Partial<Record<VariantField, string | number | null>> = {},
 ) => {
-  if (!items) return [];
-  const { field, prefix = '', suffix = '', material } = config;
+  if (!items || items.length === 0) return [];
 
+  const { field, prefix = '', suffix = '', material } = config;
   const map = getMapByFieldAndMaterial(field, material);
 
-  const allValues = Array.from(new Set(items.map((i) => i[field]).filter((v) => v !== null && v !== undefined)));
+  // Собираем уникальные значения по полю
+  const allValues: VariantValue[] = Array.from(
+    new Set(items.map((item) => item[field as keyof ProductItem] as VariantValue).filter((v) => v !== null)),
+  );
 
   return allValues.map((rawValue) => {
-    const displayValue = map?.[rawValue as any] ?? String(rawValue);
+    const displayValue = map?.[rawValue as number] ?? String(rawValue);
 
     const isAvailable = items.some((item) => {
-      if (String(item[field]) !== String(rawValue)) return false;
-      return Object.entries(filters).every(([f, v]) => {
-        if (f === field) return true; // игнорируем текущий фильтр
-        if (v === null || v === undefined || v === '') return true;
-        return String(item[f]) === String(v);
+      const itemValue = item[field as keyof ProductItem];
+      if (String(itemValue) !== String(rawValue)) return false;
+
+      return Object.entries(filters).every(([filterField, filterValue]) => {
+        if (filterField === field) return true;
+        if (filterValue === null || filterValue === undefined || filterValue === '') return true;
+
+        const itemFilterValue = item[filterField as keyof ProductItem];
+        return String(itemFilterValue) === String(filterValue);
       });
     });
-    console.log(field, rawValue, '=>', isAvailable);
+
     return {
       name: `${prefix}${displayValue}${suffix}`,
       value: String(rawValue),
-      disable: false, // всегда кликабельно
-      available: isAvailable, // для подсветки
+      disable: false,
+      available: isAvailable,
     };
   });
 };
