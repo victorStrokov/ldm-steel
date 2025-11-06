@@ -132,7 +132,7 @@ async function up() {
   });
   const profilePvc4 = await prisma.product.create({
     data: {
-      name: 'ПВХ профиль REACHMONT Соединительный 60мм',
+      name: 'ПВХ профиль REACHMONT Соединительный',
       imageUrl: '/assets/REACHMONT_Profile_Soedenetel_60мм.jpg',
       categoryId: 3,
       ingredients: {

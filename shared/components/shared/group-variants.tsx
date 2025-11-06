@@ -6,7 +6,7 @@ import React from 'react';
 type Variant = {
   name: string;
   value: string;
-  disable?: boolean; // можно оставить для совместимости
+  disable?: boolean; // старый флаг
   available?: boolean; // новый флаг
 };
 
@@ -22,18 +22,18 @@ export const GroupVariants: React.FC<Props> = ({ items, onClick, value, classNam
     <div className={cn(className, 'flex flex-wrap gap-2 bg-[#F3F3F7] rounded-3xl p-2 select-none')}>
       {items.map((item) => {
         const isSelected = item.value === value;
-        const isAvailable = item.available !== false; // по умолчанию true
+        const isDisabled = item.disable || item.available === false;
 
         return (
           <button
             key={item.value}
-            onClick={() => onClick?.(item.value)}
+            onClick={() => !isDisabled && onClick?.(item.value)}
+            disabled={isDisabled}
             className={cn(
               'flex items-center justify-center h-[35px] px-5 rounded-3xl transition-all duration-300 text-sm',
               {
                 'bg-white shadow-md text-primary': isSelected,
-                'bg-gray-200 text-gray-500 opacity-50': !isAvailable && !isSelected,
-                'cursor-pointer': true,
+                'text-gray-500 opacity-50 pointer-events-none': isDisabled && !isSelected,
               },
             )}
           >

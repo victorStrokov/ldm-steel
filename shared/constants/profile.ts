@@ -3,12 +3,12 @@ import { ProfileMaterial, VariantField } from '@/@types/profile.types';
 // Размеры
 export const SIZE_MAP: Record<ProfileMaterial, Record<number, string>> = {
   STEEL: {
-    1: '30×28',
-    2: '15×30',
-    3: '31×34',
-    4: '35×20',
-    5: '40×40',
-    6: '40×50',
+    1: '30×28 мм',
+    2: '15×30 мм',
+    3: '31×34 мм',
+    4: '35×20 мм',
+    5: '40×40 мм',
+    6: '40×50 мм',
   },
   PVC: {
     1: '6.5 мм',
@@ -17,9 +17,9 @@ export const SIZE_MAP: Record<ProfileMaterial, Record<number, string>> = {
     4: '30×70 мм',
   },
   ALUMINIUM: {
-    1: '40×40',
-    2: '60×40',
-    3: '60×60',
+    1: '40×40 мм',
+    2: '60×40 мм',
+    3: '60×60 мм',
   },
 };
 

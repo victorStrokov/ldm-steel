@@ -9,6 +9,10 @@ import { ProductVariants } from './product-variants';
 import { Ingredient, ProductItem } from '@prisma/client';
 import { IngredientItem } from './ingredient-item';
 import { useSet } from 'react-use';
+import { SIZE_MAP, LENGTH_MAP, COLOR_MAP, SHAPE_MAP } from '@/shared/constants/profile';
+import getLabel from '@/shared/lib/getLabel';
+import { X } from 'lucide-react';
+import { useVariants } from '@/shared/hooks/use-variants';
 
 interface Props {
   imageUrl?: string;
@@ -27,13 +31,67 @@ export const ChooseProfileForm: React.FC<Props> = ({
   items,
   onClickAddCart,
 }) => {
+  const {
+    selectedSize: size,
+    setSelectedSize: setSize,
+    selectedLength: length,
+    setSelectedLength: setLength,
+    selectedType: type,
+    setSelectedType: setType,
+    selectedColor: color,
+    setSelectedColor: setColor,
+    selectedShape: shape,
+    setSelectedShape: setShape,
+    resetFilters,
+  } = useVariants(items);
+
   const [selectedIngredients, { toggle: addIngredient }] = useSet(new Set<number>([]));
-  const textDetails = 'профиль аррмирующий п-образный, профиль пвх 70 мм';
+  const material = items[0].material;
+  const sizeLabel = getLabel(SIZE_MAP, material, size);
+  const lengthLabel = getLabel(LENGTH_MAP, material, length);
+  const colorLabel = getLabel(COLOR_MAP, material, color);
+  const shapeLabel = getLabel(SHAPE_MAP, material, shape);
+
   // Разобраться с ценообразованием профилей
-  const profilePrice = items.find(
-    (item) => item.profileType === items[0].profileType && item.size === items[0].size,
-  )?.price;
-  const totalPrice = profilePrice;
+  const profilePrice =
+    items.find((item) => item.profileType === items[0].profileType && item.size === items[0].size)?.price || 0;
+  const ingredientsPrice =
+    ingredients
+      ?.filter((ingredient) => selectedIngredients.has(ingredient.id))
+      .reduce((acc, ingredient) => acc + ingredient.price, 0) || 0;
+  const totalPrice = profilePrice + ingredientsPrice;
+
+  const textDetails = [
+    name,
+    lengthLabel ? `длина ${lengthLabel} ` : null,
+    sizeLabel ? `размер ${sizeLabel} ` : null,
+    type ? `толщина ${type} ` : null,
+    colorLabel ? `цвет ${colorLabel}` : null,
+    shapeLabel ? `форма ${shapeLabel}` : null,
+  ]
+    .filter(Boolean)
+    .join(', ');
+
+  const handleClickAdd = () => {
+    onClickAddCart?.();
+    console.log({
+      size,
+      length,
+      type,
+      color,
+      shape,
+      ingredients: selectedIngredients,
+    });
+  };
+
+  // const availableProducts = items.filter((item) => item.size === size && item.profileType === type);
+  // const availableProductsSizes = availableProducts.map((item) => ({
+  //   name: item.profileType,
+  //   value: item.size,
+  //   disabled: !availableProducts.some((prod) => prod.size === item.size && prod.profileType === item.profileType),
+  // }));
+
+  // console.log(items, availableProducts);
 
   return (
     <div className={cn('flex flex-col md:flex-row flex-1 gap-6', className)}>
@@ -48,11 +106,27 @@ export const ChooseProfileForm: React.FC<Props> = ({
       <div className="w-full md:w-1/2 bg-[#f7f6f5] rounded-lg p-4 md:p-6 flex flex-col max-h-[80vh]">
         <Title text={name} size="md" className="font-extrabold mb-3" />
         <p className="text-gray-500 mb-4">{textDetails}</p>
+        <div className="flex items-center justify-end mb-4">
+          <button
+            onClick={resetFilters}
+            className="flex items-center gap-2 text-sm text-gray-600 hover:text-red-600 transition-colors"
+          >
+            <X size={16} />
+            Сбросить фильтры
+          </button>
+        </div>
 
         {/* Контент с прокруткой */}
         <div className="flex-1 overflow-y-auto pr-2 space-y-5">
           {/* Варианты */}
-          <ProductVariants items={items} />
+          <ProductVariants
+            items={items}
+            onSizeChange={setSize}
+            onLengthChange={setLength}
+            onTypeChange={setType}
+            onColorChange={setColor}
+            onShapeChange={setShape}
+          />
 
           {/* Ингредиенты */}
           <div className="bg-gray-50 p-5 rounded-md">
@@ -76,7 +150,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
 
         {/* Кнопка всегда внизу */}
         <div className="sticky bottom-0 bg-[#f7f6f5] pt-4">
-          <Button onClick={onClickAddCart} className="h-[55px] w-full rounded-[18px]">
+          <Button onClick={handleClickAdd} className="h-[55px] w-full rounded-[18px]">
             Добавить в корзину за {totalPrice} ₽
           </Button>
         </div>

@@ -3,8 +3,25 @@
 import { GroupVariants } from '@/shared/components/shared';
 import { useVariants } from '@/shared/hooks/use-variants';
 import { ProductItem } from '@prisma/client';
+import React from 'react';
 
-export const ProductVariants = ({ items }: { items: ProductItem[] }) => {
+interface ProductVariantsProps {
+  items: ProductItem[];
+  onSizeChange?: (value: string) => void;
+  onLengthChange?: (value: string) => void;
+  onTypeChange?: (value: string) => void;
+  onColorChange?: (value: string) => void;
+  onShapeChange?: (value: string) => void;
+}
+
+export const ProductVariants: React.FC<ProductVariantsProps> = ({
+  items,
+  onSizeChange,
+  onLengthChange,
+  onTypeChange,
+  onColorChange,
+  onShapeChange,
+}) => {
   const {
     sizeVariants,
     selectedSize,
@@ -23,7 +40,25 @@ export const ProductVariants = ({ items }: { items: ProductItem[] }) => {
     setSelectedShape,
   } = useVariants(items);
 
-  console.log(items);
+  React.useEffect(() => {
+    if (selectedSize) onSizeChange?.(selectedSize);
+  }, [selectedSize, onSizeChange]);
+
+  React.useEffect(() => {
+    if (selectedLength) onLengthChange?.(selectedLength);
+  }, [selectedLength, onLengthChange]);
+
+  React.useEffect(() => {
+    if (selectedType) onTypeChange?.(selectedType);
+  }, [selectedType, onTypeChange]);
+
+  React.useEffect(() => {
+    if (selectedColor) onColorChange?.(selectedColor);
+  }, [selectedColor, onColorChange]);
+
+  React.useEffect(() => {
+    if (selectedShape) onShapeChange?.(selectedShape);
+  }, [selectedShape, onShapeChange]);
 
   return (
     <>

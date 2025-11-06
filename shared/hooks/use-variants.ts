@@ -27,6 +27,14 @@ export const useVariants = (items: ProductItem[], material?: ProfileMaterial) =>
   const colorVariants = buildVariants(items, { field: 'color', prefix: 'Цвет: ', material: mat }, filters);
   const shapeVariants = buildVariants(items, { field: 'shape', prefix: 'Форма: ', material: mat }, filters);
 
+  const resetFilters = () => {
+    setSelectedSize(null);
+    setSelectedLength(null);
+    setSelectedType(null);
+    setSelectedColor(null);
+    setSelectedShape(null);
+  };
+
   return {
     sizeVariants,
     selectedSize,
@@ -43,5 +51,6 @@ export const useVariants = (items: ProductItem[], material?: ProfileMaterial) =>
     shapeVariants,
     selectedShape,
     setSelectedShape,
+    resetFilters,
   };
 };
