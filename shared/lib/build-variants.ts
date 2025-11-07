@@ -2,7 +2,7 @@ import { ProfileMaterial, VariantConfig, VariantField } from '@/@types/profile.t
 import { getMapByFieldAndMaterial } from '../constants/profile';
 import { ProductItem } from '@prisma/client';
 
-type VariantValue = number | null;
+type VariantValue = string | number;
 
 // build-variants.ts
 export const buildVariants = (
@@ -15,17 +15,24 @@ export const buildVariants = (
   const { field, prefix = '', suffix = '', material } = config;
   const map = getMapByFieldAndMaterial(field, material);
 
-  // Собираем уникальные значения по полю
   const allValues: VariantValue[] = Array.from(
-    new Set(items.map((item) => item[field as keyof ProductItem] as VariantValue).filter((v) => v !== null)),
+    new Set(
+      items
+        .map((item) => item[field as keyof ProductItem])
+        .filter((v) => v !== null && v !== undefined) as VariantValue[],
+    ),
   );
 
   return allValues.map((rawValue) => {
-    const displayValue = map?.[rawValue as number] ?? String(rawValue);
+    const numKey = Number(rawValue);
+    const strKey = String(rawValue);
+
+    // пробуем по числу, затем по строке, иначе — сырой ключ
+    const displayValue = (map?.[numKey] as string | undefined) ?? (map?.[strKey] as string | undefined) ?? strKey;
 
     const isAvailable = items.some((item) => {
       const itemValue = item[field as keyof ProductItem];
-      if (String(itemValue) !== String(rawValue)) return false;
+      if (String(itemValue) !== strKey) return false;
 
       return Object.entries(filters).every(([filterField, filterValue]) => {
         if (filterField === field) return true;
@@ -38,7 +45,7 @@ export const buildVariants = (
 
     return {
       name: `${prefix}${displayValue}${suffix}`,
-      value: String(rawValue),
+      value: strKey,
       disable: false,
       available: isAvailable,
     };

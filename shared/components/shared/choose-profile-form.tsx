@@ -9,7 +9,7 @@ import { ProductVariants } from './product-variants';
 import { Ingredient, ProductItem } from '@prisma/client';
 import { IngredientItem } from './ingredient-item';
 import { useSet } from 'react-use';
-import { SIZE_MAP, LENGTH_MAP, COLOR_MAP, SHAPE_MAP } from '@/shared/constants/profile';
+import { SIZE_MAP, LENGTH_MAP, COLOR_MAP, SHAPE_MAP, TYPE_MAP } from '@/shared/constants/profile';
 import getLabel from '@/shared/lib/getLabel';
 import { X } from 'lucide-react';
 import { useVariants } from '@/shared/hooks/use-variants';
@@ -49,6 +49,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
   const material = items[0].material;
   const sizeLabel = getLabel(SIZE_MAP, material, size);
   const lengthLabel = getLabel(LENGTH_MAP, material, length);
+  const typeLabel = getLabel(TYPE_MAP, material, type); // 👈 добавили
   const colorLabel = getLabel(COLOR_MAP, material, color);
   const shapeLabel = getLabel(SHAPE_MAP, material, shape);
 
@@ -65,7 +66,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
     name,
     lengthLabel ? `длина ${lengthLabel} ` : null,
     sizeLabel ? `размер ${sizeLabel} ` : null,
-    type ? `толщина ${type} ` : null,
+    typeLabel ? `толщина ${typeLabel}` : null,
     colorLabel ? `цвет ${colorLabel}` : null,
     shapeLabel ? `форма ${shapeLabel}` : null,
   ]
@@ -83,15 +84,6 @@ export const ChooseProfileForm: React.FC<Props> = ({
       ingredients: selectedIngredients,
     });
   };
-
-  // const availableProducts = items.filter((item) => item.size === size && item.profileType === type);
-  // const availableProductsSizes = availableProducts.map((item) => ({
-  //   name: item.profileType,
-  //   value: item.size,
-  //   disabled: !availableProducts.some((prod) => prod.size === item.size && prod.profileType === item.profileType),
-  // }));
-
-  // console.log(items, availableProducts);
 
   return (
     <div className={cn('flex flex-col md:flex-row flex-1 gap-6', className)}>

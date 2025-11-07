@@ -1,11 +1,13 @@
 function getLabel(
-  map: Record<string, Record<number, string>>,
+  map: Record<string, Record<string | number, string>>,
   material: string | null,
   key?: string | number | null,
 ): string {
-  if (!material || !key) return '';
-  const numKey = typeof key === 'string' ? Number(key) : key;
-  return map[material]?.[numKey] ?? '';
+  if (!material || key === null || key === undefined) return '';
+  const numKey = Number(key);
+  const strKey = String(key);
+  const m = map[material];
+  return (m?.[numKey] ?? m?.[strKey] ?? '') as string;
 }
 
 export default getLabel;
