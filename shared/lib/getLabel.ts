@@ -1,13 +1,14 @@
-function getLabel(
-  map: Record<string, Record<string | number, string>>,
-  material: string | null,
-  key?: string | number | null,
-): string {
-  if (!material || key === null || key === undefined) return '';
-  const numKey = Number(key);
-  const strKey = String(key);
-  const m = map[material];
-  return (m?.[numKey] ?? m?.[strKey] ?? '') as string;
-}
+// import { ProductMaterial } from '@prisma/client';
 
-export default getLabel;
+// type Option = { value: number | string; name: string };
+
+// export const getLabel = (
+//   map: Record<ProductMaterial, Option[]>,
+//   material: ProductMaterial,
+//   value: string | number | null | undefined,
+// ): string | null => {
+//   if (!material || value == null) return null;
+
+//   const option = map[material].find((opt) => String(opt.value) === String(value));
+//   return option ? option.name : null;
+// };

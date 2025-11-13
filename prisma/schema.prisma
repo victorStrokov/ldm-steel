@@ -37,7 +37,7 @@ model Product {
   name        String
   imageUrl    String
 
-  items       ProductItem[]
+  items       ProductItem[] 
   ingredients Ingredient[]  @relation("IngredientToProduct")
 
   category    Category      @relation(fields: [categoryId], references: [id])
@@ -48,14 +48,16 @@ model Product {
 }
 
 model ProductItem {
-  id          Int        @id @default(autoincrement())
-  price       Int?
-  size        Int?
-  profileType Int?
-  length      Int?
-  color       Int?       
-  shape       Int? 
-  material    ProfileMaterial?      
+  id                 Int        @id @default(autoincrement())
+  price              Int?
+  steelSize          Int?
+  pvcSize            Int?
+  productSizes       Int?
+  productLength      Int?
+  productThickness   Int?
+  productColor       Int?       
+  productShape       Int? 
+  productMaterials   ProductMaterial?      
 
   cartItem    CartItem[]
 
@@ -181,8 +183,10 @@ enum UserRole {
   ADMIN
 }
 
-enum ProfileMaterial {
+enum ProductMaterial {
   STEEL
   PVC
   ALUMINIUM
+  PLASTIC
+  RUBBER
 }

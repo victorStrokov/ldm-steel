@@ -3,44 +3,37 @@
 import { cn } from '@/shared/lib/utils';
 import React from 'react';
 
-type Variant = {
+export type Variant = {
   name: string;
   value: string;
-  disable?: boolean; // старый флаг
-  available?: boolean; // новый флаг
+  disabled?: boolean;
 };
 
 interface Props {
   items: readonly Variant[];
-  onClick?: (value: string) => void;
+  onClick?: (value: Variant['value']) => void;
+  value?: Variant['value'];
   className?: string;
-  value?: string | null;
 }
 
-export const GroupVariants: React.FC<Props> = ({ items, onClick, value, className }) => {
+export const GroupVariants: React.FC<Props> = ({ items, onClick, className, value }) => {
   return (
-    <div className={cn(className, 'flex flex-wrap gap-2 bg-[#F3F3F7] rounded-3xl p-2 select-none')}>
-      {items.map((item) => {
-        const isSelected = item.value === value;
-        const isDisabled = item.disable || item.available === false;
-
-        return (
-          <button
-            key={item.value}
-            onClick={() => !isDisabled && onClick?.(item.value)}
-            disabled={isDisabled}
-            className={cn(
-              'flex items-center justify-center h-[35px] px-5 rounded-3xl transition-all duration-300 text-sm',
-              {
-                'bg-white shadow-md text-primary': isSelected,
-                'text-gray-500 opacity-50 pointer-events-none': isDisabled && !isSelected,
-              },
-            )}
-          >
-            {item.name}
-          </button>
-        );
-      })}
+    <div className={cn(className, 'flex justify-between bg-[#F3F3F7] rounded-3xl p-1 select-none')}>
+      {items.map((item) => (
+        <button
+          key={item.name}
+          onClick={() => onClick?.(item.value)}
+          className={cn(
+            'flex items-center justify-center cursor-pointer h-[30px] px-5 flex-1 rounded-3xl transition-all duration-400 text-sm',
+            {
+              'bg-white shadow': item.value === value,
+              'text-gray-500 opacity-50 pointer-events-none': item.disabled,
+            },
+          )}
+        >
+          {item.name}
+        </button>
+      ))}
     </div>
   );
 };

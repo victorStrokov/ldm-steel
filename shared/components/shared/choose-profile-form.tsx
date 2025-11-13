@@ -1,25 +1,29 @@
 'use client';
 
-import { cn } from '@/shared/lib/utils';
 import React from 'react';
+import { Ingredient, ProductItem } from '@prisma/client';
+
+import { ProductImage } from './product-image';
 import { Title } from './title';
 import { Button } from '../ui';
-import { ProductImage } from './product-image';
-import { ProductVariants } from './product-variants';
-import { Ingredient, ProductItem } from '@prisma/client';
+import { GroupVariants } from './group-variants';
+import { SteelSizes, ProductThickness, productThickness } from '@/shared/constants/profile';
 import { IngredientItem } from './ingredient-item';
-import { useSet } from 'react-use';
-import { SIZE_MAP, LENGTH_MAP, COLOR_MAP, SHAPE_MAP, TYPE_MAP } from '@/shared/constants/profile';
-import getLabel from '@/shared/lib/getLabel';
+import { cn } from '@/shared/lib/utils';
+import { getProductDetails } from '@/shared/lib/get-product-details';
+import { useProductOptions } from '@/shared/hooks';
 import { X } from 'lucide-react';
-import { useVariants } from '@/shared/hooks/use-variants';
+// import { SIZE_MAP, LENGTH_MAP, COLOR_MAP, SHAPE_MAP, TYPE_MAP } from '@/shared/constants/profile';
+// import { getLabel } from '@/shared/lib';
+// import { ProductVariants } from './product-variants';
 
 interface Props {
-  imageUrl?: string;
+  imageUrl: string;
   name: string;
-  className?: string;
-  ingredients?: Ingredient[];
   items: ProductItem[];
+  ingredients: Ingredient[];
+  loading?: boolean;
+  className?: string;
   onClickAddCart?: VoidFunction;
 }
 
@@ -30,58 +34,24 @@ export const ChooseProfileForm: React.FC<Props> = ({
   ingredients,
   items,
   onClickAddCart,
+  loading,
 }) => {
-  const {
-    selectedSize: size,
-    setSelectedSize: setSize,
-    selectedLength: length,
-    setSelectedLength: setLength,
-    selectedType: type,
-    setSelectedType: setType,
-    selectedColor: color,
-    setSelectedColor: setColor,
-    selectedShape: shape,
-    setSelectedShape: setShape,
-    resetFilters,
-  } = useVariants(items);
-
-  const [selectedIngredients, { toggle: addIngredient }] = useSet(new Set<number>([]));
-  const material = items[0].material;
-  const sizeLabel = getLabel(SIZE_MAP, material, size);
-  const lengthLabel = getLabel(LENGTH_MAP, material, length);
-  const typeLabel = getLabel(TYPE_MAP, material, type); // 👈 добавили
-  const colorLabel = getLabel(COLOR_MAP, material, color);
-  const shapeLabel = getLabel(SHAPE_MAP, material, shape);
+  const { thickness, size, selectedIngredients, availableSizes, currentItemId, setSize, setThickness, addIngredient } =
+    useProductOptions(items);
 
   // Разобраться с ценообразованием профилей
-  const profilePrice =
-    items.find((item) => item.profileType === items[0].profileType && item.size === items[0].size)?.price || 0;
-  const ingredientsPrice =
-    ingredients
-      ?.filter((ingredient) => selectedIngredients.has(ingredient.id))
-      .reduce((acc, ingredient) => acc + ingredient.price, 0) || 0;
-  const totalPrice = profilePrice + ingredientsPrice;
 
-  const textDetails = [
-    name,
-    lengthLabel ? `длина ${lengthLabel} ` : null,
-    sizeLabel ? `размер ${sizeLabel} ` : null,
-    typeLabel ? `толщина ${typeLabel}` : null,
-    colorLabel ? `цвет ${colorLabel}` : null,
-    shapeLabel ? `форма ${shapeLabel}` : null,
-  ]
-    .filter(Boolean)
-    .join(', ');
+  const { totalPrice, textDetails } = getProductDetails(thickness, size, items, ingredients, selectedIngredients);
 
   const handleClickAdd = () => {
     onClickAddCart?.();
     console.log({
+      items,
       size,
-      length,
-      type,
-      color,
-      shape,
+      thickness,
       ingredients: selectedIngredients,
+      currentItemId,
+      setThickness,
     });
   };
 
@@ -100,7 +70,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
         <p className="text-gray-500 mb-4">{textDetails}</p>
         <div className="flex items-center justify-end mb-4">
           <button
-            onClick={resetFilters}
+            // onClick={resetFilters}
             className="flex items-center gap-2 text-sm text-gray-600 hover:text-red-600 transition-colors"
           >
             <X size={16} />
@@ -110,14 +80,16 @@ export const ChooseProfileForm: React.FC<Props> = ({
 
         {/* Контент с прокруткой */}
         <div className="flex-1 overflow-y-auto pr-2 space-y-5">
-          {/* Варианты */}
-          <ProductVariants
-            items={items}
-            onSizeChange={setSize}
-            onLengthChange={setLength}
-            onTypeChange={setType}
-            onColorChange={setColor}
-            onShapeChange={setShape}
+          <GroupVariants
+            items={availableSizes}
+            value={String(size)}
+            onClick={(value) => setSize(Number(value) as SteelSizes)}
+          />
+
+          <GroupVariants
+            items={productThickness}
+            value={String(thickness)}
+            onClick={(value) => setThickness(Number(value) as ProductThickness)}
           />
 
           {/* Ингредиенты */}
@@ -142,7 +114,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
 
         {/* Кнопка всегда внизу */}
         <div className="sticky bottom-0 bg-[#f7f6f5] pt-4">
-          <Button onClick={handleClickAdd} className="h-[55px] w-full rounded-[18px]">
+          <Button loading={loading} onClick={handleClickAdd} className="h-[55px] w-full rounded-[18px]">
             Добавить в корзину за {totalPrice} ₽
           </Button>
         </div>
@@ -150,3 +122,44 @@ export const ChooseProfileForm: React.FC<Props> = ({
     </div>
   );
 };
+// const {
+//   selectedSize: size,
+//   setSelectedSize: setSize,
+//   selectedLength: length,
+//   setSelectedLength: setLength,
+//   selectedType: type,
+//   setSelectedType: setType,
+//   selectedColor: color,
+//   setSelectedColor: setColor,
+//   selectedShape: shape,
+//   setSelectedShape: setShape,
+//   resetFilters,
+// } = useVariants(items);
+
+// const material = items[0]?.material ?? null;
+// const sizeLabel = material ? getLabel(SIZE_MAP, material, size) : null;
+// const lengthLabel = material ? getLabel(LENGTH_MAP, material, length) : null;
+// const typeLabel = material ? getLabel(TYPE_MAP, material, type) : null;
+// const colorLabel = material ? getLabel(COLOR_MAP, material, color) : null;
+// const shapeLabel = material ? getLabel(SHAPE_MAP, material, shape) : null;
+
+/* Варианты */
+
+/* <ProductVariants
+            items={items}
+            onSizeChange={setSize}
+            onLengthChange={setLength}
+            onTypeChange={setType}
+            onColorChange={setColor}
+            onShapeChange={setShape}
+          /> */
+// const textDetails = [
+//   name,
+//   // lengthLabel ? `длина ${lengthLabel} ` : null,
+//   // sizeLabel ? `размер ${sizeLabel} ` : null,
+//   // typeLabel ? `толщина ${typeLabel}` : null,
+//   // colorLabel ? `цвет ${colorLabel}` : null,
+//   // shapeLabel ? `форма ${shapeLabel}` : null,
+// ]
+//   .filter(Boolean)
+//   .join(', ');

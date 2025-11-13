@@ -8,7 +8,7 @@ export const categories = [
   { id: 7, name: 'Масла' },
 ];
 
-export const ingredients = [
+export const _ingredients = [
   {
     name: 'Соединитель механический импоста Montblanc Eco 60',
     price: 1500,

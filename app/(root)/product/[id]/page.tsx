@@ -1,4 +1,4 @@
-import { Container, ProductImage, ProductVariants, Title } from '@/shared/components/shared';
+import { Container, GroupVariants, ProductImage, Title } from '@/shared/components/shared';
 import { prisma } from '@/prisma/prisma-client';
 import { notFound } from 'next/navigation';
 
@@ -27,7 +27,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           </p>
           <p className="text-2xl font-semibold text-violet-600">₽</p>
 
-          <ProductVariants items={product.items} />
+          <GroupVariants items={product.name} value={product.items[0].value} />
         </div>
       </div>
     </Container>

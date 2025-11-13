@@ -7,10 +7,10 @@ import { useRouter } from 'next/navigation';
 import { ChooseProductForm } from '../choose-product-form';
 import { ProductWithRelations } from '@/@types/prisma';
 import { ChooseProfileForm } from '../choose-profile-form';
-import { hasVariations } from '@/shared/lib/utils';
+// import { hasVariations } from '@/shared/lib/utils';
 
 interface Props {
-  product: ProductWithRelations | null;
+  product: ProductWithRelations;
   className?: string;
 }
 
@@ -19,7 +19,7 @@ export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
 
   if (!product) return null;
 
-  const isProfileForm = hasVariations(product);
+  // const isProductWithVariations = hasVariations(product);
 
   return (
     <Dialog open={Boolean(product)} onOpenChange={() => router.back()}>
@@ -31,16 +31,14 @@ export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
       >
         <DialogTitle className="sr-only">{product.name}</DialogTitle>
 
-        {isProfileForm ? (
-          <ChooseProfileForm
-            name={product.name}
-            imageUrl={product.imageUrl}
-            ingredients={product.ingredients}
-            items={product.items}
-          />
-        ) : (
-          <ChooseProductForm name={product.name} imageUrl={product.imageUrl} />
-        )}
+        <ChooseProfileForm
+          name={product.name}
+          imageUrl={product.imageUrl}
+          ingredients={product.ingredients}
+          items={product.items}
+        />
+
+        <ChooseProductForm name={product.name} imageUrl={product.imageUrl} />
       </DialogContent>
     </Dialog>
   );

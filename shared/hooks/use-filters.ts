@@ -36,7 +36,7 @@ export const useFilters = (): ReturnProps => {
   const [length, { toggle: toggleLength }] = useSet(new Set(searchParams.get('profileLength')?.split(',') ?? []));
 
   const [materialsTypes, { toggle: toggleMaterialsTypes }] = useSet(
-    new Set(searchParams.get('profileType')?.split(',') ?? []),
+    new Set(searchParams.get('thickness')?.split(',') ?? []),
   );
 
   const [prices, setPrices] = React.useState<PriceProps>(() => ({

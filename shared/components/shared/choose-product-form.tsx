@@ -9,11 +9,12 @@ interface Props {
   imageUrl?: string;
   name: string;
   className?: string;
+  loading?: boolean;
   items?: { price?: number }[];
   onClickAdd?: VoidFunction;
 }
 
-export const ChooseProductForm: React.FC<Props> = ({ imageUrl, name, className, onClickAdd }) => {
+export const ChooseProductForm: React.FC<Props> = ({ imageUrl, name, className, onClickAdd, loading }) => {
   const textDetails = 'профиль аррмирующий п-образный, профиль пвх 70 мм';
 
   const totalPrice = 100; // Placeholder price
@@ -39,7 +40,11 @@ export const ChooseProductForm: React.FC<Props> = ({ imageUrl, name, className, 
         <p className="text-gray-500 mb-4">{textDetails}</p>
 
         <div className="mt-auto">
-          <Button onClick={onClickAdd} className="h-[55px] px-6 text-base rounded-[18px] w-full whitespace-normal">
+          <Button
+            loading={loading}
+            onClick={onClickAdd}
+            className="h-[55px] px-6 text-base rounded-[18px] w-full whitespace-normal"
+          >
             Добавить в корзину за {totalPrice} ₽
           </Button>
         </div>
