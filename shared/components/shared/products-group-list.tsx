@@ -6,21 +6,11 @@ import { Title } from './title';
 import { cn } from '@/shared/lib/utils';
 import { ProductCard } from './product-card';
 import { useCategoryStore } from '@/shared/store/category';
-
-interface ProductVariant {
-  price: number | null;
-}
-
-interface ProductData {
-  id: number;
-  name: string;
-  imageUrl?: string | null;
-  items?: ProductVariant[];
-}
+import { ProductWithRelations } from '@/@types/prisma';
 
 interface Props {
   title: string;
-  items: ProductData[];
+  items: ProductWithRelations[];
   categoryId: number;
   className?: string;
   listClassName?: string;
@@ -37,7 +27,7 @@ export const ProductsGroupList: React.FC<Props> = ({ title, items, listClassName
     if (intersection?.isIntersecting) {
       setActiveCategoryId(categoryId);
     }
-  }, [categoryId, intersection?.isIntersecting, setActiveCategoryId]);
+  }, [categoryId, intersection?.isIntersecting, setActiveCategoryId, title]);
 
   return (
     <div className={className} id={title} ref={intersectionRef}>

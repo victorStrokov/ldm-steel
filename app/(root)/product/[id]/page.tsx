@@ -2,16 +2,36 @@ import { Container, GroupVariants, ProductImage, Title } from '@/shared/componen
 import { prisma } from '@/prisma/prisma-client';
 import { notFound } from 'next/navigation';
 
-export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  const { id } = params;
 
   const product = await prisma.product.findFirst({
     where: { id: Number(id) },
     include: {
-      items: true,
       ingredients: true,
+      category: {
+        include: {
+          products: {
+            include: {
+              items: true,
+            },
+          },
+        },
+      },
+      items: true,
     },
   });
+  const variants = product?.items.map((item) => ({
+    name:
+      item.pvcSize != null
+        ? `ПВХ ${item.pvcSize}мм`
+        : item.steelSize != null
+        ? `Сталь ${item.steelSize}мм`
+        : item.productLength != null
+        ? `Длина ${item.productLength}м`
+        : 'Вариант',
+    value: String(item.id),
+  }));
 
   if (!product) return notFound();
 
@@ -27,7 +47,11 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           </p>
           <p className="text-2xl font-semibold text-violet-600">₽</p>
 
-          <GroupVariants items={product.name} value={product.items[0].value} />
+          <GroupVariants
+            items={variants ?? []}
+            value={variants?.[0]?.value}
+            onClick={(value) => console.log('Выбран вариант:', value)}
+          />
         </div>
       </div>
     </Container>

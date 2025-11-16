@@ -23,8 +23,8 @@ interface Props {
   items: ProductItem[];
   ingredients: Ingredient[];
   loading?: boolean;
+  onSubmit: (itemId: number, ingredients: number[]) => void;
   className?: string;
-  onClickAddCart?: VoidFunction;
 }
 
 export const ChooseProfileForm: React.FC<Props> = ({
@@ -33,7 +33,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
   className,
   ingredients,
   items,
-  onClickAddCart,
+  onSubmit,
   loading,
 }) => {
   const { thickness, size, selectedIngredients, availableSizes, currentItemId, setSize, setThickness, addIngredient } =
@@ -44,15 +44,9 @@ export const ChooseProfileForm: React.FC<Props> = ({
   const { totalPrice, textDetails } = getProductDetails(thickness, size, items, ingredients, selectedIngredients);
 
   const handleClickAdd = () => {
-    onClickAddCart?.();
-    console.log({
-      items,
-      size,
-      thickness,
-      ingredients: selectedIngredients,
-      currentItemId,
-      setThickness,
-    });
+    if (currentItemId) {
+      onSubmit(currentItemId, Array.from(selectedIngredients));
+    }
   };
 
   return (

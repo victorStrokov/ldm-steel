@@ -11,14 +11,11 @@ interface Props {
   className?: string;
   loading?: boolean;
   items?: { price?: number }[];
-  onClickAdd?: VoidFunction;
+  price: number;
+  onSubmit?: VoidFunction;
 }
 
-export const ChooseProductForm: React.FC<Props> = ({ imageUrl, name, className, onClickAdd, loading }) => {
-  const textDetails = 'профиль аррмирующий п-образный, профиль пвх 70 мм';
-
-  const totalPrice = 100; // Placeholder price
-
+export const ChooseProductForm: React.FC<Props> = ({ imageUrl, name, className, onSubmit, loading, price }) => {
   return (
     <div
       className={cn(
@@ -37,15 +34,15 @@ export const ChooseProductForm: React.FC<Props> = ({ imageUrl, name, className, 
       {/* Правая часть: текст + кнопка */}
       <div className="w-full md:w-1/2 bg-[#f7f6f5] rounded-lg p-4 md:p-6 flex flex-col">
         <Title text={name} size="md" className="font-extrabold mb-3" />
-        <p className="text-gray-500 mb-4">{textDetails}</p>
+        {/* <p className="text-gray-500 mb-4">{textDetails}</p> */}
 
         <div className="mt-auto">
           <Button
             loading={loading}
-            onClick={onClickAdd}
+            onClick={onSubmit}
             className="h-[55px] px-6 text-base rounded-[18px] w-full whitespace-normal"
           >
-            Добавить в корзину за {totalPrice} ₽
+            Добавить в корзину за {price} ₽
           </Button>
         </div>
       </div>

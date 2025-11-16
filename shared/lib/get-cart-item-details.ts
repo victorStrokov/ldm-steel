@@ -1,10 +1,10 @@
-import { Ingredient } from '@prisma/client';
 import { mapProductThickness, SteelSizes } from './../constants/profile';
 import { ProductThickness } from '@/shared/constants/profile';
+import { CartStateItem } from './get-cart-details';
 export const getCartItemDetails = (
+  ingredients: CartStateItem['ingredients'],
   productThickness: ProductThickness,
   steelSize: SteelSizes,
-  ingredients: Ingredient[],
 ): string => {
   const details = [];
 

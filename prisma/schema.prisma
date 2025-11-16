@@ -90,7 +90,7 @@ model Cart {
 
   items       CartItem[]
 
-  token       String
+  token       String     @unique
 
   totalAmount Int        @default(0)
 
