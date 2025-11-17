@@ -19,4 +19,5 @@ export { ChooseProfileForm } from '@/shared/components/shared/choose-profile-for
 // export { ProductVariants } from '@/shared/components/shared/product-variants';
 export { IngredientItem } from '@/shared/components/shared/ingredient-item';
 export { CartDrawer } from '@/shared/components/shared/cart-drawer';
+export { ProfileButton } from '@/shared/components/shared/profile-button';
 export * from './modals';

@@ -42,9 +42,10 @@ export const Filters: React.FC<Props> = ({ className }) => {
           loading={false}
           searchInputPlaceholder="Поиск материалов..."
           items={[
-            { text: 'Армирование', value: 'Армирование' },
-            { text: 'Алюминий', value: 'Алюминий' },
-            { text: 'ПВХ', value: 'ПВХ' },
+            { text: 'Армирование', value: '1' },
+            { text: 'Алюминий', value: '2' },
+            { text: 'Резина', value: '3' },
+            { text: 'Пластик', value: '4' },
           ]}
         />
       </div>
@@ -59,9 +60,14 @@ export const Filters: React.FC<Props> = ({ className }) => {
           loading={false}
           searchInputPlaceholder="Поиск размеров..."
           items={[
-            { text: '30 x 30 ', value: '1' },
-            { text: '60 x 60', value: '2' },
-            { text: '70 x 70', value: '3' },
+            { text: '15×30', value: '1' },
+            { text: '30×28', value: '2' },
+            { text: '31×34', value: '3' },
+            { text: '31×34', value: '3' },
+            { text: '35×20', value: '4' },
+            { text: '40×40', value: '5' },
+            { text: '40×50', value: '6' },
+            { text: '50×50', value: '7' },
           ]}
         />
       </div>
@@ -74,7 +80,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
           selected={filters.length}
           limit={5}
           loading={false}
-          searchInputPlaceholder="Поиск размеров..."
+          searchInputPlaceholder="Поиск длинны..."
           items={[
             { text: '2 м', value: '1' },
             { text: '6 м', value: '2' },

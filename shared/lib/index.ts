@@ -6,5 +6,6 @@ export { getCartDetails } from './get-cart-details';
 export { calcCartItemTotalPrice } from './calc-cart-item-total-price';
 export { productLengtRename } from './product-length-rename';
 export { updateCartTotalAmount } from './update-cart-total-amount';
+export { findProducts } from './find-products';
 // export { buildVariants } from './build-variants';
 // export { getLabel } from './getLabel';

@@ -26,20 +26,18 @@ export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
 
   const onSubmit = async (productItemId?: number, ingredients?: number[]) => {
     try {
-      if (isProfileForm && productItemId && ingredients) {
-        await addCartItem({
-          productItemId,
-          ingredients,
-        });
-      } else {
-        await addCartItem({
-          productItemId: firstItem.id,
-        });
-      }
-      toast.success('Товар добавлен в корзину');
+      const itemId = productItemId ?? firstItem?.id;
+      console.log('DEBUG values:', { productItemId: itemId, ingredients });
+
+      await addCartItem({
+        productItemId: itemId,
+        ingredients,
+      });
+
+      toast.success(product.name + '  добавлен в корзину');
       router.back();
     } catch (error) {
-      toast.error('Не удалось добавить в корзину');
+      toast.error('Не удалось добавить товар в корзину');
       console.error(error);
     }
   };

@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { CartButton } from './cart-button';
 import { SearchInput } from './search-input';
+import { ProfileButton } from './profile-button';
 
 interface Props {
   className?: string;
@@ -48,7 +49,7 @@ export const Header: React.FC<Props> = ({ className }) => {
           {/* <AuthModal open={openAuthModal} onClose={() => setOpenAuthModal(false)} /> */}
 
           {/* <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} /> */}
-
+          <ProfileButton />
           {/* {hasCart && } */}
           <CartButton />
         </div>

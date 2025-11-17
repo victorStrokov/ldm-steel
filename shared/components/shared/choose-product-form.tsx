@@ -39,7 +39,7 @@ export const ChooseProductForm: React.FC<Props> = ({ imageUrl, name, className, 
         <div className="mt-auto">
           <Button
             loading={loading}
-            onClick={onSubmit}
+            onClick={() => onSubmit?.()}
             className="h-[55px] px-6 text-base rounded-[18px] w-full whitespace-normal"
           >
             Добавить в корзину за {price} ₽

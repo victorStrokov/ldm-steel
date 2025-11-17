@@ -1,28 +1,28 @@
 export const mapSteelSize = {
-  1: '15×30 ',
-  2: '30×28 ',
-  3: '31×34 ',
-  4: '35×20 ',
-  5: '40×40 ',
-  6: '40×50 ',
-  7: '50×50 ',
+  1: '15×30',
+  2: '30×28',
+  3: '31×34',
+  4: '35×20',
+  5: '40×40',
+  6: '40×50',
+  7: '50×50',
 };
 export const mapPvcSize = {
-  1: '60 ',
-  2: '70 ',
-  3: '80 ',
-  4: '90 ',
-  5: '100 ',
-  6: '6.5 ',
-  7: '30×70 ',
+  1: '60',
+  2: '70',
+  3: '80',
+  4: '90',
+  5: '100',
+  6: '6.5',
+  7: '30×70',
 };
 export const mapAluminiumSize: Record<number, string> = {
   // тут пока пусто
 };
 export const mapProductSize = {
-  1: '300 ',
-  2: '500 ',
-  3: '600 ',
+  1: '300',
+  2: '500',
+  3: '600',
   4: '32х5',
   5: '40х5',
   6: '34х6',
@@ -30,16 +30,16 @@ export const mapProductSize = {
 };
 
 export const mapProductLength = {
-  1: '2 ',
-  2: '6 ',
-  3: '6.5 ',
+  1: '2',
+  2: '6',
+  3: '6.5',
 };
 
 export const mapProductThickness = {
-  1: '1.5 ',
-  2: '1.8 ',
-  3: '2 ',
-  4: '6 ',
+  1: '1.5',
+  2: '1.8',
+  3: '2',
+  4: '6',
 };
 
 export const mapProductColor = {
@@ -55,11 +55,11 @@ export const mapProductShape = {
 };
 
 export const mapProductMaterial = {
-  1: 'Сталь',
-  2: 'ПВХ',
-  3: 'Алюминий',
-  4: 'Пластик',
-  5: 'Резина',
+  STEEL: 'Сталь',
+  PVC: 'ПВХ',
+  ALUMINIUM: 'Алюминий',
+  PLASTIC: 'Пластик',
+  RUBBER: 'Резина',
 };
 
 // export const mapMaterialEnumToLabel: Record<ProductMaterial, string> = {
