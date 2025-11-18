@@ -47,11 +47,11 @@ export default async function ProductPage({ params }: { params: { id: string } }
           </p>
           <p className="text-2xl font-semibold text-violet-600">₽</p>
 
-          <GroupVariants
+          {/* <GroupVariants
             items={variants ?? []}
             value={variants?.[0]?.value}
             onClick={(value) => console.log('Выбран вариант:', value)}
-          />
+          /> */}
         </div>
       </div>
     </Container>

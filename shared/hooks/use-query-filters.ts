@@ -28,5 +28,5 @@ export const useQueryFilters = (filters: Filters) => {
     if (newUrl !== `?${currentQuery}`) {
       router.replace(newUrl, { scroll: false });
     }
-  }, [filters, router, currentQuery]);
+  }, [filters, currentQuery, router]);
 };

@@ -30,7 +30,14 @@ const generateProductItem = ({
     productMaterials === 'STEEL' ? { steelSize } : productMaterials === 'PVC' ? { pvcSize } : { productSizes };
   return {
     productId,
-    price: calculatePrice({ ...sizeField, productLength, productMaterials, productShape, productColor }),
+    price: calculatePrice({
+      ...sizeField,
+      productLength,
+      productMaterials,
+      productShape,
+      productColor,
+      productThickness,
+    }),
     ...sizeField,
     productLength,
     productColor,
@@ -176,6 +183,7 @@ async function up() {
         pvcSize: 2,
         productLength: 3,
         productColor: 1,
+
         productMaterials: 'PVC',
       }),
       generateProductItem({

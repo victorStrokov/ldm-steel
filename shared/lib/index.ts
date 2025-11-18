@@ -1,5 +1,5 @@
 export { calcTotalProductPrice } from './calc-total-product-price';
-export { getAvailableProductSizes } from './get-available-product-sizes';
+export { getAvailableProductThickness } from './get-available-product-thicknes';
 export { getCartItemDetails } from './get-cart-item-details';
 export { getProductDetails } from './get-product-details';
 export { getCartDetails } from './get-cart-details';

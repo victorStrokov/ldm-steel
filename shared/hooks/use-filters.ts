@@ -12,6 +12,7 @@ interface PriceProps {
 export interface Filters {
   sizes: Set<string>;
   length: Set<string>;
+  thickness: Set<string>;
   materialsTypes: Set<string>;
   selectedIngredients: Set<string>;
   prices: PriceProps;
@@ -22,6 +23,7 @@ interface ReturnProps extends Filters {
   setMaterialsTypes: (value: string) => void;
   setSizes: (value: string) => void;
   setLength: (value: string) => void;
+  setThickness: (value: string) => void;
   setSelectedIngredients: (value: string) => void;
 }
 
@@ -32,11 +34,12 @@ export const useFilters = (): ReturnProps => {
     new Set(searchParams.get('ingredients')?.split(',') ?? []),
   );
 
-  const [sizes, { toggle: toggleSizes }] = useSet(new Set(searchParams.get('sizes')?.split(',') ?? []));
+  const [sizes, { toggle: toggleSizes }] = useSet(new Set(searchParams.get('steelSize')?.split(',') ?? []));
   const [length, { toggle: toggleLength }] = useSet(new Set(searchParams.get('profileLength')?.split(',') ?? []));
+  const [thickness, { toggle: toggleThickness }] = useSet(new Set(searchParams.get('thickness')?.split(',') ?? []));
 
   const [materialsTypes, { toggle: toggleMaterialsTypes }] = useSet(
-    new Set(searchParams.get('thickness')?.split(',') ?? []),
+    new Set(searchParams.get('material')?.split(',') ?? []),
   );
 
   const [prices, setPrices] = React.useState<PriceProps>(() => ({
@@ -56,10 +59,12 @@ export const useFilters = (): ReturnProps => {
     materialsTypes,
     selectedIngredients,
     length,
+    thickness,
     prices,
     setPrices: updatePrice,
     setMaterialsTypes: toggleMaterialsTypes,
     setSizes: toggleSizes,
+    setThickness: toggleThickness,
     setLength: toggleLength,
     setSelectedIngredients: toggleIngredients,
   };

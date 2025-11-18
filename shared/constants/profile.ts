@@ -6,7 +6,7 @@ export const mapSteelSize = {
   5: '40×40',
   6: '40×50',
   7: '50×50',
-};
+} as const;
 export const mapPvcSize = {
   1: '60',
   2: '70',
@@ -40,7 +40,7 @@ export const mapProductThickness = {
   2: '1.8',
   3: '2',
   4: '6',
-};
+} as const;
 
 export const mapProductColor = {
   9016: 'Белый',
