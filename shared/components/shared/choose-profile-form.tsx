@@ -24,6 +24,7 @@ interface Props {
   ingredients: Ingredient[];
   loading?: boolean;
   onSubmit: (itemId: number, ingredients: number[]) => void;
+  onClickImage?: () => void;
   className?: string;
 }
 
@@ -34,6 +35,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
   ingredients,
   items,
   onSubmit,
+  onClickImage,
   loading,
 }) => {
   const { thickness, size, selectedIngredients, availableSizes, currentItemId, setSize, setThickness, addIngredient } =
@@ -54,7 +56,11 @@ export const ChooseProfileForm: React.FC<Props> = ({
       {/* Левая часть: картинка */}
       <div className="flex items-center justify-center w-full md:w-1/2">
         <div className="w-full max-w-[300px] h-[300px] flex items-center justify-center bg-gray-50 rounded-lg">
-          <ProductImage imageUrl={imageUrl} className="max-w-full max-h-full object-contain" />
+          <ProductImage
+            imageUrl={imageUrl}
+            onClickImage={onClickImage}
+            imgClassName="object-contain w-full h-full cursor-pointer"
+          />
         </div>
       </div>
 

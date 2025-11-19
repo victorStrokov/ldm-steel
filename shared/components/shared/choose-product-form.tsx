@@ -9,13 +9,24 @@ interface Props {
   imageUrl?: string;
   name: string;
   className?: string;
+
   loading?: boolean;
   items?: { price?: number }[];
   price: number;
   onSubmit?: VoidFunction;
+  onClickImage?: () => void;
 }
 
-export const ChooseProductForm: React.FC<Props> = ({ imageUrl, name, className, onSubmit, loading, price }) => {
+export const ChooseProductForm: React.FC<Props> = ({
+  imageUrl,
+  name,
+  className,
+
+  onSubmit,
+  loading,
+  price,
+  onClickImage,
+}) => {
   return (
     <div
       className={cn(
@@ -27,7 +38,12 @@ export const ChooseProductForm: React.FC<Props> = ({ imageUrl, name, className, 
       {/* Левая часть: картинка */}
       <div className="flex items-center justify-center w-full md:w-1/2">
         <div className="w-full max-w-[300px] h-[300px] flex items-center justify-center bg-gray-50 rounded-lg">
-          <img src={imageUrl} alt={name} className="max-w-full max-h-full object-contain" />
+          <img
+            src={imageUrl}
+            onClick={onClickImage}
+            alt={name}
+            className="object-contain w-full h-full cursor-pointer"
+          />
         </div>
       </div>
 

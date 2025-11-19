@@ -3,28 +3,30 @@ import React from 'react';
 import { Title } from './title';
 import { Button } from '../ui';
 import { Plus } from 'lucide-react';
+import { Ingredient } from '@prisma/client';
 
 interface Props {
   id: number;
   name: string;
   price: number;
   imageUrl: string;
+  ingredients: Ingredient[];
   className?: string;
 }
 
-export const ProductCard: React.FC<Props> = ({ id, name, price, imageUrl, className }) => {
+export const ProductCard: React.FC<Props> = ({ id, name, price, imageUrl, ingredients, className }) => {
   return (
     <div className={`${className} h-full`}>
       <Link href={`/product/${id}`} className="flex flex-col justify-between h-full">
         {/* Верхняя часть */}
         <div>
           <div className="bg-secondary rounded-lg aspect-[3/2] flex items-center justify-center">
-            <img src={imageUrl} alt={name} className="max-w-full max-h-full object-contain" />
+            <img src={imageUrl} alt={name} className="max-w-full max-h-full object-contain cursor-pointer" />
           </div>
 
           <Title text={name} size="xs" className="mb-1 mt-3 font-bold line-clamp-2" />
           <p className="text-sm text-gray-500 line-clamp-2">
-            ALUPLAST 229001, п-образный, APM 30 x 30, длинна 6-метров, 600 метров
+            {ingredients.map((ingredient) => ingredient.name).join(', ')}
           </p>
         </div>
 

@@ -42,6 +42,9 @@ export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
     }
   };
   // const isProductWithVariations = hasVariations(product);
+  const handleImageClick = () => {
+    window.location.href = `/product/${product.id}`;
+  };
 
   return (
     <Dialog open={Boolean(product)} onOpenChange={() => router.back()}>
@@ -61,6 +64,7 @@ export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
             items={product.items}
             onSubmit={onSubmit}
             loading={loading}
+            onClickImage={handleImageClick}
           />
         ) : (
           <ChooseProductForm
@@ -69,6 +73,7 @@ export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
             price={firstItem?.price ?? 0}
             onSubmit={onSubmit}
             loading={loading}
+            onClickImage={handleImageClick}
           />
         )}
       </DialogContent>

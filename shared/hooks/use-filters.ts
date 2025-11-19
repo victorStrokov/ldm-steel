@@ -54,18 +54,22 @@ export const useFilters = (): ReturnProps => {
     }));
   };
 
-  return {
-    sizes,
-    materialsTypes,
-    selectedIngredients,
-    length,
-    thickness,
-    prices,
-    setPrices: updatePrice,
-    setMaterialsTypes: toggleMaterialsTypes,
-    setSizes: toggleSizes,
-    setThickness: toggleThickness,
-    setLength: toggleLength,
-    setSelectedIngredients: toggleIngredients,
-  };
+  return React.useMemo(
+    () => ({
+      sizes,
+      materialsTypes,
+      selectedIngredients,
+      length,
+      thickness,
+      prices,
+      setPrices: updatePrice,
+      setMaterialsTypes: toggleMaterialsTypes,
+      setSizes: toggleSizes,
+      setThickness: toggleThickness,
+      setLength: toggleLength,
+      setSelectedIngredients: toggleIngredients,
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sizes, materialsTypes, selectedIngredients, length, thickness, prices],
+  );
 };

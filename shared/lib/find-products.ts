@@ -56,7 +56,15 @@ export const findProducts = async (params: GetSearchParams) => {
           ingredients: ingredientsIdArr.length ? { some: { id: { in: ingredientsIdArr } } } : undefined,
           items: { some: itemWhere },
         },
-        include: { ingredients: true, items: true },
+        include: {
+          ingredients: true,
+          items: {
+            where: {
+              price: { gte: minPrice, lte: maxPrice },
+            },
+            orderBy: { price: 'desc' },
+          },
+        },
       },
     },
   });
