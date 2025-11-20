@@ -9,10 +9,10 @@ import { ChooseProductForm } from './choose-product-form';
 
 interface Props {
   product: ProductWithRelations;
-  className?: string;
+  onSubmit?: VoidFunction;
 }
 
-export const ProductForm: React.FC<Props> = ({ product }) => {
+export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit }) => {
   const firstItem = product.items?.[0];
   const isProfileForm = Boolean(firstItem?.steelSize);
   const addCartItem = useCartStore((state) => state.addCartItem);
@@ -29,10 +29,15 @@ export const ProductForm: React.FC<Props> = ({ product }) => {
       });
 
       toast.success(product.name + '  добавлен в корзину');
+
+      _onSubmit?.();
     } catch (error) {
       toast.error('Не удалось добавить товар в корзину');
       console.error(error);
     }
+  };
+  const handleImageClick = () => {
+    window.location.href = `/product/${product.id}`;
   };
   // const variants = product?.items.map((item) => ({
   //   name:
@@ -54,6 +59,7 @@ export const ProductForm: React.FC<Props> = ({ product }) => {
         items={product.items}
         onSubmit={onSubmit}
         loading={loading}
+        onClickImage={handleImageClick}
       />
     );
   }
@@ -64,6 +70,7 @@ export const ProductForm: React.FC<Props> = ({ product }) => {
       price={firstItem?.price ?? 0}
       onSubmit={onSubmit}
       loading={loading}
+      onClickImage={handleImageClick}
     />
   );
 };

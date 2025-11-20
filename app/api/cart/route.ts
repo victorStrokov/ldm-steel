@@ -72,17 +72,16 @@ export async function POST(req: NextRequest) {
 
     const data = (await req.json()) as CreateCartItemValues;
 
-    // проверка товара в корзине на идентичность
+    // проверка товара в корзине на идентичность найти решение с учетом ингредиентов и без ингредиентов иначе товар дублируется
     const findCartItem = await prisma.cartItem.findFirst({
       where: {
         cartId: userCart.id,
         productItemId: data.productItemId,
         ingredients: {
           every: {
-            id: {
-              in: data.ingredients,
-            },
+            id: { in: data.ingredients },
           },
+          some: {},
         },
       },
     });
@@ -106,7 +105,6 @@ export async function POST(req: NextRequest) {
         },
       });
     }
-    console.log('Created cartItem:', { cartId: userCart.id, productItemId: data.productItemId });
     const updatedUserCart = await updateCartTotalAmount(token);
 
     const resp = NextResponse.json(updatedUserCart);

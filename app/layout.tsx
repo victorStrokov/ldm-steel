@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link data-rh="true" rel="icon" href="/i.jpg" />
+        <link data-rh="true" rel="icon" href="/logoLDM.png" />
       </head>
       <body className={nunito.className}>
         {children}

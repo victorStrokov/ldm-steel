@@ -4,12 +4,8 @@ import { cn } from '@/shared/lib/utils';
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent } from '@/shared/components/ui/dialog';
 import { useRouter } from 'next/navigation';
-import { ChooseProductForm } from '../choose-product-form';
 import { ProductWithRelations } from '@/@types/prisma';
-import { ChooseProfileForm } from '../choose-profile-form';
-import { useCartStore } from '@/shared/store';
-import toast from 'react-hot-toast';
-// import { hasVariations } from '@/shared/lib/utils';
+import { ProductForm } from '../product-form';
 
 interface Props {
   product: ProductWithRelations;
@@ -18,33 +14,6 @@ interface Props {
 
 export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
   const router = useRouter();
-  const firstItem = product.items?.[0];
-  const isProfileForm = Boolean(firstItem?.steelSize);
-  const addCartItem = useCartStore((state) => state.addCartItem);
-  const loading = useCartStore((state) => state.loading);
-  if (!product) return null;
-
-  const onSubmit = async (productItemId?: number, ingredients?: number[]) => {
-    try {
-      const itemId = productItemId ?? firstItem?.id;
-      console.log('DEBUG values:', { productItemId: itemId, ingredients });
-
-      await addCartItem({
-        productItemId: itemId,
-        ingredients,
-      });
-
-      toast.success(product.name + '  добавлен в корзину');
-      router.back();
-    } catch (error) {
-      toast.error('Не удалось добавить товар в корзину');
-      console.error(error);
-    }
-  };
-  // const isProductWithVariations = hasVariations(product);
-  const handleImageClick = () => {
-    window.location.href = `/product/${product.id}`;
-  };
 
   return (
     <Dialog open={Boolean(product)} onOpenChange={() => router.back()}>
@@ -55,27 +24,7 @@ export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
         )}
       >
         <DialogTitle className="sr-only">{product.name}</DialogTitle>
-
-        {isProfileForm ? (
-          <ChooseProfileForm
-            imageUrl={product.imageUrl}
-            name={product.name}
-            ingredients={product.ingredients}
-            items={product.items}
-            onSubmit={onSubmit}
-            loading={loading}
-            onClickImage={handleImageClick}
-          />
-        ) : (
-          <ChooseProductForm
-            name={product.name}
-            imageUrl={product.imageUrl}
-            price={firstItem?.price ?? 0}
-            onSubmit={onSubmit}
-            loading={loading}
-            onClickImage={handleImageClick}
-          />
-        )}
+        <ProductForm product={product} onSubmit={() => router.back()} />
       </DialogContent>
     </Dialog>
   );

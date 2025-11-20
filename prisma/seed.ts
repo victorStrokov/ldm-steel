@@ -82,7 +82,7 @@ async function up() {
   const profileSteel = await prisma.product.create({
     data: {
       name: 'REHAU 245536',
-      imageUrl: '/assets/REHAU_245536.png',
+      imageUrl: '/assets/OIG2.jpg',
       categoryId: 1,
       ingredients: {
         connect: _ingredients.slice(0, 7).map((i) => ({ id: i.id })),
@@ -92,7 +92,7 @@ async function up() {
   const profileSteel2 = await prisma.product.create({
     data: {
       name: 'Труба сварная',
-      imageUrl: '/assets/Truba_svsrnaia40х50х2мм_(6м).jpg',
+      imageUrl: '/assets/OIG3.jpg',
       categoryId: 1,
       ingredients: {
         connect: _ingredients.slice(8, 13).map((i) => ({ id: i.id })),

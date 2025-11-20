@@ -9,8 +9,8 @@ export default async function Home({ searchParams }: { searchParams: GetSearchPa
   return (
     <>
       <Container className="mt-10">
-        <Title size="lg" className="font-extrabold">
-          Наш <span className="text-violet-500">каталог</span>
+        <Title size="lg" className="font-extrabold text-blue-deep/90">
+          Каталог
         </Title>
       </Container>
       <TopBar categories={categories.filter((category) => category.products.length > 0)} />
