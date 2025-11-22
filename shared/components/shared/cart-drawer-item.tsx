@@ -12,6 +12,7 @@ interface Props extends CartItemProps {
 }
 
 export const CartDrawerItem: React.FC<Props> = ({
+  id,
   imageUrl,
   details,
   name,
@@ -32,7 +33,7 @@ export const CartDrawerItem: React.FC<Props> = ({
         className,
       )}
     >
-      <CartItem.Image src={imageUrl} />
+      <CartItem.Image src={imageUrl} id={id} />
 
       <div className="flex-1">
         <CartItem.Info name={name} details={details} />

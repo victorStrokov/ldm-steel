@@ -2,7 +2,7 @@
 
 import { cn } from '@/shared/lib/utils';
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent } from '@/shared/components/ui/dialog';
+import { Dialog, DialogTitle, DialogContent, DialogDescription } from '@/shared/components/ui/dialog';
 import { useRouter } from 'next/navigation';
 import { ProductWithRelations } from '@/@types/prisma';
 import { ProductForm } from '../product-form';
@@ -24,6 +24,8 @@ export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
         )}
       >
         <DialogTitle className="sr-only">{product.name}</DialogTitle>
+        <DialogDescription>Настройте параметры товара перед добавлением в корзину</DialogDescription>
+
         <ProductForm product={product} onSubmit={() => router.back()} />
       </DialogContent>
     </Dialog>

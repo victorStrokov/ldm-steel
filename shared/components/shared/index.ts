@@ -21,4 +21,6 @@ export { IngredientItem } from '@/shared/components/shared/ingredient-item';
 export { CartDrawer } from '@/shared/components/shared/cart-drawer';
 export { ProfileButton } from '@/shared/components/shared/profile-button';
 export { ProductForm } from '@/shared/components/shared/product-form';
+export { WhiteBlock } from '@/shared/components/shared/white-block';
+export { CheckoutItemDetails } from '@/shared/components/shared/checkout-item-details';
 export * from './modals';
