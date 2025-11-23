@@ -3,8 +3,8 @@ import { ProductThickness } from '@/shared/constants/profile';
 import { CartStateItem } from './get-cart-details';
 export const getCartItemDetails = (
   ingredients: CartStateItem['ingredients'],
-  productThickness: ProductThickness,
-  steelSize: SteelSizes,
+  productThickness?: ProductThickness,
+  steelSize?: SteelSizes,
 ): string => {
   const details = [];
 
