@@ -5,7 +5,7 @@ export const checkoutFormSchema = z.object({
   lastName: z.string().min(2, { message: 'Фамилия должна содержать минимум 2 символа' }),
   email: z.string().email({ message: 'Некорректный email' }),
   phone: z.string().min(10, { message: 'Телефон должен содержать минимум 7 символов' }),
-  address: z.string().min(4, { message: 'Адрес должен содержать минимум 4 символа' }),
+  address: z.string().min(4, { message: 'Введите корректный адрес' }),
   comment: z.string().optional(),
 });
 

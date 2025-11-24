@@ -1,7 +1,7 @@
 import React from 'react';
 import { WhiteBlock } from './white-block';
 import { ArrowBigRight, Coins, PackagePlus, RussianRuble, Truck } from 'lucide-react';
-import { Button } from '../ui';
+import { Button, Skeleton } from '../ui';
 import { CheckoutItemDetails } from './checkout-item-details';
 import { cn } from '@/shared/lib/utils';
 
@@ -10,10 +10,11 @@ const DELIVERY_PRICE = 4000;
 
 interface Props {
   totalAmount: number;
+  loading?: boolean;
   className?: string;
 }
 
-export const CheckoutSidebar: React.FC<Props> = ({ className, totalAmount }) => {
+export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmount }) => {
   const packingPrice = totalAmount < 300000 ? 500 : 0;
   const vatPrice = ((totalAmount + packingPrice + DELIVERY_PRICE) * VAT) / 100;
   const deliveryPrice = totalAmount < 100000 ? DELIVERY_PRICE : 0;
@@ -26,7 +27,11 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, totalAmount }) => 
     <WhiteBlock className={cn('p-6 sticky top-4', className)}>
       <div className="flex flex-col gap-1">
         <span className="text-xl">Итого:</span>
-        <span className="text-[34px] font-extrabold">{`${totalPrice} ₽`}</span>
+        {loading ? (
+          <Skeleton className=" h-11 w-48" />
+        ) : (
+          <span className="h-11 text-[34px] font-extrabold">{`${totalPrice} ₽`}</span>
+        )}
       </div>
       <CheckoutItemDetails
         title={
@@ -35,7 +40,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, totalAmount }) => 
             Сумма заказа:
           </div>
         }
-        value={`${totalAmount} ₽`}
+        value={loading ? <Skeleton className=" h-6 w-16 rounded-[6px]" /> : `${totalAmount} ₽`}
       />
       <CheckoutItemDetails
         title={
@@ -44,7 +49,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, totalAmount }) => 
             Услуги упаковки:
           </div>
         }
-        value={`${packingPrice} ₽`}
+        value={loading ? <Skeleton className=" h-6 w-14 rounded-[6px]" /> : `${packingPrice} ₽`}
       />
       <CheckoutItemDetails
         title={
@@ -53,7 +58,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, totalAmount }) => 
             Доставка:
           </div>
         }
-        value={`${deliveryPrice} ₽`}
+        value={loading ? <Skeleton className=" h-6 w-16 rounded-[6px]" /> : `${deliveryPrice} ₽`}
       />
       <CheckoutItemDetails
         title={
@@ -62,7 +67,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, totalAmount }) => 
             НДС (20%):
           </div>
         }
-        value={`${vatPrice} ₽`}
+        value={loading ? <Skeleton className=" h-6 w-18 rounded-[6px]" /> : `${vatPrice} ₽`}
       />
       <Button type="submit" disabled={false} className="w-full h-14 rounded-2xl mt-6 text-base font-bold">
         Перейти к оплате

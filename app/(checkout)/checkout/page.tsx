@@ -12,9 +12,11 @@ import {
   Container,
 } from '@/shared/components';
 import { CheckoutFormValues, checkoutFormSchema } from '@/shared/constants';
+import { cn } from '@/shared/lib/utils';
+import { createOrder } from '@/app/actions';
 
 export default function CheckoutPage() {
-  const { totalAmount, items, updateItemQuantity, removeCartItem } = useCart();
+  const { totalAmount, items, updateItemQuantity, removeCartItem, loading } = useCart();
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -30,6 +32,7 @@ export default function CheckoutPage() {
 
   const onSubmit = (data: CheckoutFormValues) => {
     console.log(data);
+    createOrder(data);
   };
 
   const onClickCountButton = (id: number, quantity: number, type: 'plus' | 'minus') => {
@@ -45,14 +48,19 @@ export default function CheckoutPage() {
           <div className="flex gap-10">
             {/* Левая часть  */}
             <div className="flex flex-col gap-10 flex-1 mb-20">
-              <CheckoutCart onClickCountButton={onClickCountButton} removeCartItem={removeCartItem} items={items} />
-              <CheckoutPersonalForm />
-              <CheckoutAddressForm />
+              <CheckoutCart
+                onClickCountButton={onClickCountButton}
+                removeCartItem={removeCartItem}
+                items={items}
+                loading={loading}
+              />
+              <CheckoutPersonalForm className={cn({ 'opacity-40 pointer-events-none': loading })} />
+              <CheckoutAddressForm className={cn({ 'opacity-40 pointer-events-none': loading })} />
             </div>
 
             {/* Правая часть */}
             <div className="w-[450px]">
-              <CheckoutSidebar totalAmount={totalAmount} />
+              <CheckoutSidebar totalAmount={totalAmount} loading={loading} />
             </div>
           </div>
         </form>
