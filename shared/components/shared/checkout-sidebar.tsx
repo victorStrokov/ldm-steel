@@ -11,6 +11,7 @@ const DELIVERY_PRICE = 4000;
 interface Props {
   totalAmount: number;
   loading?: boolean;
+
   className?: string;
 }
 
@@ -69,7 +70,12 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmou
         }
         value={loading ? <Skeleton className=" h-6 w-18 rounded-[6px]" /> : `${vatPrice} ₽`}
       />
-      <Button type="submit" disabled={false} className="w-full h-14 rounded-2xl mt-6 text-base font-bold">
+      <Button
+        loading={loading}
+        type="submit"
+        disabled={false}
+        className="w-full h-14 rounded-2xl mt-6 text-base font-bold"
+      >
         Перейти к оплате
         <ArrowBigRight size={20} className="w-5 ml-2" />
       </Button>

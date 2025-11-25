@@ -29,6 +29,7 @@ export { CheckoutSidebar } from '@/shared/components/shared/checkout-sidebar';
 export { RequiredSymbol } from '@/shared/components/shared/required-symbol';
 export { ErrorText } from '@/shared/components/shared/error-text';
 export { ClearButton } from '@/shared/components/shared/clear-button';
+export * from './email-templates';
 export * from './form';
 export * from './modals';
 export * from './checkout';
