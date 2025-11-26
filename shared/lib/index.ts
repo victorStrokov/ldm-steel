@@ -8,5 +8,6 @@ export { productLengtRename } from './product-length-rename';
 export { updateCartTotalAmount } from './update-cart-total-amount';
 export { findProducts } from './find-products';
 export { sendEmail } from './sendEmail';
+export { createPayment } from './creat-payment';
 // export { buildVariants } from './build-variants';
 // export { getLabel } from './getLabel';

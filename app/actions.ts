@@ -2,7 +2,7 @@
 
 import { prisma } from '@/prisma/prisma-client';
 import { CheckoutFormValues, PayOrderTemplate } from '@/shared/components';
-import { sendEmail } from '@/shared/lib';
+import { createPayment, sendEmail } from '@/shared/lib';
 import { OrderStatus } from '@prisma/client';
 import { cookies } from 'next/headers';
 import React from 'react';
@@ -76,7 +76,26 @@ export async function createOrder(data: CheckoutFormValues) {
       },
     });
 
-    // TODO: сделать оплату
+    const paymentData = await createPayment({
+      amount: order.totalAmount,
+      orderId: order.id,
+      description: 'Оплата заказа #' + order.id,
+    });
+
+    if (!paymentData) {
+      throw new Error('Payment data not found');
+    }
+
+    await prisma.order.update({
+      where: {
+        id: order.id,
+      },
+      data: {
+        paymentId: paymentData.id,
+      },
+    });
+
+    const paymentUrl = paymentData.confirmation.confirmation_url;
 
     await sendEmail(
       data.email,
@@ -84,9 +103,11 @@ export async function createOrder(data: CheckoutFormValues) {
       React.createElement(PayOrderTemplate, {
         orderId: String(order.id),
         totalAmount: order.totalAmount,
-        paymentUrl: 'https://dodopizza.ru/peterburg',
+        paymentUrl,
       }),
     );
+
+    return paymentUrl;
   } catch (error) {
     console.error('[Create Order] Server Error', error);
   }
