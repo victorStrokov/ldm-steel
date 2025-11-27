@@ -8,7 +8,7 @@ export const sendEmail = async (to: string, subject: string, template: React.Rea
     subject,
     react: template,
   });
-
+  console.log('Resend result:', { data, error });
   if (error) throw error;
 
   return data;

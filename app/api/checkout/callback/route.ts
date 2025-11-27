@@ -34,21 +34,26 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    const items = order?.items as unknown as CartItemDTO[];
+    const items = JSON.parse(order?.items as string) as CartItemDTO[];
 
     if (!items) {
       return NextResponse.json({ error: 'Order items not found' }, { status: 404 });
     }
 
-    await sendEmail(
-      order.email,
-      'Next Steel / Ваш заказ успешно оплачен',
-      React.createElement(OrderSuccessTemplate, {
-        orderId: order.id,
-        totalAmount: order.totalAmount,
-        items,
-      }),
-    );
+    if (isSucceeded) {
+      await sendEmail(
+        order.email,
+        'Next Steel / Ваш заказ успешно оплачен',
+        React.createElement(OrderSuccessTemplate, {
+          orderId: order.id,
+          totalAmount: order.totalAmount,
+          items,
+        }),
+      );
+      return NextResponse.json({ success: true });
+    } else {
+      // TODO: send email about failed order
+    }
   } catch (error) {
     console.log('[ChtckoutCallback] Error.', error);
 

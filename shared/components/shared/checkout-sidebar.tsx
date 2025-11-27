@@ -11,7 +11,6 @@ const DELIVERY_PRICE = 4000;
 interface Props {
   totalAmount: number;
   loading?: boolean;
-
   className?: string;
 }
 

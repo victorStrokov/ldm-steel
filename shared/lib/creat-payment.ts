@@ -1,5 +1,6 @@
 import { PaymentData } from './../../@types/youkassa';
 import axios from 'axios';
+import { calcTotalOrder } from '@/shared/lib';
 
 interface Props {
   description: string;
@@ -8,11 +9,13 @@ interface Props {
 }
 
 export async function createPayment(details: Props) {
+  const { totalWithExtras } = calcTotalOrder(details.amount);
+
   const { data } = await axios.post<PaymentData>(
     'https://api.yookassa.ru/v3/payments',
     {
       amount: {
-        value: details.amount.toFixed(2),
+        value: totalWithExtras.toFixed(2),
         currency: 'RUB',
       },
       capture: true,

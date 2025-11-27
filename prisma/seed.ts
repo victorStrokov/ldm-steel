@@ -3,7 +3,7 @@ import { prisma } from './prisma-client';
 import { categories, _ingredients, products } from './constants';
 import { Prisma } from '@prisma/client';
 import { ProductMaterial } from '@/@types/product.types';
-import { calculatePrice } from '../shared/lib/calculate-prise';
+import { calculatePrice } from '../shared/lib/calculate-price';
 
 const generateProductItem = ({
   productId,
