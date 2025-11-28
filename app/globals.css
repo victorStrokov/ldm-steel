@@ -153,3 +153,18 @@ html {
     @apply bg-primary text-primary-foreground;
   }
 }
+
+#nprogress .bar {
+  background: var(--primary);
+}
+
+#nprogress .peg {
+  box-shadow:
+    0 0 10px var(--primary),
+    0 0 5px var(--primary);
+}
+
+#nprogress .spinner-icon {
+  border-top-color: var(--primary);
+  border-left-color: var(--primary);
+}

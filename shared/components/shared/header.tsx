@@ -10,6 +10,8 @@ import { SearchInput } from './search-input';
 import { ProfileButton } from './profile-button';
 import { useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { useSession, signIn } from 'next-auth/react';
+import { AuthModal } from './modals';
 
 interface Props {
   hasSearch?: boolean;
@@ -17,6 +19,9 @@ interface Props {
   className?: string;
 }
 export const Header: React.FC<Props> = ({ hasSearch = true, hasCart = true, className }) => {
+  const [openAuthModal, setOpenAuthModal] = React.useState(false);
+
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
 
   React.useEffect(() => {
@@ -58,10 +63,10 @@ export const Header: React.FC<Props> = ({ hasSearch = true, hasCart = true, clas
 
         {/* Правая часть */}
         <div className="flex items-center gap-3">
-          {/* <AuthModal open={openAuthModal} onClose={() => setOpenAuthModal(false)} /> */}
+          <AuthModal open={openAuthModal} onClose={() => setOpenAuthModal(false)} />
 
-          {/* <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} /> */}
-          <ProfileButton />
+          <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
+
           {hasCart && <CartButton />}
         </div>
       </Container>

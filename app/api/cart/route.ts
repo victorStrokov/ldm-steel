@@ -9,8 +9,6 @@ export async function GET(req: NextRequest) {
   try {
     const token = req.cookies.get('cartToken')?.value;
 
-    console.log('cookie cartToken:', token);
-
     if (!token) {
       return NextResponse.json({ totalAmount: 0, items: [] });
     }
@@ -40,13 +38,12 @@ export async function GET(req: NextRequest) {
         },
       },
     });
-    console.log('found cart:', userCart);
 
     if (!userCart) {
       // корзина не найдена — возвращаем дефолт
       return NextResponse.json({ totalAmount: 0, items: [] });
     }
-    console.log('Cart items count:', userCart.items.length);
+
     return NextResponse.json({
       totalAmount: userCart.totalAmount,
       items: userCart.items,
