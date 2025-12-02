@@ -1,4 +1,4 @@
-import { Container, Title, TopBar, Filters, ProductsGroupList } from '@/shared//components/shared';
+import { Container, Title, TopBar, Filters, ProductsGroupList, Stories } from '@/shared//components/shared';
 import { Suspense } from 'react';
 import { findProducts } from '@/shared/lib';
 import { GetSearchParams } from '@/shared/lib/find-products';
@@ -13,6 +13,8 @@ export default async function Home({ searchParams }: { searchParams: GetSearchPa
           Каталог
         </Title>
       </Container>
+
+      <Stories />
       <TopBar categories={categories.filter((category) => category.products.length > 0)} />
       <Container className="mt-10 mb-4">
         <div className="flex gap-[60px]">

@@ -8,9 +8,8 @@ import Link from 'next/link';
 import { CartButton } from './cart-button';
 import { SearchInput } from './search-input';
 import { ProfileButton } from './profile-button';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { useSession, signIn } from 'next-auth/react';
 import { AuthModal } from './modals';
 
 interface Props {
@@ -19,15 +18,28 @@ interface Props {
   className?: string;
 }
 export const Header: React.FC<Props> = ({ hasSearch = true, hasCart = true, className }) => {
+  const router = useRouter();
   const [openAuthModal, setOpenAuthModal] = React.useState(false);
 
-  const { data: session } = useSession();
   const searchParams = useSearchParams();
 
   React.useEffect(() => {
+    let toastMessage = '';
+
     if (searchParams.has('paid')) {
+      toastMessage = 'Оплата прошла успешно! 🎉 Информация отправлена на почту.';
+    }
+
+    if (searchParams.has('verified')) {
+      toastMessage = 'Подтверждение прошло успешно! 🎉';
+    }
+
+    if (toastMessage) {
       setTimeout(() => {
-        toast.success('Оплата прошла успешно! 🎉 Информация отправлена на почту.');
+        router.replace('/');
+        toast.success(toastMessage, {
+          duration: 3000,
+        });
       }, 1000);
     }
   }, []);
