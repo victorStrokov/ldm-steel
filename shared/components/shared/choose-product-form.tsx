@@ -9,7 +9,6 @@ interface Props {
   imageUrl?: string;
   name: string;
   className?: string;
-
   loading?: boolean;
   items?: { price?: number }[];
   price: number;
@@ -21,7 +20,6 @@ export const ChooseProductForm: React.FC<Props> = ({
   imageUrl,
   name,
   className,
-
   onSubmit,
   loading,
   price,

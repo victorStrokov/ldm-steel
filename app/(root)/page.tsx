@@ -3,8 +3,9 @@ import { Suspense } from 'react';
 import { findProducts } from '@/shared/lib';
 import { GetSearchParams } from '@/shared/lib/find-products';
 
-export default async function Home({ searchParams }: { searchParams: GetSearchParams }) {
-  const params = await searchParams;
+export default async function Home({ searchParams }: { searchParams: Promise<GetSearchParams> }) {
+  const params: GetSearchParams = await searchParams;
+
   const categories = await findProducts(params);
   return (
     <>

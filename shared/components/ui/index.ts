@@ -8,3 +8,4 @@ export { Skeleton } from './skeleton';
 export { Slider } from './slider';
 export { Textarea } from './textarea';
 export { Popover } from './popover';
+export { Label } from './label';

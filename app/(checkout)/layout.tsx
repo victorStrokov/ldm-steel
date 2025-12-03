@@ -1,5 +1,6 @@
 import { Container, Header } from '@/shared/components/shared';
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'LDM Steel | Корзина',
@@ -10,7 +11,10 @@ export default function CheckoutLayout({ children }: { children: React.ReactNode
   return (
     <main className="min-h-screen bg-[#ebddf7]">
       <Container>
-        <Header hasSearch={false} hasCart={false} className="border-b-gray-300" />
+        <Suspense>
+          <Header hasSearch={false} hasCart={false} className="border-b-gray-300" />
+        </Suspense>
+
         {children}
       </Container>
     </main>
