@@ -502,6 +502,85 @@ async function up() {
       },
     },
   });
+
+  await prisma.story.createMany({
+    data: [
+      {
+        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main2.jpg',
+      },
+      {
+        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main3.jpg',
+      },
+      {
+        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main2.jpg',
+      },
+      {
+        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main3.jpg',
+      },
+      {
+        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main2.jpg',
+      },
+      {
+        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main3.jpg',
+      },
+      {
+        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main2.jpg',
+      },
+      {
+        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main3.jpg',
+      },
+      {
+        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main2.jpg',
+      },
+      {
+        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main3.jpg',
+      },
+      {
+        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main2.jpg',
+      },
+    ],
+  });
+
+  await prisma.storyItem.createMany({
+    data: [
+      {
+        storyId: 1,
+        sourceUrl: 'http://ldm-steel.com/wp-content/uploads/03.png',
+      },
+      {
+        storyId: 1,
+        sourceUrl: 'http://ldm-steel.com/wp-content/uploads/image/certificates/sanzakl_sm.jpg',
+      },
+      {
+        storyId: 1,
+        sourceUrl: 'http://ldm-steel.com/wp-content/uploads/image/certificates/sanzakl2_sm.jpg',
+      },
+      {
+        storyId: 1,
+        sourceUrl: 'http://ldm-steel.com/wp-content/uploads/image/certificates/gigienharact_sm.jpg',
+      },
+      {
+        storyId: 2,
+        sourceUrl: 'http://ldm-steel.com/wp-content/uploads/image/certificates/gigienharact2_sm.jpg',
+      },
+      {
+        storyId: 2,
+        sourceUrl: 'http://ldm-steel.com/wp-content/uploads/se%60ndvich.jpg',
+      },
+      {
+        storyId: 2,
+        sourceUrl: 'http://ldm-steel.com/wp-content/uploads/Sertifikat_do-2013-uplotneniya-e1369978366913.jpg',
+      },
+      {
+        storyId: 3,
+        sourceUrl: 'http://ldm-steel.com/wp-content/uploads/P_20150323_163144.jpg',
+      },
+      {
+        storyId: 2,
+        sourceUrl: 'http://ldm-steel.com/wp-content/uploads/02.png',
+      },
+    ],
+  });
 }
 
 // async function down() {
