@@ -5,8 +5,6 @@ export { getProductDetails } from './get-product-details';
 export { getCartDetails } from './get-cart-details';
 export { calcCartItemTotalPrice } from './calc-cart-item-total-price';
 export { productLengtRename } from './product-length-rename';
-export { updateCartTotalAmount } from './update-cart-total-amount';
-export { findProducts } from './find-products';
 export { sendEmail } from './sendEmail';
 export { createPayment } from './creat-payment';
 export { calcTotalOrder } from './calc-total-order';

@@ -12,6 +12,7 @@ interface Props {
 
 export const ProductImage: React.FC<Props> = ({ imageUrl, className, onClickImage, imgClassName }) => {
   const handleClick = onClickImage ?? (() => {});
+  console.log(handleClick, 'handleClick');
 
   return (
     <div className={cn('flex items-center justify-center flex-1 relative w-full', className)}>

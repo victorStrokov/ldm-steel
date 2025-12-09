@@ -11,7 +11,7 @@ import { Container } from './container';
 import { Title } from './title';
 import { FormInput } from './form';
 import { Button } from '../ui';
-import { updateUserInfo } from '@/app/actions';
+import { updateUserInfo } from '@/app/actions/update-userInfo';
 
 interface Props {
   data: User;

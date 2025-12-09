@@ -1,5 +1,4 @@
 import { SteelSizes, ProductThickness } from '@/shared/constants/profile';
-
 import { useSet } from 'react-use';
 import { Variant } from '../components/shared/group-variants';
 import React from 'react';

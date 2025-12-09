@@ -63,7 +63,6 @@ export const Filters: React.FC<Props> = ({ className }) => {
             { text: '15×30', value: '1' },
             { text: '30×28', value: '2' },
             { text: '31×34', value: '3' },
-            { text: '31×34', value: '3' },
             { text: '35×20', value: '4' },
             { text: '40×40', value: '5' },
             { text: '40×50', value: '6' },

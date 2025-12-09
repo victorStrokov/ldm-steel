@@ -1,7 +1,6 @@
 import { Container, Title, TopBar, Filters, ProductsGroupList, Stories } from '@/shared//components/shared';
 import { Suspense } from 'react';
-import { findProducts } from '@/shared/lib';
-import { GetSearchParams } from '@/shared/lib/find-products';
+import { findProducts, GetSearchParams } from '../actions/find-products';
 
 export default async function Home({ searchParams }: { searchParams: Promise<GetSearchParams> }) {
   const params: GetSearchParams = await searchParams;

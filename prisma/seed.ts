@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { hashSync } from 'bcrypt';
 import { prisma } from './prisma-client';
 import { categories, _ingredients, products } from './constants';
@@ -506,37 +507,37 @@ async function up() {
   await prisma.story.createMany({
     data: [
       {
-        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main2.jpg',
+        previewImageUrl: '/assets/insta-react/aluplast.jpg',
       },
       {
-        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main3.jpg',
+        previewImageUrl: '/assets/insta-react/armiruyshaya-vstavka.jpg',
       },
       {
-        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main2.jpg',
+        previewImageUrl: '/assets/insta-react/artec.jpg',
       },
       {
-        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main3.jpg',
+        previewImageUrl: '/assets/insta-react/gealan.jpg',
       },
       {
-        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main2.jpg',
+        previewImageUrl: '/assets/insta-react/kbe.jpg',
       },
       {
-        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main3.jpg',
+        previewImageUrl: '/assets/insta-react/montblanc.jpg',
       },
       {
-        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main2.jpg',
+        previewImageUrl: '/assets/insta-react/plafen.jpg',
       },
       {
-        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main3.jpg',
+        previewImageUrl: '/assets/insta-react/provedal1.jpg',
       },
       {
-        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main2.jpg',
+        previewImageUrl: '/assets/insta-react/rehau.jpg',
       },
       {
-        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main3.jpg',
+        previewImageUrl: '/assets/insta-react/veka.jpg',
       },
       {
-        previewImageUrl: 'http://ldm-steel.com/wp-content/uploads/image/main/main2.jpg',
+        previewImageUrl: '/assets/insta-react/wintech.jpg',
       },
     ],
   });
@@ -593,7 +594,7 @@ async function down() {
     DO $$
     BEGIN
       IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'ProductItem') THEN
-        TRUNCATE TABLE "ProductItem", "Product", "Ingredient", "Category", "Cart", "CartItem", "User" RESTART IDENTITY CASCADE;
+        TRUNCATE TABLE "ProductItem", "Product", "Ingredient", "Category", "Cart", "CartItem", "User", "Story", "StoryItem" RESTART IDENTITY CASCADE;
       END IF;
     END$$;
   `);
