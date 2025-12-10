@@ -25,7 +25,7 @@ export async function updateUserInfo(body: Prisma.UserUpdateInput) {
       data: {
         fullName: body.fullName,
         email: body.email,
-        password: body.password ? hashSync(body.password as string, 10) : findUser?.password,
+        passwordHash: body.passwordHash ? hashSync(body.passwordHash as string, 10) : findUser?.passwordHash,
       },
     });
   } catch (error) {

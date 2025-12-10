@@ -1,5 +1,7 @@
-import { cn } from '@/shared/lib/utils';
+'use client';
+
 import React from 'react';
+import { cn } from '@/shared/lib/utils';
 import { Container } from './container';
 import { Categories } from './categories';
 import { SortPopup } from './sort-popup';

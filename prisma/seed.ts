@@ -54,14 +54,14 @@ async function up() {
       {
         fullName: 'User Test',
         email: 'user@test.ru',
-        password: hashSync('1111', 10),
+        passwordHash: hashSync('1111', 10),
         verified: new Date(),
         role: 'USER',
       },
       {
         fullName: 'Admin Admin',
         email: 'admin@test.ru',
-        password: hashSync('2222', 10),
+        passwordHash: hashSync('2222', 10),
         verified: new Date(),
         role: 'ADMIN',
       },

@@ -5,16 +5,16 @@ CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'SUCCEEDED', 'CANCELLED');
 CREATE TYPE "UserRole" AS ENUM ('USER', 'ADMIN');
 
 -- CreateEnum
-CREATE TYPE "ProductMaterial" AS ENUM ('STEEL', 'PVC', 'ALUMINIUM', 'PLASTIC');
+CREATE TYPE "ProductMaterial" AS ENUM ('STEEL', 'PVC', 'ALUMINIUM', 'PLASTIC', 'RUBBER');
 
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
-    "fullName" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
+    "fullName" VARCHAR(150) NOT NULL,
+    "email" VARCHAR(255) NOT NULL,
+    "passwordHash" VARCHAR(100) NOT NULL,
     "role" "UserRole" NOT NULL DEFAULT 'USER',
-    "verified" TIMESTAMP(3) NOT NULL,
+    "verified" TIMESTAMP(3),
     "provider" TEXT,
     "providerId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -49,15 +49,17 @@ CREATE TABLE "Product" (
 CREATE TABLE "ProductItem" (
     "id" SERIAL NOT NULL,
     "price" INTEGER,
-    "size" INTEGER,
-    "thickness" INTEGER,
-    "length" INTEGER,
-    "color" INTEGER,
-    "shape" INTEGER,
-    "material" "ProductMaterial",
     "productId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "productColor" INTEGER,
+    "productLength" INTEGER,
+    "productMaterials" "ProductMaterial",
+    "productShape" INTEGER,
+    "productSizes" INTEGER,
+    "productThickness" INTEGER,
+    "pvcSize" INTEGER,
+    "steelSize" INTEGER,
 
     CONSTRAINT "ProductItem_pkey" PRIMARY KEY ("id")
 );
@@ -104,14 +106,14 @@ CREATE TABLE "Order" (
     "userId" INTEGER,
     "token" TEXT NOT NULL,
     "totalAmount" INTEGER NOT NULL,
-    "status" "OrderStatus" NOT NULL,
+    "status" "OrderStatus" NOT NULL DEFAULT 'PENDING',
     "paymentId" TEXT,
     "items" JSONB NOT NULL,
-    "fullName" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "phone" TEXT NOT NULL,
-    "address" TEXT NOT NULL,
-    "comment" TEXT,
+    "fullName" VARCHAR(150) NOT NULL,
+    "email" VARCHAR(255) NOT NULL,
+    "phone" VARCHAR(20) NOT NULL,
+    "address" VARCHAR(255) NOT NULL,
+    "comment" VARCHAR(1000),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -124,6 +126,7 @@ CREATE TABLE "VerificationCode" (
     "userId" INTEGER NOT NULL,
     "code" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "VerificationCode_pkey" PRIMARY KEY ("id")
 );
@@ -167,10 +170,40 @@ CREATE TABLE "_CartItemToIngredient" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE INDEX "User_email_idx" ON "User"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
 -- CreateIndex
+CREATE INDEX "Product_categoryId_idx" ON "Product"("categoryId");
+
+-- CreateIndex
+CREATE INDEX "ProductItem_productId_idx" ON "ProductItem"("productId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Cart_userId_key" ON "Cart"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Cart_token_key" ON "Cart"("token");
+
+-- CreateIndex
+CREATE INDEX "Cart_userId_idx" ON "Cart"("userId");
+
+-- CreateIndex
+CREATE INDEX "CartItem_cartId_idx" ON "CartItem"("cartId");
+
+-- CreateIndex
+CREATE INDEX "CartItem_productItemId_idx" ON "CartItem"("productItemId");
+
+-- CreateIndex
+CREATE INDEX "Order_userId_idx" ON "Order"("userId");
+
+-- CreateIndex
+CREATE INDEX "Order_email_idx" ON "Order"("email");
+
+-- CreateIndex
+CREATE INDEX "Order_phone_idx" ON "Order"("phone");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "VerificationCode_userId_key" ON "VerificationCode"("userId");

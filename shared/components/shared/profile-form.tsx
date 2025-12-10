@@ -33,7 +33,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
       await updateUserInfo({
         email: data.email,
         fullName: data.fullName,
-        password: data.password,
+        passwordHash: data.password,
       });
 
       toast.success('Данные успешно обновлены', {

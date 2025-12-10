@@ -20,7 +20,14 @@ export const Categories: React.FC<Props> = ({ items, className }) => {
         <a
           key={id}
           href={`/#${name}`}
-          onClick={() => setActiveId(id)}
+          onClick={(e) => {
+            e.preventDefault(); // отменяем стандартный переход
+            setActiveId(id);
+            document.getElementById(name)?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            });
+          }}
           className={cn(
             'flex items-center font-bold h-11 rounded-2xl px-5',
             categoryActiveId === id && 'bg-white shadow-md shadow-gray-200 text-blue-medium',

@@ -27,7 +27,7 @@ export async function registerUser(body: Prisma.UserCreateInput) {
       data: {
         fullName: body.fullName,
         email: body.email,
-        password: hashSync(body.password as string, 10),
+        passwordHash: hashSync(body.passwordHash as string, 10),
       },
     });
 
@@ -37,6 +37,8 @@ export async function registerUser(body: Prisma.UserCreateInput) {
       data: {
         code,
         userId: createdUser.id,
+        createdAt: new Date(),
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // Код действителен 10 минут
       },
     });
 

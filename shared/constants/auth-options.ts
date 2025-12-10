@@ -79,7 +79,7 @@ export const authOptions: AuthOptions = {
           return null;
         }
 
-        const isPasswordValid = await compare(credentials.password, findUser.password);
+        const isPasswordValid = await compare(credentials.password, findUser.passwordHash || '');
 
         if (!isPasswordValid) {
           return null;
@@ -136,7 +136,7 @@ export const authOptions: AuthOptions = {
           data: {
             email: user.email,
             fullName: user.name || 'User #' + user.id,
-            password: hashSync(user.id.toString(), 10), // TODO: хэшировать пароль безопасно сейчас не безопасен там есть id пользователя
+            passwordHash: hashSync(user.id.toString(), 10), // TODO: хэшировать пароль безопасно сейчас не безопасен там есть id пользователя
             verified: new Date(),
             provider: account?.provider,
             providerId: account?.providerAccountId,

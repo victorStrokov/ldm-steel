@@ -7,6 +7,7 @@ import { cn } from '@/shared/lib/utils';
 import { ProductCard } from './product-card';
 import { useCategoryStore } from '@/shared/store/category';
 import { ProductWithRelations } from '@/@types/prisma';
+import { useSortStore } from '@/shared/store';
 
 interface Props {
   title: string;
@@ -18,9 +19,11 @@ interface Props {
 
 export const ProductsGroupList: React.FC<Props> = ({ title, items, listClassName, categoryId, className }) => {
   const setActiveCategoryId = useCategoryStore((state) => state.setActiveId);
+  const { order } = useSortStore();
   const intersectionRef = React.useRef<HTMLDivElement>(null);
   const intersection = useIntersection(intersectionRef as React.RefObject<HTMLElement>, {
-    threshold: 0.4,
+    threshold: 0.2,
+    rootMargin: '-80px 0px 0px 0px',
   });
 
   React.useEffect(() => {
@@ -29,8 +32,16 @@ export const ProductsGroupList: React.FC<Props> = ({ title, items, listClassName
     }
   }, [categoryId, intersection?.isIntersecting, setActiveCategoryId, title]);
 
+  const sortedItems = React.useMemo(() => {
+    return [...items].sort((asc, desc) => {
+      const priceAsc = asc.items?.[0]?.price ?? 0;
+      const priceDesc = desc.items?.[0]?.price ?? 0;
+      return order === 'asc' ? priceAsc - priceDesc : priceDesc - priceAsc;
+    });
+  }, [items, order]);
+
   return (
-    <div className={className} id={title} ref={intersectionRef}>
+    <div className={className} id={title} ref={intersectionRef} style={{ scrollMarginTop: '120px' }}>
       <Title text={title} size="lg" className="font-extrabold mb-5" />
 
       <div
@@ -40,7 +51,7 @@ export const ProductsGroupList: React.FC<Props> = ({ title, items, listClassName
           listClassName,
         )}
       >
-        {items.map((product) => (
+        {sortedItems.map((product) => (
           <ProductCard
             key={product.id}
             id={product.id}
