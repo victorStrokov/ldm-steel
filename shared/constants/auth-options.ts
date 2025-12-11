@@ -60,7 +60,7 @@ export const authOptions: AuthOptions = {
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        passwordHash: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         if (!credentials) {
@@ -79,7 +79,7 @@ export const authOptions: AuthOptions = {
           return null;
         }
 
-        const isPasswordValid = await compare(credentials.password, findUser.passwordHash || '');
+        const isPasswordValid = await compare(credentials.passwordHash, findUser.passwordHash || '');
 
         if (!isPasswordValid) {
           return null;

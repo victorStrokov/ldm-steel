@@ -18,7 +18,7 @@ export async function GET() {
       select: {
         fullName: true,
         email: true,
-        password: false,
+        passwordHash: false,
       },
     });
 
