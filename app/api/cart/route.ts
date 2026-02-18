@@ -30,7 +30,11 @@ export async function GET(req: NextRequest) {
           include: {
             productItem: {
               include: {
-                product: true,
+                product: {
+                  include: {
+                    images: true,
+                  },
+                },
               },
             },
             ingredients: true,

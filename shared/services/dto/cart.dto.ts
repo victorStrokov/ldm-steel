@@ -1,8 +1,10 @@
-import { Cart, CartItem, Ingredient, Product, ProductItem } from '@prisma/client';
+import { Cart, CartItem, Ingredient, Product, ProductItem, ProductImage } from '@prisma/client';
 
 export type CartItemDTO = CartItem & {
   productItem: ProductItem & {
-    product: Product;
+    product: Product & {
+      images: ProductImage[]; // ✔ добавили картинки
+    };
   };
   ingredients: Ingredient[];
 };

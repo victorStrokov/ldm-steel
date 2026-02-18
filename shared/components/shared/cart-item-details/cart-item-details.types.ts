@@ -1,6 +1,6 @@
 export interface CartItemProps {
   id: number;
-  imageUrl: string;
+  imageUrl: string | null;
   details: string;
   name: string;
   price: number;

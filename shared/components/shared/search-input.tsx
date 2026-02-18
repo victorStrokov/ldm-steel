@@ -8,6 +8,10 @@ import Link from 'next/link';
 import React from 'react';
 import { useClickAway, useDebounce } from 'react-use';
 
+type SearchProduct = Product & {
+  images: { url: string }[];
+};
+
 interface Props {
   className?: string;
 }
@@ -15,7 +19,7 @@ interface Props {
 export const SearchInput: React.FC<Props> = ({ className }) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [focused, setFocused] = React.useState(false);
-  const [products, setProducts] = React.useState<Product[]>([]);
+  const [products, setProducts] = React.useState<SearchProduct[]>([]);
   const ref = React.useRef(null);
 
   useClickAway(ref, () => {
@@ -70,7 +74,11 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
                 className="flex items-center gap-3 w-full px-3 py-2 hover:bg-primary/10"
                 href={`/product/${product.id}`}
               >
-                <img className="rounded-sm h-8 w-8" src={product.imageUrl} alt={product.name} />
+                <img
+                  className="rounded-sm h-8 w-8"
+                  src={product.images[0]?.url ?? '/placeholder.png'}
+                  alt={product.name}
+                />
                 <span>{product.name}</span>
               </Link>
             ))}

@@ -1,6 +1,8 @@
-import { Ingredient, Product, ProductItem } from '@prisma/client';
+import { Product, ProductImage, ProductItem } from '@prisma/client';
+import { IngredientWithImages } from './IngredientWithImages';
 
 export type ProductWithRelations = Product & {
-  ingredients: Ingredient[];
+  ingredients: IngredientWithImages[];
   items: ProductItem[];
+  images: ProductImage[];
 };

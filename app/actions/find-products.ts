@@ -59,7 +59,12 @@ export const findProducts = async (params: GetSearchParams) => {
           items: { some: itemWhere },
         },
         include: {
-          ingredients: true,
+          images: true,
+          ingredients: {
+            include: {
+              images: true,
+            },
+          },
           items: {
             where: {
               price: { gte: minPrice, lte: maxPrice },

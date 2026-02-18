@@ -1,5 +1,6 @@
-import { Ingredient, ProductItem } from '@prisma/client';
+import { ProductItem } from '@prisma/client';
 import { SteelSizes, ProductThickness } from '../constants/profile';
+import { IngredientBase } from '@/@types/IngredientBase';
 
 /**
  * Вычисляет общую цену продукта с учётом выбранных ингредиентов
@@ -16,7 +17,7 @@ export const calcTotalProductPrice = (
   thickness: ProductThickness,
   size: SteelSizes,
   items: ProductItem[],
-  ingredients: Ingredient[],
+  ingredients: IngredientBase[],
   selectedIngredients: Set<number> = new Set<number>(),
 ) => {
   const productPrice =

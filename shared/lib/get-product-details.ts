@@ -1,12 +1,13 @@
-import { Ingredient, ProductItem } from '@prisma/client';
+import { ProductItem } from '@prisma/client';
 import { calcTotalProductPrice } from './calc-total-product-price';
 import { SteelSizes, ProductThickness, mapProductThickness, mapSteelSize } from '../constants/profile';
+import { IngredientBase } from '@/@types/IngredientBase';
 
 export const getProductDetails = (
   thickness: ProductThickness,
   size: SteelSizes,
   items: ProductItem[],
-  ingredients: Ingredient[],
+  ingredients: IngredientBase[],
   selectedIngredients: Set<number>,
 ) => {
   const totalPrice = calcTotalProductPrice(thickness, size, items, ingredients, selectedIngredients);

@@ -1,9 +1,9 @@
 import { Api } from '@/shared/services/api-client';
-import { Ingredient } from '@prisma/client';
+import { IngredientWithImages } from '@/@types/IngredientWithImages';
 import React from 'react';
 
 export const useIngredients = () => {
-  const [ingredients, setIngredients] = React.useState<Ingredient[]>([]);
+  const [ingredients, setIngredients] = React.useState<IngredientWithImages[]>([]);
 
   const [loading, setLoading] = React.useState(true);
 

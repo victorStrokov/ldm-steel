@@ -13,8 +13,13 @@ export async function GET(req: NextRequest) {
     },
     take: 5,
     include: {
-      items: true, // <-- подтягиваем варианты
-      ingredients: true, // <-- если нужны ингредиенты
+      items: true,
+      images: true,
+      ingredients: {
+        include: {
+          images: true,
+        },
+      },
     },
   });
 

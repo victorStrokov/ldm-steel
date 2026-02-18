@@ -136,10 +136,11 @@ export const authOptions: AuthOptions = {
           data: {
             email: user.email,
             fullName: user.name || 'User #' + user.id,
-            passwordHash: hashSync(user.id.toString(), 10), // TODO: хэшировать пароль безопасно сейчас не безопасен там есть id пользователя
+            passwordHash: hashSync(user.id.toString(), 10),
             verified: new Date(),
             provider: account?.provider,
             providerId: account?.providerAccountId,
+            tenant: { connect: { id: 1 } }, // ✔ добавили tenant
           },
         });
 

@@ -3,14 +3,14 @@ import React from 'react';
 import { Title } from './title';
 import { Button } from '../ui';
 import { Plus } from 'lucide-react';
-import { Ingredient } from '@prisma/client';
+import { IngredientWithImages } from '@/@types/IngredientWithImages';
 
 interface Props {
   id: number;
   name: string;
   price: number;
   imageUrl: string;
-  ingredients: Ingredient[];
+  ingredients: IngredientWithImages[];
   className?: string;
 }
 
@@ -21,7 +21,11 @@ export const ProductCard: React.FC<Props> = ({ id, name, price, imageUrl, ingred
         {/* Верхняя часть */}
         <div>
           <div className="bg-secondary rounded-lg aspect-[3/2] flex items-center justify-center">
-            <img src={imageUrl} alt={name} className="max-w-full max-h-full object-contain cursor-pointer" />
+            <img
+              src={imageUrl ?? '/no-image.png'}
+              alt={name}
+              className="max-w-full max-h-full object-contain cursor-pointer"
+            />
           </div>
 
           <Title text={name} size="xs" className="mb-1 mt-3 font-bold line-clamp-2" />

@@ -16,7 +16,11 @@ export const updateCartTotalAmount = async (token: string) => {
         include: {
           productItem: {
             include: {
-              product: true,
+              product: {
+                include: {
+                  images: true,
+                },
+              },
             },
           },
           ingredients: true,
@@ -27,7 +31,7 @@ export const updateCartTotalAmount = async (token: string) => {
 
   if (!userCart) return 0;
 
-  const totalAmount = userCart?.items.reduce((acc, item) => {
+  const totalAmount = userCart.items.reduce((acc, item) => {
     return acc + calcCartItemTotalPrice(item);
   }, 0);
 
@@ -46,7 +50,11 @@ export const updateCartTotalAmount = async (token: string) => {
         include: {
           productItem: {
             include: {
-              product: true,
+              product: {
+                include: {
+                  images: true,
+                },
+              },
             },
           },
           ingredients: true,

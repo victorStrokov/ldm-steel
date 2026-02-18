@@ -53,7 +53,7 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit }) =
   if (isProfileForm) {
     return (
       <ChooseProfileForm
-        imageUrl={product.imageUrl}
+        imageUrl={product.images?.[0]?.url ?? '/no-image.png'}
         name={product.name}
         ingredients={product.ingredients}
         items={product.items}
@@ -66,7 +66,7 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit }) =
   return (
     <ChooseProductForm
       name={product.name}
-      imageUrl={product.imageUrl}
+      imageUrl={product.images?.[0]?.url ?? '/no-image.png'}
       price={firstItem?.price ?? 0}
       onSubmit={onSubmit}
       loading={loading}

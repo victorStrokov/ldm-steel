@@ -24,7 +24,11 @@ export async function createOrder(data: CheckoutFormValues) {
             ingredients: true,
             productItem: {
               include: {
-                product: true,
+                product: {
+                  include: {
+                    images: true,
+                  },
+                },
               },
             },
           },
@@ -43,6 +47,11 @@ export async function createOrder(data: CheckoutFormValues) {
     if (userCart?.totalAmount === 0) {
       throw new Error('Cart is empty');
     }
+    const tenantId = userCart.user?.tenantId ?? userCart.items[0]?.productItem.product.tenantId;
+
+    if (!tenantId) {
+      throw new Error('Tenant ID not found');
+    }
 
     /* Создаем  заказ */
     const order = await prisma.order.create({
@@ -56,6 +65,7 @@ export async function createOrder(data: CheckoutFormValues) {
         totalAmount: userCart.totalAmount, // нужен для понимания сколько стоил заказ в админку
         status: OrderStatus.PENDING,
         items: JSON.stringify(userCart.items), // нужен для понимания что в заказе какие товары
+        tenantId,
       },
     });
     /* Очищаем корзину */
@@ -112,4 +122,3 @@ export async function createOrder(data: CheckoutFormValues) {
     console.error('[Create Order] Server Error', error);
   }
 }
-// Хочешь, я покажу пример структуры проекта, где app/actions/orders.ts хранит все экшены для заказов (createOrder, cancelOrder, getOrderById), а клиентские страницы (CheckoutPage) просто их вызывают? Это поможет держать код чистым и избежать путаницы.

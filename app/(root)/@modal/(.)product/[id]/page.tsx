@@ -6,7 +6,15 @@ export default async function ProductModalPage({ params }: { params: Promise<{ i
   const { id } = await params;
   const product = await prisma.product.findUnique({
     where: { id: Number(id) },
-    include: { ingredients: true, items: true },
+    include: {
+      items: true,
+      ingredients: {
+        include: {
+          images: true,
+        },
+      },
+      images: true,
+    },
   });
   if (!product) return notFound();
   return <ChooseProductModal product={product} />;

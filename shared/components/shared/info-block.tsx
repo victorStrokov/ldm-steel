@@ -8,10 +8,10 @@ interface Props {
   title: string;
   text: string;
   className?: string;
-  imageUrl?: string;
+  image?: string;
 }
 
-export const InfoBlock: React.FC<Props> = ({ title, text, className, imageUrl }) => {
+export const InfoBlock: React.FC<Props> = ({ title, text, className, image }) => {
   return (
     <div className={cn(className, 'flex items-center justify-between w-[840px] gap-12')}>
       <div className="flex flex-col">
@@ -27,6 +27,7 @@ export const InfoBlock: React.FC<Props> = ({ title, text, className, imageUrl })
               На главную
             </Button>
           </Link>
+
           <a href="">
             <Button variant="outline" className="text-gray-500 border-gray-400 hover:bg-gray-50">
               Обновить
@@ -34,7 +35,8 @@ export const InfoBlock: React.FC<Props> = ({ title, text, className, imageUrl })
           </a>
         </div>
       </div>
-      <img src={imageUrl} alt={title} width={500} height={500} />
+
+      {image && <img src={image} alt={title} width={500} height={500} />}
     </div>
   );
 };

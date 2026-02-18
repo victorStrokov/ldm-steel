@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Ingredient, ProductItem } from '@prisma/client';
+import { ProductItem } from '@prisma/client';
 
 import { ProductImage } from './product-image';
 import { Title } from './title';
@@ -13,6 +13,7 @@ import { cn } from '@/shared/lib/utils';
 import { getProductDetails } from '@/shared/lib/get-product-details';
 import { useProductOptions } from '@/shared/hooks';
 import { X } from 'lucide-react';
+import { IngredientWithImages } from '@/@types/IngredientWithImages';
 // import { SIZE_MAP, LENGTH_MAP, COLOR_MAP, SHAPE_MAP, TYPE_MAP } from '@/shared/constants/profile';
 // import { getLabel } from '@/shared/lib';
 // import { ProductVariants } from './product-variants';
@@ -21,7 +22,7 @@ interface Props {
   imageUrl: string;
   name: string;
   items: ProductItem[];
-  ingredients: Ingredient[];
+  ingredients: IngredientWithImages[];
   loading?: boolean;
   onSubmit: (itemId: number, ingredients: number[]) => void;
   onClickImage?: () => void;
@@ -100,7 +101,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
               {ingredients?.map((ingredient) => (
                 <IngredientItem
                   key={ingredient.id}
-                  imageUrl={ingredient.imageUrl || undefined}
+                  imageUrl={ingredient.images?.[0]?.url ?? '/no-image.png'}
                   name={ingredient.name || undefined}
                   price={ingredient.price}
                   onClick={() => addIngredient(ingredient.id)}
