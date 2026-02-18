@@ -4,11 +4,10 @@ import { prisma } from '@/prisma/prisma-client';
 
 import { VerificationUserTemplate } from '@/shared/components/shared/email-templates/verification-user';
 import { sendEmail } from '@/shared/lib';
-import { Prisma } from '@prisma/client';
 import { hashSync } from 'bcrypt';
 import React from 'react';
 
-export async function registerUser(body: Prisma.UserCreateInput) {
+export async function registerUser(body: { email: string; fullName: string; passwordHash: string }) {
   try {
     const user = await prisma.user.findFirst({
       where: {
@@ -28,7 +27,7 @@ export async function registerUser(body: Prisma.UserCreateInput) {
         fullName: body.fullName,
         email: body.email,
         passwordHash: hashSync(body.passwordHash as string, 10),
-        tenant: { connect: { id: 1 } },
+        tenantId: 1,
       },
     });
 
