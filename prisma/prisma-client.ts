@@ -6,8 +6,11 @@ import ws from 'ws';
 neonConfig.webSocketConstructor = ws;
 
 const prismaClientSingleton = () => {
-  const connectionString = process.env.DATABASE_URL;
-  const pool = new Pool({ connectionString });
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    connectionTimeoutMillis: 10000, // ждем 10 сек перед ошибкой
+    max: 10, // ограничиваем количество соединений для Serverless
+  });
 
   // Ключевой момент: приводим Pool к any, чтобы PrismaNeon его принял
   const adapter = new PrismaNeon(pool as any);
