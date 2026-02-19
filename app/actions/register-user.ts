@@ -4,7 +4,7 @@ import { prisma } from '@/prisma/prisma-client';
 
 import { VerificationUserTemplate } from '@/shared/components/shared/email-templates/verification-user';
 import { sendEmail } from '@/shared/lib';
-import { hashSync } from 'bcrypt';
+import { hashSync } from 'bcryptjs';
 import React from 'react';
 
 export async function registerUser(body: { email: string; fullName: string; passwordHash: string }) {

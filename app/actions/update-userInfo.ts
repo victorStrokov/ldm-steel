@@ -3,7 +3,7 @@
 import { prisma } from '@/prisma/prisma-client';
 import { getUserSession } from '@/shared/lib/get-user-session';
 import { Prisma } from '@prisma/client';
-import { hashSync } from 'bcrypt';
+import { hashSync } from 'bcryptjs';
 
 export async function updateUserInfo(body: Prisma.UserUpdateInput) {
   try {

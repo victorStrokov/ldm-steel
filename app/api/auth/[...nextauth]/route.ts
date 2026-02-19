@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+
 import NextAuth from 'next-auth';
 import { authOptions } from '@/shared/constants/auth-options';
 
