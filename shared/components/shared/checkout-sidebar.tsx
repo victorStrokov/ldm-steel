@@ -5,7 +5,7 @@ import { Button, Skeleton } from '../ui';
 import { CheckoutItemDetails } from './checkout-item-details';
 import { cn } from '@/shared/lib/utils';
 
-const VAT = 20;
+const VAT = 22;
 const DELIVERY_PRICE = 4000;
 
 interface Props {
@@ -64,7 +64,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmou
         title={
           <div className="flex items-center">
             <Coins size={18} className="mr-3  text-gray-400" />
-            НДС (20%):
+            НДС (22%):
           </div>
         }
         value={loading ? <Skeleton className=" h-6 w-18 rounded-[6px]" /> : `${vatPrice} ₽`}

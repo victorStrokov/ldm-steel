@@ -41,7 +41,6 @@ export const useFilters = (): ReturnProps => {
   const [materialsTypes, { toggle: toggleMaterialsTypes }] = useSet(
     new Set(searchParams.get('material')?.split(',') ?? []),
   );
-  console.log(materialsTypes, 'materialsTypes', toggleMaterialsTypes, 'toggleMaterialsTypes');
 
   const [prices, setPrices] = React.useState<PriceProps>(() => ({
     priceFrom: searchParams.get('priceFrom') ? Number(searchParams.get('priceFrom')) : undefined,

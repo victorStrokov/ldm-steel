@@ -21,7 +21,6 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit }) =
   const onSubmit = async (productItemId?: number, ingredients?: number[]) => {
     try {
       const itemId = productItemId ?? firstItem?.id;
-      console.log('DEBUG values:', { productItemId: itemId, ingredients });
 
       await addCartItem({
         productItemId: itemId,
