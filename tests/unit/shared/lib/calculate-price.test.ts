@@ -1,4 +1,5 @@
 import { calculatePrice } from '@/shared/lib/calculate-price';
+import { vi } from 'vitest';
 
 describe('calculatePrice', () => {
   it('returns a number in expected range for STEEL base config', () => {
@@ -18,8 +19,12 @@ describe('calculatePrice', () => {
   });
 
   it('grows when productLength increases with same other params', () => {
+    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0);
+
     const short = calculatePrice({ productMaterials: 'PVC', pvcSize: 2, productLength: 1 });
     const long = calculatePrice({ productMaterials: 'PVC', pvcSize: 2, productLength: 3 });
+
+    randomSpy.mockRestore();
 
     // Length contributes +20 per step, so long should be at least as high as short.
     expect(long).toBeGreaterThanOrEqual(short);
