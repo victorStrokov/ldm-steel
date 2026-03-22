@@ -1,0 +1,57 @@
+name: Release Gate
+
+on:
+    workflow_dispatch:
+
+env:
+    CI: true
+    NEXT_TELEMETRY_DISABLED: 1
+    DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ldm_steel_ci
+    NEXTAUTH_SECRET: ci-secret
+    NEXTAUTH_URL: http://localhost:3001
+    YOOKASSA_STORE_ID: ci-store
+    YOOKASSA_API_KEY: ci-key
+    YOOKASSA_WEBHOOK_SECRET: ci-webhook
+    RESEND_API_KEY: ci-resend
+
+jobs:
+    release-gate:
+        name: Full Release Gate
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  cache-dependency-path: package-lock.json
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Lint
+              run: npm run lint
+
+            - name: Unit/Integration with coverage
+              run: npm run test:coverage
+
+            - name: Build
+              run: npm run build
+
+            - name: Install Playwright browser
+              run: npx playwright install --with-deps chromium
+
+            - name: E2E smoke
+              run: npm run test:e2e
+
+            - name: Upload Playwright HTML report
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: release-gate-playwright-report
+                  path: playwright-report/
+                  if-no-files-found: ignore
