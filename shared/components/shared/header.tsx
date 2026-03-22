@@ -42,7 +42,7 @@ export const Header: React.FC<Props> = ({ hasSearch = true, hasCart = true, clas
         });
       }, 1000);
     }
-  }, []);
+  }, [router, searchParams]);
 
   return (
     <header className={cn('border-b', className)}>
