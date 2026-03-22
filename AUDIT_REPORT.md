@@ -103,11 +103,14 @@
 
 #### 1. **Отсутствие тестов**
 
-- ❌ Нет unit тестов
-- ❌ Нет integration тестов
-- ❌ Нет e2e тестов
-- ❌ Нет vitest или jest конфигурации
-- 📌 **Действие:** Настроить Vitest и написать тесты минимум 50% покрытие
+- ✅ Vitest конфигурация добавлена (`vitest.config.ts`)
+- ✅ Добавлены базовые unit тесты (валидация checkout и расчет цены)
+- ✅ Добавлены integration тесты для критичных сценариев (checkout callback, cart API, create-order)
+- ✅ Добавлены Playwright e2e smoke-тесты (`tests/e2e/smoke.spec.ts`)
+- ✅ E2E прогон проходит: 3/3 passed (not-auth, /dashboard, /dashboard/products)
+- ✅ Текущий baseline покрытия после расширения тестов: lines 51.96%, statements 51.93%, functions 32.69%, branches 50.25%
+- ⚠️ Цель 50% по lines/statements/branches достигнута; нужно дальше поднимать functions coverage
+- 📌 **Действие:** Повысить functions coverage (hooks/services/store)
 
 #### 2. **Отсутствие Docker конфигурации**
 
@@ -116,16 +119,18 @@
 - ❌ Нет .dockerignore
 - 📌 **Действие:** Создать Docker setup для production deployment
 
-#### 3. **Нет CI/CD pipeline**
+#### 3. **CI/CD pipeline в процессе**
 
-- ❌ Нет GitHub Actions workflows
-- ❌ Нет автоматизации lint/test/build
-- 📌 **Действие:** Настроить CI/CD с автоматическим деплоем
+- ✅ Добавлен GitHub Actions workflow (`.github/workflows/ci.yml`)
+- ✅ Базовая автоматизация lint/test/build/e2e smoke настроена
+- ✅ Добавлен ручной release-gate workflow (`.github/workflows/release-gate.yml`)
+- ⚠️ Branch protection на `main` еще не включен
+- 📌 **Действие:** Добавить deployment job (staging/prod), secrets policy и branch protection
 
 #### 4. **TypeScript ошибка в prisma-client.ts**
 
-- ❌ `const adapter = new PrismaNeon(sql as any);` - использование `any`
-- 📌 **Действие:** Исправить типизацию адаптера
+- ✅ Убран `any` и исправлена типизация Prisma Neon adapter
+- 📌 **Действие:** Поддерживать zero-`as any` политику в CI
 
 #### 5. **Нет health check endpoint**
 
@@ -252,12 +257,12 @@
   - docker-compose.yml (app + postgres + redis)
   - Multi-stage builds
 
-- [ ] **CI/CD**
+- [x] **CI/CD (базовый уровень)**
   - GitHub Actions для lint/test/build
   - Automated deployment в staging
   - Environment secrets management
 
-- [ ] **Исправить TypeScript ошибки**
+- [x] **Исправить TypeScript ошибки**
   - Правильная типизация Prisma Neon adapter
   - Убрать все `as any`
 
@@ -332,15 +337,15 @@
 
 ## 📊 Метрики проекта
 
-| Метрика             | Значение    | Оценка                    |
-| ------------------- | ----------- | ------------------------- |
-| TypeScript покрытие | 100%        | ✅ Отлично                |
-| Test покрытие       | 0%          | ❌ Критично               |
-| Безопасность        | 70%         | ⚠️ Удовлетворительно      |
-| Документация        | 30%         | ⚠️ Требуется работа       |
-| Production-ready    | 65%         | ⚠️ Требуется работа       |
-| Performance         | Не измерено | ⚠️ Требуется тестирование |
-| Code Quality        | 75%         | ✅ Хорошо                 |
+| Метрика             | Значение    | Оценка                     |
+| ------------------- | ----------- | -------------------------- |
+| TypeScript покрытие | 100%        | ✅ Отлично                 |
+| Test покрытие       | ~52% lines  | ✅ Базовый порог достигнут |
+| Безопасность        | 70%         | ⚠️ Удовлетворительно       |
+| Документация        | 30%         | ⚠️ Требуется работа        |
+| Production-ready    | 65%         | ⚠️ Требуется работа        |
+| Performance         | Не измерено | ⚠️ Требуется тестирование  |
+| Code Quality        | 75%         | ✅ Хорошо                  |
 
 ---
 
@@ -367,7 +372,7 @@
 
 ### Можно отложить на v0.2.0:
 
-1. ⏳ E2E тесты (если есть базовые)
+1. ✅ E2E smoke тесты уже добавлены
 2. ⏳ OpenAPI документация
 3. ⏳ Advanced monitoring (APM)
 4. ⏳ Stylelint
@@ -422,9 +427,9 @@
 | ------------ | ----------- | --------- |
 | Архитектура  | ✅ 90%      | ✅ 85%    |
 | Безопасность | ✅ 85%      | ⚠️ 70%    |
-| Тесты        | ❌ 0%       | ❌ 0%     |
+| Тесты        | ❌ 0%       | ✅ ~52%   |
 | Docker       | ❌ 0%       | ❌ 0%     |
-| CI/CD        | ❌ 0%       | ❌ 0%     |
+| CI/CD        | ❌ 0%       | ⚠️ 35%    |
 | Мониторинг   | ⚠️ 40%      | ⚠️ 20%    |
 | Документация | ⚠️ 40%      | ⚠️ 30%    |
 | **ИТОГО**    | **70%**     | **65%**   |
@@ -446,11 +451,9 @@
 
 ❌ **Основные проблемы:**
 
-- Отсутствие тестов
-- Нет Docker/CI/CD
+- Нет Docker и deploy-автоматизации
 - Недостаточная безопасность
 - Нет мониторинга
-- TypeScript ошибки
 - Много console.log
 - Незавершенная миграция данных
 
@@ -462,3 +465,92 @@
 
 **Дата отчета:** 24 февраля 2026 г.  
 **Следующий аудит:** После реализации Фазы 1
+
+---
+
+## ✅ Чек-лист расхождений ldm-steel относительно admin-panel
+
+### 🔴 Критично (закрыть до следующего релиза)
+
+- [ ] Закрыть публичный `GET/POST /api/users` и оставить только защищенный доступ по роли
+  - Файл: `app/api/users/route.ts`
+- [ ] Защитить `POST /api/checkout/callback` от подделки
+  - Проверка подписи/секрета webhook
+  - Верификация статуса платежа через trusted API провайдера
+  - Файл: `app/api/checkout/callback/route.ts`
+- [ ] Сделать атомарный сценарий создания заказа
+  - Перенести критичный путь (создание заказа + фиксация платежа + очистка корзины) в транзакцию
+  - Не очищать корзину до успешной фиксации заказа и `paymentId`
+  - Файл: `app/actions/create-order.ts`
+- [ ] Включить tenant-изоляцию во всех публичных выборках каталога
+  - Файлы: `app/actions/find-products.ts`, `app/api/products/search/route.ts`, `app/api/ingredients/route.ts`
+- [ ] Убрать жестко заданный `tenantId: 1` из регистрации и OAuth-создания пользователей
+  - Файлы: `app/actions/register-user.ts`, `shared/constants/auth-options.ts`
+
+### 🟠 Высокий приоритет (безопасность и корректность)
+
+- [ ] Поднять парольную политику до `min(8)` и синхронизировать текст ошибок
+  - Файл: `shared/components/shared/modals/auth-modal/forms/schemas.ts`
+- [ ] Проверять `expiresAt` при подтверждении email-кода
+  - Файл: `app/api/auth/verify/route.ts`
+- [ ] Убрать `Math.random()` из критичных мест
+  - Идемпотентность платежа: криптостойкий `Idempotence-Key`
+  - Ценообразование: детерминированный расчет без random offset
+  - Файлы: `shared/lib/creat-payment.ts`, `shared/lib/calculate-price.ts`
+- [ ] Ввести единый error-handling контракт в server actions/API
+  - Явные коды/ошибки вместо немых `catch` и `console.log`
+  - Файлы: `app/actions/create-order.ts`, `app/api/auth/verify/route.ts`, `app/api/cart/*`
+
+### 🟡 Средний приоритет (production baseline)
+
+- [ ] Добавить централизованную Zod-валидацию env + fail-fast на старте
+  - Ориентир: подход из admin-panel `shared/lib/env.ts`
+- [ ] Добавить security headers и CSP в `next.config.ts`
+- [ ] Включить `reactStrictMode: true`
+- [ ] Внедрить структурированное логирование (pino) вместо `console.*`
+- [ ] Добавить health endpoint `/api/health` с проверкой БД
+- [ ] Добавить rate limiting на auth и чувствительные API
+- [ ] Добавить базовый request tracing (requestId + latency)
+
+### 🧪 Тестовый контур и quality gate
+
+- [x] Подключить Vitest (unit + integration)
+- [x] Добавить Playwright smoke e2e (минимум checkout/auth/navigation)
+- [x] Добавить coverage thresholds в CI
+- [x] Добавить pre-commit/pre-push проверки
+- [x] pre-commit: `npm run lint`
+- [x] pre-push: `npm run test:coverage && npm run build`
+- [x] Создать GitHub Actions workflow: lint + test + build
+- [x] Добавить ручной release-gate workflow: lint + test:coverage + build + e2e
+- [x] Добавить документацию по branch protection: `docs/branch-protection.md`
+- [ ] Включить required checks на ветке `main` (CI / Lint, Unit/Integration, Build; CI / E2E Smoke)
+
+### 🧱 Deploy/операционка
+
+- [ ] Добавить `Dockerfile`, `docker-compose.yml`, `.dockerignore`
+- [ ] Добавить deploy runbook (env, миграции, rollback)
+- [ ] Добавить backup strategy для БД и регулярные бэкапы
+- [ ] Добавить базовый мониторинг ошибок (Sentry)
+
+### 🔁 Интеграция клиент ↔ админка (контракт данных)
+
+- [ ] Зафиксировать единый контракт по товарам и заказам (поля, статусы, tenant-границы)
+- [ ] Определить источник истины по каталогу (admin-panel) и стратегию синхронизации
+- [ ] Ввести идемпотентность для входящих заказов и callback событий
+- [ ] Добавить инварианты на стороне БД и API
+  - `order.tenantId` обязателен и согласован с товарами заказа
+  - Нельзя менять статус заказа без валидного платежного события
+- [ ] Добавить smoke-check после деплоя
+  - Товар создан в admin-panel → доступен в ldm-steel
+  - Заказ из ldm-steel → виден в admin-panel
+  - Email покупателю отправляется только после подтвержденной оплаты
+
+### 📌 Definition of Done (для ревизии 3)
+
+- [ ] Нет публичных опасных endpoint'ов без auth
+- [ ] Checkout callback защищен и идемпотентен
+- [ ] Заказ создается атомарно
+- [ ] Tenant-изоляция подтверждена тестами
+- [ ] Включены env validation, health checks, rate limiting, security headers
+- [ ] Запущены unit/integration/e2e smoke тесты в CI (workflow настроен, ожидается первый прогон в GitHub)
+- [ ] Подготовлены Docker + runbook + backups + error monitoring
