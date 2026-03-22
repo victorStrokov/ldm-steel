@@ -13,7 +13,7 @@ export default defineConfig({
   },
   webServer: {
     command: process.env.CI ? 'npm run build && npm run start -- --port 3001' : 'npm run dev -- --port 3001',
-    url: 'http://localhost:3001',
+    url: 'http://localhost:3001/dashboard',
     reuseExistingServer: !process.env.CI,
     timeout: process.env.CI ? 300000 : 120000,
   },
