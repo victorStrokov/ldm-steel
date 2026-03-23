@@ -1,8 +1,12 @@
 import { PaymentCallbackData } from '@/@types/youkassa';
 import { prisma } from '@/prisma/prisma-client';
+import { OrderFailedTemplate } from '@/shared/components/shared/email-templates/order-failed';
 import { OrderSuccessTemplate } from '@/shared/components/shared/email-templates/order-success';
 import { sendEmail } from '@/shared/lib';
+import { logger } from '@/shared/lib/logger';
 import { CartItemDTO } from '@/shared/services/dto/cart.dto';
+
+const log = logger.child({ module: 'api/checkout/callback' });
 import { OrderStatus } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import React from 'react';
@@ -21,20 +25,15 @@ export async function POST(req: NextRequest) {
     }
 
     const isSucceeded = body.object.status === 'succeeded';
-    if (!isSucceeded) {
-      return NextResponse.json({ error: 'Order not succeeded' }, { status: 404 });
-    }
 
     await prisma.order.update({
-      where: {
-        id: order.id,
-      },
+      where: { id: order.id },
       data: {
         status: isSucceeded ? OrderStatus.SUCCEEDED : OrderStatus.CANCELLED,
       },
     });
 
-    const items = JSON.parse(order?.items as string) as CartItemDTO[];
+    const items = JSON.parse(order.items as string) as CartItemDTO[];
 
     if (!items) {
       return NextResponse.json({ error: 'Order items not found' }, { status: 404 });
@@ -50,12 +49,20 @@ export async function POST(req: NextRequest) {
           items,
         }),
       );
-      return NextResponse.json({ success: true });
     } else {
-      // TODO: send email about failed order
+      await sendEmail(
+        order.email,
+        'Next Steel / Платёж не прошёл',
+        React.createElement(OrderFailedTemplate, {
+          orderId: order.id,
+          totalAmount: order.totalAmount,
+        }),
+      );
     }
+
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.log('[ChtckoutCallback] Error.', error);
+    log.error({ err: error }, 'POST /api/checkout/callback failed');
 
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }

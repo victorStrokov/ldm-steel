@@ -24,7 +24,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
     filters.setPrices('priceTo', prices[1]);
   };
 
-  // TODO: добавить ВЫВОД ВЫБРАННЫХ ЧЕКБОКСОВ НА ВЕРХ ЕСЛИ СПИСОК СКРЫТ И ТАМ ЕСТЬ ВЫБРАННЫЕ
+  // Note: когда список свёрнут и есть выбранные элементы — нужно выводить их
+  // над кнопкой «Показать все» в CheckboxFiltersGroup. Отложено до v0.2.0.
 
   return (
     <div className={className}>

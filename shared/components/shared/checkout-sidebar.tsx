@@ -1,6 +1,8 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { WhiteBlock } from './white-block';
-import { ArrowBigRight, Coins, PackagePlus, RussianRuble, Truck } from 'lucide-react';
+import { ArrowBigRight, PackagePlus, RussianRuble, Truck } from 'lucide-react';
 import { Button, Skeleton } from '../ui';
 import { CheckoutItemDetails } from './checkout-item-details';
 import { cn } from '@/shared/lib/utils';
@@ -15,16 +17,37 @@ interface Props {
 }
 
 export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmount }) => {
+  const [isDelivery, setIsDelivery] = useState(true);
+
   const packingPrice = totalAmount < 300000 ? 500 : 0;
-  const vatPrice = ((totalAmount + packingPrice + DELIVERY_PRICE) * VAT) / 100;
-  const deliveryPrice = totalAmount < 100000 ? DELIVERY_PRICE : 0;
+  const deliveryPrice = isDelivery ? (totalAmount < 100000 ? DELIVERY_PRICE : 0) : 0;
+  const vatPrice = Math.round(((totalAmount + packingPrice + deliveryPrice) * VAT) / 100);
   const totalPrice = totalAmount + deliveryPrice + packingPrice;
 
-  // TODO:
-  // const totalPriceWithoutDelivery = totalAmount + packingPrice;
-  // реализоват выбор доставки или самовывоз
   return (
     <WhiteBlock className={cn('p-6 sticky top-4', className)}>
+      <div className="flex rounded-xl overflow-hidden border border-gray-200 mb-5 text-sm font-medium">
+        <button
+          type="button"
+          onClick={() => setIsDelivery(true)}
+          className={cn(
+            'flex-1 py-2.5 transition-colors',
+            isDelivery ? 'bg-black text-white' : 'bg-white text-gray-600 hover:bg-gray-50',
+          )}
+        >
+          Доставка
+        </button>
+        <button
+          type="button"
+          onClick={() => setIsDelivery(false)}
+          className={cn(
+            'flex-1 py-2.5 transition-colors',
+            !isDelivery ? 'bg-black text-white' : 'bg-white text-gray-600 hover:bg-gray-50',
+          )}
+        >
+          Самовывоз
+        </button>
+      </div>
       <div className="flex flex-col gap-1">
         <span className="text-xl">Итого:</span>
         {loading ? (
@@ -58,12 +81,20 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmou
             Доставка:
           </div>
         }
-        value={loading ? <Skeleton className=" h-6 w-16 rounded-[6px]" /> : `${deliveryPrice} ₽`}
+        value={
+          loading ? (
+            <Skeleton className=" h-6 w-16 rounded-[6px]" />
+          ) : isDelivery ? (
+            `${deliveryPrice} ₽`
+          ) : (
+            <span className="text-green-600 font-medium">Бесплатно</span>
+          )
+        }
       />
       <CheckoutItemDetails
         title={
           <div className="flex items-center">
-            <Coins size={18} className="mr-3  text-gray-400" />
+            <ArrowBigRight size={18} className="mr-3  text-gray-400" />
             НДС (22%):
           </div>
         }

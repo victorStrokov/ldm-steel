@@ -8,7 +8,6 @@ interface Props {
   totalAmount: number;
   paymentUrl: string;
 }
-// todo сделать тоталэмоунт с доставкой и упаковкой
 export const PayOrderTemplate: React.FC<Props> = ({ orderId, totalAmount, paymentUrl }) => {
   const { packingPrice, deliveryPrice, totalWithExtras } = calcTotalOrder(totalAmount);
 
