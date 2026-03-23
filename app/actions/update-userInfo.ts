@@ -2,8 +2,11 @@
 
 import { prisma } from '@/prisma/prisma-client';
 import { getUserSession } from '@/shared/lib/get-user-session';
+import { logger } from '@/shared/lib/logger';
 import { Prisma } from '@prisma/client';
 import { hashSync } from 'bcryptjs';
+
+const log = logger.child({ module: 'update-userInfo' });
 
 export async function updateUserInfo(body: Prisma.UserUpdateInput) {
   try {
@@ -29,7 +32,7 @@ export async function updateUserInfo(body: Prisma.UserUpdateInput) {
       },
     });
   } catch (error) {
-    console.log('[Update User Info] Server Error', error);
+    log.error({ err: error }, 'updateUserInfo failed');
     throw error;
   }
 }

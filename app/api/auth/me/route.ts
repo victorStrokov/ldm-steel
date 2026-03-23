@@ -1,6 +1,9 @@
 import { prisma } from '@/prisma/prisma-client';
 import { getUserSession } from '@/shared/lib/get-user-session';
+import { logger } from '@/shared/lib/logger';
 import { NextResponse } from 'next/server';
+
+const log = logger.child({ module: 'api/auth/me' });
 
 export const dynamic = 'force-dynamic';
 
@@ -24,7 +27,7 @@ export async function GET() {
 
     return NextResponse.json(data);
   } catch (error) {
-    console.log(error);
+    log.error({ err: error }, 'GET /api/auth/me failed');
     return NextResponse.json({ message: '[USER_GET] Server error' }, { status: 500 });
   }
 }

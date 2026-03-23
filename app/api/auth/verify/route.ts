@@ -1,5 +1,8 @@
 import { prisma } from '@/prisma/prisma-client';
+import { logger } from '@/shared/lib/logger';
 import { NextRequest, NextResponse } from 'next/server';
+
+const log = logger.child({ module: 'api/auth/verify' });
 
 export async function GET(req: NextRequest) {
   try {
@@ -36,7 +39,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.redirect(new URL('/?verified', req.url));
   } catch (error) {
-    console.error(error);
-    console.log('[VERIFY_GET] Server Error', error);
+    log.error({ err: error }, 'GET /api/auth/verify failed');
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

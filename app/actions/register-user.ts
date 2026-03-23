@@ -4,8 +4,11 @@ import { prisma } from '@/prisma/prisma-client';
 
 import { VerificationUserTemplate } from '@/shared/components/shared/email-templates/verification-user';
 import { sendEmail } from '@/shared/lib';
+import { logger } from '@/shared/lib/logger';
 import { hashSync } from 'bcryptjs';
 import React from 'react';
+
+const log = logger.child({ module: 'register-user' });
 
 export async function registerUser(body: { email: string; fullName: string; passwordHash: string }) {
   try {
@@ -48,7 +51,7 @@ export async function registerUser(body: { email: string; fullName: string; pass
       React.createElement(VerificationUserTemplate, { code }),
     );
   } catch (error) {
-    console.error('[Register User] Server Error', error);
+    log.error({ err: error }, 'registerUser failed');
     throw error;
   }
 }

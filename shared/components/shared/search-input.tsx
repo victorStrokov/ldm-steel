@@ -1,5 +1,9 @@
 'use client';
 
+import { createClientLogger } from '@/shared/lib/client-logger';
+
+const log = createClientLogger('SearchInput');
+
 import { cn } from '@/shared/lib/utils';
 import { Api } from '@/shared/services/api-client';
 import { Product } from '@prisma/client';
@@ -32,7 +36,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
         const response = await Api.products.search(searchQuery);
         setProducts(response);
       } catch (error) {
-        console.log(error);
+        log.error('Failed to search products', error);
       }
     },
     250,

@@ -1,6 +1,9 @@
 import { Api } from '@/shared/services/api-client';
 import { IngredientWithImages } from '@/@types/IngredientWithImages';
 import React from 'react';
+import { createClientLogger } from '../lib/client-logger';
+
+const log = createClientLogger('useIngredients');
 
 export const useIngredients = () => {
   const [ingredients, setIngredients] = React.useState<IngredientWithImages[]>([]);
@@ -14,7 +17,7 @@ export const useIngredients = () => {
         const ingredients = await Api.ingredients.getAll();
         setIngredients(ingredients);
       } catch (error) {
-        console.log('Ошибка при загрузке ингредиентов:', error);
+        log.error('Failed to load ingredients', error);
       } finally {
         setLoading(false);
       }

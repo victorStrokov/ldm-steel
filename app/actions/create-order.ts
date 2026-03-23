@@ -3,9 +3,12 @@
 import { prisma } from '@/prisma/prisma-client';
 import { CheckoutFormValues, PayOrderTemplate } from '@/shared/components';
 import { createPayment, sendEmail } from '@/shared/lib';
+import { logger } from '@/shared/lib/logger';
 import { OrderStatus } from '@prisma/client';
 import { cookies } from 'next/headers';
 import React from 'react';
+
+const log = logger.child({ module: 'create-order' });
 
 export async function createOrder(data: CheckoutFormValues) {
   try {
@@ -119,6 +122,6 @@ export async function createOrder(data: CheckoutFormValues) {
 
     return paymentUrl;
   } catch (error) {
-    console.error('[Create Order] Server Error', error);
+    log.error({ err: error }, 'createOrder failed');
   }
 }

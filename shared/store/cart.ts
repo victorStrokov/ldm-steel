@@ -3,6 +3,9 @@ import { Api } from '../services/api-client';
 import { getCartDetails } from '../lib';
 import { CartStateItem } from '../lib/get-cart-details';
 import { CreateCartItemValues } from '../services/dto/cart.dto';
+import { createClientLogger } from '../lib/client-logger';
+
+const log = createClientLogger('CartStore');
 
 export interface CartState {
   loading: boolean;
@@ -32,7 +35,7 @@ export const useCartStore = create<CartState>((set) => ({
       const data = await Api.cart.getCart();
       set(getCartDetails(data));
     } catch (error) {
-      console.error(error);
+      log.error('fetchCartItems failed', error);
       set({ error: true });
     } finally {
       set({ loading: false });
@@ -45,7 +48,7 @@ export const useCartStore = create<CartState>((set) => ({
       const data = await Api.cart.updateCartItemQuantity(id, quantity);
       set(getCartDetails(data));
     } catch (error) {
-      console.error(error);
+      log.error('updateItemQuantity failed', error);
       set({ error: true });
     } finally {
       set({ loading: false });
@@ -61,7 +64,7 @@ export const useCartStore = create<CartState>((set) => ({
       const data = await Api.cart.removeCartItem(id);
       set(getCartDetails(data));
     } catch (error) {
-      console.error(error);
+      log.error('removeCartItem failed', error);
       set({ error: true });
     } finally {
       set((state) => ({
@@ -76,7 +79,7 @@ export const useCartStore = create<CartState>((set) => ({
       const data = await Api.cart.addCartItem(values);
       set(getCartDetails(data));
     } catch (error) {
-      console.error(error);
+      log.error('addCartItem failed', error);
       set({ error: true });
     } finally {
       set({ loading: false });

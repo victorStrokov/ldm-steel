@@ -8,6 +8,9 @@ import { User } from '@prisma/client';
 import toast from 'react-hot-toast';
 import { signOut } from 'next-auth/react';
 import { Container } from './container';
+import { createClientLogger } from '@/shared/lib/client-logger';
+
+const log = createClientLogger('ProfileForm');
 import { Title } from './title';
 import { FormInput } from './form';
 import { Button } from '../ui';
@@ -40,7 +43,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
         icon: '✅',
       });
     } catch (error) {
-      console.error(error);
+      log.error('updateUserInfo failed', error);
       return toast.error('Ошибка при обновлении данных', {
         icon: '❌',
       });

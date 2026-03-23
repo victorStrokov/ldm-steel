@@ -4,6 +4,9 @@ import crypto from 'crypto';
 import { findOrCreateCart } from '@/shared/lib/find-or-create-cart';
 import { CreateCartItemValues } from '@/shared/services/dto/cart.dto';
 import { updateCartTotalAmount } from '@/app/actions';
+import { logger } from '@/shared/lib/logger';
+
+const log = logger.child({ module: 'api/cart' });
 
 export async function GET(req: NextRequest) {
   try {
@@ -55,7 +58,7 @@ export async function GET(req: NextRequest) {
 
     // return NextResponse.json(userCart);
   } catch (error) {
-    console.log('[CART_GET] Server error', error);
+    log.error({ err: error }, 'GET /api/cart failed');
 
     return NextResponse.json({ message: 'Error get cart/ Не удалось получить корзину' }, { status: 500 });
   }
@@ -112,7 +115,7 @@ export async function POST(req: NextRequest) {
     resp.cookies.set('cartToken', token);
     return resp;
   } catch (error) {
-    console.log('[CART_POST] Server error', error);
+    log.error({ err: error }, 'POST /api/cart failed');
     return NextResponse.json({ message: 'Error adding to cart/ Не удалось создать корзину' }, { status: 500 });
   }
 }

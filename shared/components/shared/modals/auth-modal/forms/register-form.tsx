@@ -8,6 +8,9 @@ import { registerUser } from '@/app/actions';
 import { TFormRegisterValues, formRegisterSchema } from './schemas';
 import { FormInput } from '../../../form';
 import { Button } from '@/shared/components/ui';
+import { createClientLogger } from '@/shared/lib/client-logger';
+
+const log = createClientLogger('RegisterForm');
 
 interface Props {
   onClose?: VoidFunction;
@@ -39,7 +42,7 @@ export const RegisterForm: React.FC<Props> = ({ onClose }) => {
 
       onClose?.();
     } catch (error) {
-      console.error('Error: [REGISTER]', error);
+      log.error('registerUser failed', error);
       return toast.error('Неверный E-Mail или пароль', {
         icon: '❌',
       });

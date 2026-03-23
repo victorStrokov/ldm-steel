@@ -1,7 +1,9 @@
 import { updateCartTotalAmount } from '@/app/actions';
 import { prisma } from '@/prisma/prisma-client';
-
+import { logger } from '@/shared/lib/logger';
 import { NextRequest, NextResponse } from 'next/server';
+
+const log = logger.child({ module: 'api/cart/[id]' });
 
 export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
@@ -35,7 +37,7 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
 
     return NextResponse.json(await updateCartTotalAmount(token));
   } catch (error) {
-    console.error('[ CART_PATCH ] Server Error', error);
+    log.error({ err: error }, 'PATCH /api/cart/[id] failed');
     return NextResponse.json({ message: 'Произошла ошибка. Корзина не обновлена' }, { status: 500 });
   }
 }
@@ -71,7 +73,7 @@ export async function DELETE(req: NextRequest, context: { params: Promise<{ id: 
 
     return NextResponse.json(updatedUserCart);
   } catch (error) {
-    console.error(error);
+    log.error({ err: error }, 'DELETE /api/cart/[id] failed');
     return NextResponse.json({ message: 'Произошла ошибка. Корзина не Удалена' }, { status: 500 });
   }
 }

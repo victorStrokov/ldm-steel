@@ -7,6 +7,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, FormInput, Title } from '@/shared/components';
 import toast from 'react-hot-toast';
 import { signIn } from 'next-auth/react';
+import { createClientLogger } from '@/shared/lib/client-logger';
+
+const log = createClientLogger('LoginForm');
 
 interface Props {
   onClose?: VoidFunction;
@@ -36,7 +39,7 @@ export const LoginForm: React.FC<Props> = ({ onClose }) => {
 
       onClose?.();
     } catch (error) {
-      console.error('Error: [LOGIN]', error);
+      log.error('signIn failed', error);
       toast.error('Не удалось войти в аккаунт, не правильный логин или пароль!', {
         icon: '❌',
       });

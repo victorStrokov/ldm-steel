@@ -3,8 +3,11 @@ import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/prisma/prisma-client';
 import { compare, hashSync } from 'bcryptjs';
+import { logger } from '@/shared/lib/logger';
 import { UserRole } from '@prisma/client';
 import { AuthOptions } from 'next-auth';
+
+const log = logger.child({ module: 'auth-options' });
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -146,7 +149,7 @@ export const authOptions: AuthOptions = {
 
         return true;
       } catch (error) {
-        console.error('Error [SIGNIN]', error);
+        log.error({ err: error }, 'signIn callback failed');
         return false;
       }
     },

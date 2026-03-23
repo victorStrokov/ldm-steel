@@ -1,5 +1,9 @@
 'use client';
 
+import { createClientLogger } from '@/shared/lib/client-logger';
+
+const log = createClientLogger('ProductForm');
+
 import { ProductWithRelations } from '@/@types/prisma';
 import { useCartStore } from '@/shared/store';
 import React from 'react';
@@ -32,7 +36,7 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit }) =
       _onSubmit?.();
     } catch (error) {
       toast.error('Не удалось добавить товар в корзину');
-      console.error(error);
+      log.error('addCartItem failed', error);
     }
   };
   const handleImageClick = () => {
