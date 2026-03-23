@@ -11,7 +11,7 @@
 Проект **LDM Steel** представляет собой е-commerce платформу на базе Next.js 16 с мультитенантностью, NextAuth аутентификацией и интеграцией с платежными системами. Проект имеет хорошую архитектуру, но требует значительных доработок перед production.
 
 **Общий статус:** 🟡 Требуется доработка перед production  
-**Готовность к production:** ~65%
+**Готовность к production:** ~68%
 
 ---
 
@@ -107,25 +107,40 @@
 - ✅ Добавлены базовые unit тесты (валидация checkout и расчет цены)
 - ✅ Добавлены integration тесты для критичных сценариев (checkout callback, cart API, create-order)
 - ✅ Добавлены Playwright e2e smoke-тесты (`tests/e2e/smoke.spec.ts`)
-- ✅ E2E прогон проходит: 3/3 passed (not-auth, /dashboard, /dashboard/products)
-- ✅ Текущий baseline покрытия после расширения тестов: lines 51.96%, statements 51.93%, functions 32.69%, branches 50.25%
-- ⚠️ Цель 50% по lines/statements/branches достигнута; нужно дальше поднимать functions coverage
-- 📌 **Действие:** Повысить functions coverage (hooks/services/store)
+- ✅ E2E прогон проходит: 6/6 passed (smoke + checkout + негативные сценарии)
+- ✅ Текущий baseline покрытия после расширения тестов: lines 60.04%, statements 59.87%, functions 50.00%, branches 51.26%
+- ✅ Цель 50% по lines/statements/branches/functions достигнута
+- ✅ Добавлен интеграционный lifecycle-тест: createOrder -> paymentId -> callback succeeded
+- ✅ Добавлен opt-in браузерный sandbox e2e-тест checkout (`tests/e2e/checkout-sandbox.spec.ts`)
+- 📌 **Действие:** Настроить sandbox env/data (DB + платежные ключи) и включить `E2E_SANDBOX_ENABLED=1` в отдельном пайплайне
+- ⏸️ **Временный статус:** этап sandbox e2e осознанно отложен до появления отдельной test/sandbox БД
+- 🔐 **Секреты для sandbox job (GitHub Actions Secrets):** `SANDBOX_DATABASE_URL`, `SANDBOX_NEXTAUTH_SECRET`, `SANDBOX_NEXTAUTH_URL`, `SANDBOX_YOOKASSA_SHOP_ID`, `SANDBOX_YOOKASSA_SECRET_KEY`, `SANDBOX_YOOKASSA_CALLBACK_URL`, `SANDBOX_RESEND_API_KEY`
+- 📌 **Когда будут основная и тестовая БД:**
+  - Развести окружения: production БД только для prod, отдельная test/sandbox БД только для автотестов
+  - Заполнить sandbox secrets реальными sandbox-значениями провайдеров и URL тестового контура
+  - Подготовить данные в test/sandbox БД (минимум товар/`productItem` для checkout)
+  - Запускать `release-gate` с `run_sandbox_e2e=true` (или `E2E_SANDBOX_ENABLED=1`) и держать этот прогон отдельным от обязательного smoke
 
-#### 2. **Отсутствие Docker конфигурации**
+#### 2. **Docker конфигурация (базовый уровень закрыт)**
 
-- ❌ Нет Dockerfile
-- ❌ Нет docker-compose.yml
-- ❌ Нет .dockerignore
-- 📌 **Действие:** Создать Docker setup для production deployment
+- ✅ Добавлен `Dockerfile` (multi-stage build для Next.js standalone)
+- ✅ Добавлен `docker-compose.yml` (app + postgres + healthcheck)
+- ✅ Добавлен `.dockerignore`
+- ✅ Добавлен deploy runbook (`docs/deploy-runbook.md`)
+- ✅ Добавлен CI workflow для Docker image (`.github/workflows/docker-image.yml`, GHCR)
+- ✅ `output: 'standalone'` убран из `next.config.ts` (Vercel не поддерживает standalone); Dockerfile выставляет `NEXT_OUTPUT=standalone` самостоятельно
+- 📌 **Текущий prod:** Vercel (Git push → автодеплой). Docker актуален при переходе на собственный VPS/сервер
 
 #### 3. **CI/CD pipeline в процессе**
 
 - ✅ Добавлен GitHub Actions workflow (`.github/workflows/ci.yml`)
 - ✅ Базовая автоматизация lint/test/build/e2e smoke настроена
 - ✅ Добавлен ручной release-gate workflow (`.github/workflows/release-gate.yml`)
-- ⚠️ Branch protection на `main` еще не включен
-- 📌 **Действие:** Добавить deployment job (staging/prod), secrets policy и branch protection
+- ✅ Добавлен workflow сборки/публикации Docker image (`.github/workflows/docker-image.yml`)
+- ✅ Branch protection на `main` включен (required checks: Lint, Unit/Integration, Build; E2E Smoke)
+- ✅ **Production deploy:** Vercel автодеплой при пуше в `main` (Git Integration), env vars в Vercel Dashboard
+- ✅ **Migration gate:** скрипт `vercel-build` = `prisma migrate deploy && next build` — миграции применяются до сборки; если миграция сломана — деплой падает
+- 📌 **Статус:** Готово
 
 #### 4. **TypeScript ошибка в prisma-client.ts**
 
@@ -134,42 +149,53 @@
 
 #### 5. **Нет health check endpoint**
 
-- ❌ Нет `/api/health` или `/api/healthz`
-- ❌ Невозможно мониторить состояние приложения
-- 📌 **Действие:** Добавить health check с проверкой БД
+- ✅ `/api/health` — endpoint с проверкой БД (`SELECT 1`) и uptime
+- ✅ Docker Compose healthcheck обновлён на `/api/health`
+- 📌 **Статус:** Готово
 
 #### 6. **Чувствительные данные в коде**
 
-- ⚠️ Прямое использование `process.env.*` без валидации
-- ❌ Нет проверки наличия обязательных переменных
-- 📌 **Действие:** Добавить Zod схему для env vars с fail-fast при старте
+- ✅ `shared/lib/env.ts` — Zod-схема для всех обязательных env vars
+- ✅ `instrumentation.ts` — fail-fast валидация при старте (только `nodejs` runtime)
+- ✅ Покрыты: `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `YOOKASSA_*`, `RESEND_API_KEY`
+- ✅ OAuth переменные (Google/GitHub/MAILRU) — опциональные, не блокируют старт
+- 📌 **Статус:** Готово
 
 #### 7. **Недокументированные TODO**
 
-- ⚠️ 5+ TODO комментариев в коде
-- ⚠️ Незавершенные функции (email для failed orders, delivery cost в checkout)
-- 📌 **Действие:** Завершить или задокументировать незавершенные фичи
+- ✅ `app/api/checkout/callback/route.ts` — исправлен баг: ранний `return 404` делал ветку `else` мёртвым кодом (статус CANCELLED не обновлялся); переписан полностью
+- ✅ `email-templates/order-failed.tsx` — создан шаблон для отправки письма при неудачной оплате; добавлен в `index.ts`
+- ✅ `email-templates/pay-order.tsx` — устаревший `todo` удалён (функция уже была реализована через `calcTotalOrder`)
+- ✅ `checkout-sidebar.tsx` — реализован переключатель «Доставка / Самовывоз» (состояние, динамическое ценообразование)
+- ✅ `filters.tsx` — TODO задокументирован как отложенная задача v0.2.0 (показ выбранных фильтров поверх свёрнутого списка)
+- 📌 **Статус:** Готово
 
 ### ⚠️ Важные проблемы (Priority: MEDIUM)
 
 #### 8. **Логирование не структурировано**
 
-- ⚠️ 20+ использований `console.log/error` вместо logger
-- ❌ Нет централизованного логгера (pino, winston)
-- 📌 **Действие:** Внедрить структурированное логирование
+- ✅ Создан серверный логгер: `shared/lib/logger.ts` (pino, JSON в prod / pretty в dev)
+- ✅ Создан browser-safe клиентский логгер: `shared/lib/client-logger.ts` (console-враппер с labelling)
+- ✅ 9 серверных файлов (API routes, actions, auth-options) → `logger.child({ module })`
+- ✅ 8 клиентских файлов (компоненты, store, hooks) → `createClientLogger`
+- ✅ `prisma/seed.ts` оставлен с `console.log` (CLI-скрипт — уместно)
+- 📌 **Статус:** Готово
 
 #### 9. **Отсутствие API документации**
 
-- ❌ Нет OpenAPI/Swagger спецификации
-- ❌ Сложно понять доступные API routes
-- 📌 **Действие:** Добавить Swagger UI или документацию
+- ✅ Добавлена OpenAPI спецификация: `/api/openapi`
+- ✅ Добавлена страница документации API routes: `/api-docs`
+- ✅ Добавлен интерактивный Swagger UI: `/api-docs/swagger`
+- ✅ Описаны все текущие route handlers из `app/api/**/route.ts`
+- 📌 **Статус:** Готово
 
 #### 10. **Нет мониторинга и error tracking**
 
-- ❌ Нет интеграции с Sentry/DataDog
-- ❌ Нет отслеживания ошибок в production
-- ❌ Нет performance monitoring
-- 📌 **Действие:** Интегрировать Sentry для error tracking
+- ✅ Интегрирован Sentry SDK: `@sentry/nextjs`
+- ✅ Добавлен error tracking для server/edge/browser runtime
+- ✅ Добавлен global error boundary: `app/global-error.tsx`
+- ✅ Включен базовый performance monitoring (`tracesSampleRate`)
+- 📌 **Статус:** Готово
 
 #### 11. **Миграция данных не завершена**
 
@@ -185,14 +211,16 @@
 
 #### 13. **Отсутствие backup стратегии**
 
-- ❌ Нет настроенных бэкапов БД
-- ❌ Нет disaster recovery плана
-- 📌 **Действие:** Настроить автоматические бэкапы PostgreSQL
+- ✅ **Neon** предоставляет автоматические backup и Point-in-Time Recovery (PITR) на платных планах (Launch+)
+- ⚠️ **Текущий план: Free** — только 7 дней истории, PITR недоступен
+- 📌 **Действие:** При переходе в prod перейти на Launch+ для полноценного PITR. До тех пор — периодически делать ручной dump: `pg_dump $DATABASE_URL > backup.sql`
 
 #### 14. **DEBUG код в production**
 
-- ⚠️ `console.log('DEBUG values:', ...)` в product-form.tsx
-- 📌 **Действие:** Убрать debug логи или вынести в development mode
+- ✅ Убран `console.log('Resend result:', ...)` из `sendEmail.ts`
+- ✅ `console.log` заменён на `console.error` во всех API-маршрутах (`cart`, `checkout/callback`, `auth/verify`, `auth/me`) и server actions (`update-userInfo`)
+- ✅ Дублирующий лог в `auth/verify` удалён
+- 📌 **Статус:** Готово
 
 ### 📋 Желательные улучшения (Priority: LOW)
 
@@ -252,10 +280,10 @@
   - E2E тесты для checkout flow
   - Покрытие минимум 50%
 
-- [ ] **Docker setup**
-  - Dockerfile для production
-  - docker-compose.yml (app + postgres + redis)
-  - Multi-stage builds
+- [x] **Docker setup**
+  - ✅ Dockerfile для production
+  - ✅ docker-compose.yml (app + postgres)
+  - ✅ Multi-stage builds
 
 - [x] **CI/CD (базовый уровень)**
   - GitHub Actions для lint/test/build
@@ -277,15 +305,16 @@
 
 ### Фаза 2: Важные улучшения (1-2 недели)
 
-- [ ] **Мониторинг**
-  - Sentry интеграция
-  - Error tracking
-  - Performance monitoring
+- [x] **Мониторинг**
+  - ✅ Sentry интеграция
+  - ✅ Error tracking
+  - ✅ Performance monitoring (baseline tracing)
 
 - [ ] **Логирование**
-  - Внедрить Pino logger
-  - Заменить все console.\* на logger
-  - Structured logs с correlation IDs
+- [x] **Логирование**
+  - ✅ Внедрён Pino logger (`shared/lib/logger.ts`)
+  - ✅ Заменены все console.\* на logger (server) / createClientLogger (client)
+  - ⏳ Structured logs с correlation IDs (correlation IDs — v0.2.0)
 
 - [ ] **Security**
   - Rate limiting на auth endpoints
@@ -293,9 +322,10 @@
   - Security headers в next.config.ts
   - Input validation везде
 
-- [ ] **API документация**
-  - OpenAPI спецификация
-  - Swagger UI endpoint
+- [x] **API документация**
+  - ✅ OpenAPI спецификация (`/api/openapi`)
+  - ✅ Документация API routes (`/api-docs`)
+  - ✅ Интерактивный Swagger UI (`/api-docs/swagger`)
 
 - [ ] **Завершить миграцию данных**
   - Migration script для imageUrl → images[]
@@ -340,10 +370,10 @@
 | Метрика             | Значение    | Оценка                     |
 | ------------------- | ----------- | -------------------------- |
 | TypeScript покрытие | 100%        | ✅ Отлично                 |
-| Test покрытие       | ~52% lines  | ✅ Базовый порог достигнут |
+| Test покрытие       | ~60% lines  | ✅ Базовый порог достигнут |
 | Безопасность        | 70%         | ⚠️ Удовлетворительно       |
 | Документация        | 30%         | ⚠️ Требуется работа        |
-| Production-ready    | 65%         | ⚠️ Требуется работа        |
+| Production-ready    | 68%         | ⚠️ Требуется работа        |
 | Performance         | Не измерено | ⚠️ Требуется тестирование  |
 | Code Quality        | 75%         | ✅ Хорошо                  |
 
@@ -354,10 +384,10 @@
 ### Сделать прямо сейчас:
 
 1. ✅ Исправить TypeScript ошибку (as any)
-2. ✅ Добавить env validation
-3. ✅ Убрать DEBUG логи
-4. ✅ Настроить Docker
-5. ✅ Добавить health check
+2. ⏳ Добавить env validation
+3. ⏳ Убрать DEBUG логи
+4. ✅ Базовый Docker setup внедрен
+5. ⏳ Добавить health check
 
 ### Сделать до первого production deploy:
 
@@ -365,15 +395,15 @@
 2. ✅ Настроить CI/CD
 3. ✅ Интегрировать Sentry
 4. ✅ Структурированное логирование
-5. ✅ Rate limiting
-6. ✅ Security headers
-7. ✅ Database backups
-8. ✅ Завершить миграцию данных
+5. ⏳ Rate limiting
+6. ⏳ Security headers
+7. ⏳ Database backups
+8. ⏳ Завершить миграцию данных
 
 ### Можно отложить на v0.2.0:
 
 1. ✅ E2E smoke тесты уже добавлены
-2. ⏳ OpenAPI документация
+2. ✅ OpenAPI документация
 3. ⏳ Advanced monitoring (APM)
 4. ⏳ Stylelint
 5. ⏳ Bundle optimization
@@ -416,8 +446,8 @@
 1. **Меньше observability** - нет OpenTelemetry, нет request tracing
 2. **Нет RBAC middleware** - менее структурированная авторизация
 3. **Меньше security headers** - нет CORS настроек
-4. **Больше console.log** - менее структурированное логирование
-5. **Меньше готовности к prod** - 65% vs 70% у admin-panel
+4. ~~**Больше console.log**~~ — ✅ Внедрён pino + client-logger, все `console.*` заменены
+5. **Меньше готовности к prod** - 68% vs 70% у admin-panel
 
 ---
 
@@ -428,11 +458,11 @@
 | Архитектура  | ✅ 90%      | ✅ 85%    |
 | Безопасность | ✅ 85%      | ⚠️ 70%    |
 | Тесты        | ❌ 0%       | ✅ ~52%   |
-| Docker       | ❌ 0%       | ❌ 0%     |
-| CI/CD        | ❌ 0%       | ⚠️ 35%    |
+| Docker       | ❌ 0%       | ✅ 60%    |
+| CI/CD        | ❌ 0%       | ⚠️ 60%    |
 | Мониторинг   | ⚠️ 40%      | ⚠️ 20%    |
 | Документация | ⚠️ 40%      | ⚠️ 30%    |
-| **ИТОГО**    | **70%**     | **65%**   |
+| **ИТОГО**    | **70%**     | **68%**   |
 
 ---
 
@@ -451,7 +481,7 @@
 
 ❌ **Основные проблемы:**
 
-- Нет Docker и deploy-автоматизации
+- Нет deploy-автоматизации
 - Недостаточная безопасность
 - Нет мониторинга
 - Много console.log
@@ -465,6 +495,33 @@
 
 **Дата отчета:** 24 февраля 2026 г.  
 **Следующий аудит:** После реализации Фазы 1
+
+---
+
+## 📌 История изменений (март 2026)
+
+- ✅ Восстановлен и вмержен в `main` контур качества из ветки восстановления через PR
+- ✅ Включены required checks для `main`: `Lint, Unit/Integration, Build` и `E2E Smoke`
+- ✅ Расширен e2e-контур checkout-сценариями и негативными кейсами (актуально: 6/6 тестов)
+- ✅ Добавлен интеграционный checkout order lifecycle тест (happy-path + callback)
+- ✅ Добавлен opt-in браузерный sandbox e2e checkout flow (по умолчанию skipped без sandbox env)
+- ✅ Добавлен Docker baseline: `Dockerfile`, `docker-compose.yml`, `.dockerignore`
+- ✅ Добавлен deploy runbook (`docs/deploy-runbook.md`) для env/миграций/rollback
+- ✅ Добавлен Docker image workflow для GHCR (`.github/workflows/docker-image.yml`)
+- ✅ Устранен флаки-тест расчета цены через детерминированный контроль `Math.random()` в unit-тесте
+- ✅ Добавлена Zod-валидация env vars: `shared/lib/env.ts` + `instrumentation.ts` (fail-fast)
+- ✅ Добавлен `/api/health` с проверкой БД; Docker Compose healthcheck обновлён
+- ✅ Убраны debug-логи: `console.log` → `console.error` во всех маршрутах; removed `Resend result` log
+- ✅ Исправлен `output: 'standalone'` в `next.config.ts`: Vercel не поддерживает standalone, `NEXT_OUTPUT=standalone` перенесён в Dockerfile
+- ✅ Подтверждено: prod = Vercel + Neon Serverless; Docker сохранён для будущего VPS/миграции
+- ✅ Исправлен критичный баг в `checkout/callback`: ранний `return 404` делал статус CANCELLED и email о неудаче недостижимыми; маршрут переписан
+- ✅ Создан `email-templates/order-failed.tsx` — письмо покупателю при неудачной оплате
+- ✅ Реализован переключатель «Доставка / Самовывоз» в `checkout-sidebar.tsx` с динамическим расчётом стоимости
+- ✅ Все TODO комментарии устранены или задокументированы (items 7 закрыт)
+- ✅ Все TODO комментарии устранены или задокументированы (items 7 закрыт)
+- ✅ Добавлена API документация: OpenAPI endpoint (`/api/openapi`), страница маршрутов (`/api-docs`) и Swagger UI (`/api-docs/swagger`) (item 9 закрыт)
+- ✅ Интегрирован Sentry monitoring: `@sentry/nextjs`, конфиг для server/edge/client, `app/global-error.tsx`, базовый tracing (item 10 закрыт)
+- ⚠️ Vercel Preview может оставаться красным и не блокирует merge, пока не добавлен в required checks
 
 ---
 
@@ -499,16 +556,20 @@
   - Файлы: `shared/lib/creat-payment.ts`, `shared/lib/calculate-price.ts`
 - [ ] Ввести единый error-handling контракт в server actions/API
   - Явные коды/ошибки вместо немых `catch` и `console.log`
-  - Файлы: `app/actions/create-order.ts`, `app/api/auth/verify/route.ts`, `app/api/cart/*`
+- [x] Внедрить структурированное логирование (pino) вместо `console.*`
+  - ✅ `shared/lib/logger.ts` (pino server), `shared/lib/client-logger.ts` (browser wrapper)
+  - ✅ 9 server + 8 client файлов обновлены
+- ✅ Все TODO комментарии устранены или задокументированы (items 7 закрыт)
+- ✅ Внедрено структурированное логирование: pino (`shared/lib/logger.ts`) + browser wrapper (`shared/lib/client-logger.ts`); заменены все `console.*` в 17 файлах (item 8 закрыт)
 
 ### 🟡 Средний приоритет (production baseline)
 
-- [ ] Добавить централизованную Zod-валидацию env + fail-fast на старте
-  - Ориентир: подход из admin-panel `shared/lib/env.ts`
+- [x] Добавить централизованную Zod-валидацию env + fail-fast на старте
+  - `shared/lib/env.ts` + `instrumentation.ts`
 - [ ] Добавить security headers и CSP в `next.config.ts`
 - [ ] Включить `reactStrictMode: true`
 - [ ] Внедрить структурированное логирование (pino) вместо `console.*`
-- [ ] Добавить health endpoint `/api/health` с проверкой БД
+- [x] Добавить health endpoint `/api/health` с проверкой БД
 - [ ] Добавить rate limiting на auth и чувствительные API
 - [ ] Добавить базовый request tracing (requestId + latency)
 
@@ -523,14 +584,15 @@
 - [x] Создать GitHub Actions workflow: lint + test + build
 - [x] Добавить ручной release-gate workflow: lint + test:coverage + build + e2e
 - [x] Добавить документацию по branch protection: `docs/branch-protection.md`
-- [ ] Включить required checks на ветке `main` (CI / Lint, Unit/Integration, Build; CI / E2E Smoke)
+- [x] Включить required checks на ветке `main` (CI / Lint, Unit/Integration, Build; CI / E2E Smoke)
+- [ ] После выделения отдельной test/sandbox БД: заполнить sandbox secrets и включить регулярный sandbox e2e прогон в release-gate
 
 ### 🧱 Deploy/операционка
 
-- [ ] Добавить `Dockerfile`, `docker-compose.yml`, `.dockerignore`
-- [ ] Добавить deploy runbook (env, миграции, rollback)
-- [ ] Добавить backup strategy для БД и регулярные бэкапы
-- [ ] Добавить базовый мониторинг ошибок (Sentry)
+- [x] Добавить `Dockerfile`, `docker-compose.yml`, `.dockerignore`
+- [x] Добавить deploy runbook (env, миграции, rollback)
+- [⚠️] Backup strategy: Neon авто-backup есть, проверить PITR на текущем плане
+- [x] Добавить базовый мониторинг ошибок (Sentry)
 
 ### 🔁 Интеграция клиент ↔ админка (контракт данных)
 
@@ -552,5 +614,5 @@
 - [ ] Заказ создается атомарно
 - [ ] Tenant-изоляция подтверждена тестами
 - [ ] Включены env validation, health checks, rate limiting, security headers
-- [ ] Запущены unit/integration/e2e smoke тесты в CI (workflow настроен, ожидается первый прогон в GitHub)
+- [x] Запущены unit/integration/e2e smoke тесты в CI (required checks включены и проходят)
 - [ ] Подготовлены Docker + runbook + backups + error monitoring
