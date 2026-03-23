@@ -32,7 +32,7 @@ describe('POST /api/checkout/callback', () => {
     expect(res.status).toBe(404);
   });
 
-  it('returns 404 when payment is not succeeded', async () => {
+  it('marks order as cancelled when payment is not succeeded', async () => {
     vi.mocked(prisma.order.findFirst).mockResolvedValue({
       id: 10,
       email: 'user@example.com',
@@ -40,12 +40,18 @@ describe('POST /api/checkout/callback', () => {
       totalAmount: 1000,
     } as never);
 
+    vi.mocked(prisma.order.update).mockResolvedValue({ id: 10 } as never);
+
     const res = await POST({
       json: async () => ({ object: { metadata: { order_id: '10' }, status: 'canceled' } }),
     } as never);
 
-    expect(res.status).toBe(404);
-    expect(prisma.order.update).not.toHaveBeenCalled();
+    expect(res.status).toBe(200);
+    expect(prisma.order.update).toHaveBeenCalledWith({
+      where: { id: 10 },
+      data: { status: 'CANCELLED' },
+    });
+    expect(sendEmail).toHaveBeenCalled();
   });
 
   it('updates order and sends email when payment succeeds', async () => {
