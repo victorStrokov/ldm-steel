@@ -35,6 +35,8 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 .env
+!.env.example
+!.env.production.example
 
 
 # vercel
@@ -46,5 +48,10 @@ next-env.d.ts
 
 AUDIT_REPORT.md
 FIX_IMAGES.md
+**/AUDIT_REPORT.md
+**/FIX_IMAGES.md
+.tsbuildinfo
+next-env.d.ts
+_IMAGES.md
 **/AUDIT_REPORT.md
 **/FIX_IMAGES.md

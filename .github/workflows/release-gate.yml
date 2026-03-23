@@ -1,57 +1,116 @@
 name: Release Gate
 
 on:
-    workflow_dispatch:
+  workflow_dispatch:
+    inputs:
+      run_sandbox_e2e:
+        description: "Run checkout sandbox e2e flow (requires sandbox DB/payment secrets)"
+        type: boolean
+        required: false
+        default: false
 
 env:
-    CI: true
-    NEXT_TELEMETRY_DISABLED: 1
-    DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ldm_steel_ci
-    NEXTAUTH_SECRET: ci-secret
-    NEXTAUTH_URL: http://localhost:3001
-    YOOKASSA_STORE_ID: ci-store
-    YOOKASSA_API_KEY: ci-key
-    YOOKASSA_WEBHOOK_SECRET: ci-webhook
-    RESEND_API_KEY: ci-resend
+  CI: true
+  NEXT_TELEMETRY_DISABLED: 1
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ldm_steel_ci
+  NEXTAUTH_SECRET: ci-secret
+  NEXTAUTH_URL: http://localhost:3001
+  YOOKASSA_SHOP_ID: ci-shop
+  YOOKASSA_SECRET_KEY: ci-secret-key
+  YOOKASSA_CALLBACK_URL: http://localhost:3001/?paid
+  RESEND_API_KEY: ci-resend
 
 jobs:
-    release-gate:
-        name: Full Release Gate
-        runs-on: ubuntu-latest
+  release-gate:
+    name: Full Release Gate
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-                  cache: npm
-                  cache-dependency-path: package-lock.json
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
 
-            - name: Install dependencies
-              run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-            - name: Lint
-              run: npm run lint
+      - name: Lint
+        run: npm run lint
 
-            - name: Unit/Integration with coverage
-              run: npm run test:coverage
+      - name: Unit/Integration with coverage
+        run: npm run test:coverage
 
-            - name: Build
-              run: npm run build
+      - name: Build
+        run: npm run build
 
-            - name: Install Playwright browser
-              run: npx playwright install --with-deps chromium
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
 
-            - name: E2E smoke
-              run: npm run test:e2e
+      - name: E2E smoke
+        run: npm run test:e2e
 
-            - name: Upload Playwright HTML report
-              if: always()
-              uses: actions/upload-artifact@v4
-              with:
-                  name: release-gate-playwright-report
-                  path: playwright-report/
-                  if-no-files-found: ignore
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-gate-playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+
+  sandbox-e2e:
+    name: Sandbox Checkout E2E
+    runs-on: ubuntu-latest
+    needs: release-gate
+    if: ${{ github.event.inputs.run_sandbox_e2e == 'true' }}
+    env:
+      E2E_SANDBOX_ENABLED: "1"
+      DATABASE_URL: ${{ secrets.SANDBOX_DATABASE_URL }}
+      NEXTAUTH_SECRET: ${{ secrets.SANDBOX_NEXTAUTH_SECRET }}
+      NEXTAUTH_URL: ${{ secrets.SANDBOX_NEXTAUTH_URL }}
+      YOOKASSA_SHOP_ID: ${{ secrets.SANDBOX_YOOKASSA_SHOP_ID }}
+      YOOKASSA_SECRET_KEY: ${{ secrets.SANDBOX_YOOKASSA_SECRET_KEY }}
+      YOOKASSA_CALLBACK_URL: ${{ secrets.SANDBOX_YOOKASSA_CALLBACK_URL }}
+      RESEND_API_KEY: ${{ secrets.SANDBOX_RESEND_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Verify sandbox env
+        run: |
+          test -n "$DATABASE_URL"
+          test -n "$YOOKASSA_SHOP_ID"
+          test -n "$YOOKASSA_SECRET_KEY"
+          test -n "$YOOKASSA_CALLBACK_URL"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run sandbox checkout e2e
+        run: npx playwright test tests/e2e/checkout-sandbox.spec.ts
+
+      - name: Upload sandbox Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sandbox-playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
