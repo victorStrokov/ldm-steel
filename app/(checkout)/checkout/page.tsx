@@ -13,6 +13,9 @@ import {
 } from '@/shared/components';
 import { CheckoutFormValues, checkoutFormSchema } from '@/shared/constants';
 import { cn } from '@/shared/lib/utils';
+import { createClientLogger } from '@/shared/lib/client-logger';
+
+const log = createClientLogger('CheckoutPage');
 import { createOrder } from '@/app/actions/create-order';
 import toast from 'react-hot-toast';
 import React from 'react';
@@ -59,7 +62,7 @@ export default function CheckoutPage() {
         location.href = url;
       }
     } catch (error) {
-      console.error(error);
+      log.error('createOrder failed', error);
       setSubmitting(false);
       toast.error('Не удалось создать заказ', { icon: '❌' });
     }
