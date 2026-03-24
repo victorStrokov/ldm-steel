@@ -12,6 +12,6 @@ Sentry.init({
   replaysSessionSampleRate: 0.0,
   replaysOnErrorSampleRate: 1.0,
 
-  enabled: process.env.NODE_ENV === 'production' || process.env.SENTRY_ENABLE_DEV === '1',
-  debug: process.env.SENTRY_DEBUG === '1',
+  enabled: process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_SENTRY_ENABLE_DEV === '1',
+  debug: process.env.NEXT_PUBLIC_SENTRY_DEBUG === '1',
 });

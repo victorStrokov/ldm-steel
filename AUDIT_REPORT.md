@@ -195,6 +195,7 @@
 - ✅ Добавлен error tracking для server/edge/browser runtime
 - ✅ Добавлен global error boundary: `app/global-error.tsx`
 - ✅ Включен базовый performance monitoring (`tracesSampleRate`)
+- ✅ Проведен ручной smoke-тест Sentry: подтвержден прием server и client событий в проекте `next-steel`
 - 📌 **Статус:** Готово
 
 #### 11. **Миграция данных не завершена**
@@ -521,6 +522,7 @@
 - ✅ Все TODO комментарии устранены или задокументированы (items 7 закрыт)
 - ✅ Добавлена API документация: OpenAPI endpoint (`/api/openapi`), страница маршрутов (`/api-docs`) и Swagger UI (`/api-docs/swagger`) (item 9 закрыт)
 - ✅ Интегрирован Sentry monitoring: `@sentry/nextjs`, конфиг для server/edge/client, `app/global-error.tsx`, базовый tracing (item 10 закрыт)
+- ✅ Подтверждено на практике: в Sentry приходят и server event (`GET /api/test-sentry`), и client event (`/test-sentry`) в одном trace
 - ⚠️ Vercel Preview может оставаться красным и не блокирует merge, пока не добавлен в required checks
 
 ---
