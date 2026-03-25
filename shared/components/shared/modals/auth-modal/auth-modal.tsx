@@ -34,9 +34,9 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
             variant="secondary"
             onClick={() => signIn('github', { callbackUrl: '/', redirect: true })}
             type="button"
-            className="gap-2 h-12 p-2 flex-1"
+            className="h-12 flex-1 gap-2 p-2"
           >
-            <img className="w-6 h-6" src="https://github.githubassets.com/favicons/favicon.svg" alt="GitHub" />
+            <img className="h-6 w-6" src="https://github.githubassets.com/favicons/favicon.svg" alt="GitHub" />
             GitHub
           </Button>
 
@@ -44,10 +44,10 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
             variant="secondary"
             onClick={() => signIn('google', { callbackUrl: '/', redirect: true })}
             type="button"
-            className="gap-2 h-12 p-2 flex-1"
+            className="h-12 flex-1 gap-2 p-2"
           >
             <img
-              className="w-6 h-6"
+              className="h-6 w-6"
               src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
               alt="Google"
             />
@@ -57,10 +57,10 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
             variant="secondary"
             onClick={() => signIn('mailru', { callbackUrl: '/', redirect: true })}
             type="button"
-            className="gap-2 h-12 p-2 flex-1"
+            className="h-12 flex-1 gap-2 p-2"
           >
             <img
-              className="w-18 h-18"
+              className="h-18 w-18"
               src="https://home.imgsmail.ru/whiteline/assets/logo/dark/logo.svg?_1765229105625"
               alt="Mail.ru"
             />

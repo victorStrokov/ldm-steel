@@ -33,7 +33,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   if (!product) return notFound();
 
   return (
-    <Container className="flex flex-col my-10">
+    <Container className="my-10 flex flex-col">
       <ProductForm product={product} />
     </Container>
   );

@@ -53,10 +53,10 @@ export const ChooseProfileForm: React.FC<Props> = ({
   };
 
   return (
-    <div className={cn('flex flex-col md:flex-row flex-1 gap-6', className)}>
+    <div className={cn('flex flex-1 flex-col gap-6 md:flex-row', className)}>
       {/* Левая часть: картинка */}
-      <div className="flex items-center justify-center w-full md:w-1/2">
-        <div className="w-full max-w-[300px] h-[300px] flex items-center justify-center bg-gray-50 rounded-lg">
+      <div className="flex w-full items-center justify-center md:w-1/2">
+        <div className="flex h-[300px] w-full max-w-[300px] items-center justify-center rounded-lg bg-gray-50">
           <ProductImage
             imageUrl={imageUrl}
             onClickImage={onClickImage}
@@ -66,13 +66,13 @@ export const ChooseProfileForm: React.FC<Props> = ({
       </div>
 
       {/* Правая часть: текст + варианты + ингредиенты + кнопка */}
-      <div className="w-full md:w-1/2 bg-[#f7f6f5] rounded-lg p-4 md:p-6 flex flex-col max-h-[80vh]">
-        <Title text={name} size="md" className="font-extrabold mb-3" />
-        <p className="text-gray-500 mb-4">{textDetails}</p>
-        <div className="flex items-center justify-end mb-4">
+      <div className="flex max-h-[80vh] w-full flex-col rounded-lg bg-[#f7f6f5] p-4 md:w-1/2 md:p-6">
+        <Title text={name} size="md" className="mb-3 font-extrabold" />
+        <p className="mb-4 text-gray-500">{textDetails}</p>
+        <div className="mb-4 flex items-center justify-end">
           <button
             // onClick={resetFilters}
-            className="flex items-center gap-2 text-sm text-gray-600 hover:text-red-600 transition-colors"
+            className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-red-600"
           >
             <X size={16} />
             Сбросить фильтры
@@ -80,7 +80,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
         </div>
 
         {/* Контент с прокруткой */}
-        <div className="flex-1 overflow-y-auto pr-2 space-y-5">
+        <div className="flex-1 space-y-5 overflow-y-auto pr-2">
           <GroupVariants
             items={availableSizes}
             value={String(size)}
@@ -94,8 +94,8 @@ export const ChooseProfileForm: React.FC<Props> = ({
           />
 
           {/* Ингредиенты */}
-          <div className="bg-gray-50 p-5 rounded-md">
-            <h3 className="text-lg font-semibold mb-4">С этим товаром берут</h3>
+          <div className="rounded-md bg-gray-50 p-5">
+            <h3 className="mb-4 text-lg font-semibold">С этим товаром берут</h3>
 
             <div className="grid grid-cols-3 gap-4">
               {ingredients?.map((ingredient) => (

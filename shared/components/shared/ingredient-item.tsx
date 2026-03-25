@@ -1,3 +1,4 @@
+import { normalizeImageUrl } from '@/shared/lib/normalize-image-url';
 import { cn } from '@/shared/lib/utils';
 import { CircleCheck } from 'lucide-react';
 import React from 'react';
@@ -12,18 +13,20 @@ interface Props {
 }
 
 export const IngredientItem: React.FC<Props> = ({ imageUrl, name, price, active, onClick, className }) => {
+  const normalizedImageUrl = normalizeImageUrl(imageUrl) ?? '/no-image.png';
+
   return (
     <div
       className={cn(
-        'flex items-center flex-col p-1 rounded-md w-32 text-center relative cursor-pointer shadow-md bg-white',
-        { 'border-2 border-primary': active },
+        'relative flex w-32 cursor-pointer flex-col items-center rounded-md bg-white p-1 text-center shadow-md',
+        { 'border-primary border-2': active },
         className,
       )}
       onClick={onClick}
     >
-      {active && <CircleCheck className="absolute top-2 right-2 text-primary" />}
-      <img width={110} height={110} src={imageUrl} alt={name} />
-      <span className="text-sm mb-1">{name}</span>
+      {active && <CircleCheck className="text-primary absolute top-2 right-2" />}
+      <img width={110} height={110} src={normalizedImageUrl} alt={name} />
+      <span className="mb-1 text-sm">{name}</span>
       <span className="font-bold">{price} ₽</span>
     </div>
   );

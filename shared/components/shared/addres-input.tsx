@@ -28,8 +28,7 @@ export const AddresInput: React.FC<Props> = ({ value, onChange, className }) => 
           <div className="relative">
             <Input
               {...props}
-              className={`w-full h-9 text-base px-3 py-2 rounded-md border border-input shadow-xs focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] 
-              ${className ?? ''}`}
+              className={`border-input focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full rounded-md border px-3 py-2 text-base shadow-xs focus-visible:ring-[3px] ${className ?? ''}`}
             />
             {value && (
               <ClearButton

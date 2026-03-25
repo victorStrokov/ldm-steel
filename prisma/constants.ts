@@ -53,22 +53,22 @@ export const _ingredients = [
   {
     name: 'Шнур ПВХ',
     price: 110,
-    imageUrl: 'http://ldm-steel.com/wp-content/uploads/image/moskitos/shnurpvc.jpg',
+    imageUrl: 'https://ldm-steel.com/wp-content/uploads/image/moskitos/shnurpvc.jpg',
   },
   {
     name: 'Крепеж длинный',
     price: 79,
-    imageUrl: 'http://ldm-steel.com/wp-content/uploads/image/moskitos/kr_dl_m.png',
+    imageUrl: 'https://ldm-steel.com/wp-content/uploads/image/moskitos/kr_dl_m.png',
   },
   {
     name: 'Крепеж короткий',
     price: 79,
-    imageUrl: 'http://ldm-steel.com/wp-content/uploads/image/moskitos/kr_kr_m.png',
+    imageUrl: 'https://ldm-steel.com/wp-content/uploads/image/moskitos/kr_kr_m.png',
   },
   {
     name: 'Сетка москитная',
     price: 79,
-    imageUrl: 'http://ldm-steel.com/wp-content/uploads/image/moskitos/setka_rul.jpg',
+    imageUrl: 'https://ldm-steel.com/wp-content/uploads/image/moskitos/setka_rul.jpg',
   },
   {
     name: 'Уголок для маскитной сетки серый',

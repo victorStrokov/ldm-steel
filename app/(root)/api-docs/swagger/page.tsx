@@ -2,9 +2,9 @@ import SwaggerUI from '@/shared/components/shared/swagger-ui';
 
 export default function SwaggerDocsPage() {
   return (
-    <section className="py-8 md:py-12 space-y-4">
-      <h1 className="text-2xl md:text-3xl font-bold">Swagger UI</h1>
-      <p className="text-sm md:text-base text-slate-600">
+    <section className="space-y-4 py-8 md:py-12">
+      <h1 className="text-2xl font-bold md:text-3xl">Swagger UI</h1>
+      <p className="text-sm text-slate-600 md:text-base">
         Интерактивная документация API с возможностью выполнять запросы через Try it out.
       </p>
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { normalizeImageUrl } from '@/shared/lib/normalize-image-url';
 import { cn } from '@/shared/lib/utils';
 import React from 'react';
 import { Title } from './title';
@@ -25,36 +26,38 @@ export const ChooseProductForm: React.FC<Props> = ({
   price,
   onClickImage,
 }) => {
+  const normalizedImageUrl = normalizeImageUrl(imageUrl) ?? '/no-image.png';
+
   return (
     <div
       className={cn(
         // на мобилке — колонка, на md+ — строка
-        'flex flex-col md:flex-row flex-1 gap-6 p-4 md:p-6',
+        'flex flex-1 flex-col gap-6 p-4 md:flex-row md:p-6',
         className,
       )}
     >
       {/* Левая часть: картинка */}
-      <div className="flex items-center justify-center w-full md:w-1/2">
-        <div className="w-full max-w-[300px] h-[300px] flex items-center justify-center bg-gray-50 rounded-lg">
+      <div className="flex w-full items-center justify-center md:w-1/2">
+        <div className="flex h-[300px] w-full max-w-[300px] items-center justify-center rounded-lg bg-gray-50">
           <img
-            src={imageUrl}
+            src={normalizedImageUrl}
             onClick={onClickImage}
             alt={name}
-            className="object-contain w-full h-full cursor-pointer"
+            className="h-full w-full cursor-pointer object-contain"
           />
         </div>
       </div>
 
       {/* Правая часть: текст + кнопка */}
-      <div className="w-full md:w-1/2 bg-[#f7f6f5] rounded-lg p-4 md:p-6 flex flex-col">
-        <Title text={name} size="md" className="font-extrabold mb-3" />
+      <div className="flex w-full flex-col rounded-lg bg-[#f7f6f5] p-4 md:w-1/2 md:p-6">
+        <Title text={name} size="md" className="mb-3 font-extrabold" />
         {/* <p className="text-gray-500 mb-4">{textDetails}</p> */}
 
         <div className="mt-auto">
           <Button
             loading={loading}
             onClick={() => onSubmit?.()}
-            className="h-[55px] px-6 text-base rounded-[18px] w-full whitespace-normal"
+            className="h-[55px] w-full rounded-[18px] px-6 text-base whitespace-normal"
           >
             Добавить в корзину за {price} ₽
           </Button>

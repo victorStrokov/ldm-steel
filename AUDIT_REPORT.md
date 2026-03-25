@@ -135,11 +135,13 @@
 
 - ✅ Добавлен GitHub Actions workflow (`.github/workflows/ci.yml`)
 - ✅ Базовая автоматизация lint/test/build/e2e smoke настроена
+- ✅ Добавлен отдельный CI status check для форматирования: `Format Check` (`npm run format:check`)
 - ✅ Добавлен ручной release-gate workflow (`.github/workflows/release-gate.yml`)
 - ✅ Добавлен workflow сборки/публикации Docker image (`.github/workflows/docker-image.yml`)
-- ✅ Branch protection на `main` включен (required checks: Lint, Unit/Integration, Build; E2E Smoke)
+- ✅ Branch protection на `main` включен (required checks: Format Check; Lint, Unit/Integration, Build; E2E Smoke)
 - ✅ **Production deploy:** Vercel автодеплой при пуше в `main` (Git Integration), env vars в Vercel Dashboard
-- ✅ **Migration gate:** скрипт `vercel-build` = `prisma migrate deploy && next build` — миграции применяются до сборки; если миграция сломана — деплой падает
+- ✅ **Модель ownership миграций для общей БД:** schema migrations и seed выполняются только через `admin-panel` (single source of truth)
+- ✅ В `ldm-steel` скрипт `vercel-build` переведен на `next build` (без `prisma migrate deploy`), чтобы исключить конфликт миграций
 - 📌 **Статус:** Готово
 
 #### 4. **TypeScript ошибка в prisma-client.ts**
@@ -200,21 +202,25 @@
 
 #### 11. **Миграция данных не завершена**
 
-- ⚠️ Есть `FIX_IMAGES.md` и `CHANGES_SUMMARY.md` о переходе с `imageUrl` на `images[]`
-- ⚠️ Возможны старые данные в БД без изображений
-- 📌 **Действие:** Создать migration script для обновления старых данных
+- ✅ Для общей БД зафиксирован единый владелец миграций: `admin-panel`
+- ✅ `ldm-steel` не применяет schema/data миграции самостоятельно
+- 📌 **Действие:** Поддерживать совместимость чтения схемы в `ldm-steel`; любые изменения схемы/seed делать через `admin-panel`
 
 #### 12. **Нет rate limiting**
 
-- ❌ Отсутствует защита от brute-force
-- ❌ Нет ограничений на API запросы
-- 📌 **Действие:** Добавить rate limiting (Upstash Redis или встроенный)
+- ✅ Добавлен Upstash rate limiting (fallback pass-through, если Redis env не задан)
+- ✅ Лимиты включены для auth и чувствительных API (`/api/auth/[...nextauth]` POST, `/api/auth/verify`, `/api/users`, `/api/cart` POST)
+- 📌 **Действие:** На production подключить `UPSTASH_REDIS_REST_URL/TOKEN` и откалибровать окна/лимиты через env
+- 📌 **Действие (после релиза):** выделить отдельные `UPSTASH_REDIS_REST_URL` и `UPSTASH_REDIS_REST_TOKEN` для `ldm-steel` (не делить ключи/URL с `admin-panel`)
 
 #### 13. **Отсутствие backup стратегии**
 
+- ✅ Для общей БД зафиксирован владелец backup/restore: `admin-panel`
 - ✅ **Neon** предоставляет автоматические backup и Point-in-Time Recovery (PITR) на платных планах (Launch+)
 - ⚠️ **Текущий план: Free** — только 7 дней истории, PITR недоступен
-- 📌 **Действие:** При переходе в prod перейти на Launch+ для полноценного PITR. До тех пор — периодически делать ручной dump: `pg_dump $DATABASE_URL > backup.sql`
+- 📌 **Действие (owner: `admin-panel`):** При переходе в prod перейти на Launch+ для полноценного PITR, зафиксировать регламент backup/restore и проводить регулярный restore-drill
+- 📌 **Действие (для `ldm-steel`):** После каждого восстановления БД выполнять post-restore compatibility smoke-check (критичные чтения каталога, auth/checkout сценарии, проверка совместимости схемы)
+- 📌 **Регламент:** Детальные шаги и критерии PASS/FAIL описаны в `docs/deploy-runbook.md` (раздел Post-Restore Compatibility Smoke Check)
 
 #### 14. **DEBUG код в production**
 
@@ -227,14 +233,21 @@
 
 #### 15. **Оптимизация конфигурации Next.js**
 
-- ⚠️ Минимальная конфигурация в `next.config.ts`
-- ⚠️ Нет настройки image optimization, security headers
-- 📌 **Действие:** Расширить конфигурацию (security headers, image domains, etc.)
+- ✅ Расширена конфигурация в `next.config.ts` (включен `reactStrictMode`, отключен `X-Powered-By`)
+- ✅ Добавлены базовые security headers (HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy)
+- ✅ Добавлен baseline Content Security Policy (CSP) в `next.config.ts` (dev/prod профили)
+- ✅ Усилена image optimization конфигурация (`avif/webp`, `minimumCacheTTL`, SVG hardening)
+- ✅ Зафиксирован baseline allowlist внешних image-hosts (`images.remotePatterns` + CSP `img-src`)
+- ✅ Legacy `http` изображения переведены на `https` (источник `ldm-steel.com`)
+- ✅ CSP ужесточен: `connect-src` переведен с общего `https:` на явный allowlist runtime-интеграций (DaData, Sentry, same-origin)
+- 📌 **Действие:** Периодически пересматривать CSP allowlist и удалять неиспользуемые источники
 
 #### 16. **Отсутствие линтера для styles**
 
-- ❌ Нет stylelint для Tailwind
-- 📌 **Действие:** Добавить stylelint или prettier-plugin-tailwindcss
+- ✅ Внедрен `prettier-plugin-tailwindcss` для стабильной сортировки Tailwind-классов
+- ✅ Добавлены команды форматирования: `npm run format` и `npm run format:check`
+- ✅ `npm run format:check` добавлен в CI как отдельный status check
+- 📌 **Действие:** При росте объема кастомного CSS добавить `stylelint` как второй слой контроля
 
 #### 17. **Нет graceful shutdown**
 
@@ -252,11 +265,11 @@
 
 ### Конфликт #1: Схема изображений
 
-- **Проблема:** Переход с `imageUrl` на `images[]` не полностью завершен
+- **Проблема:** Риск рассинхрона при независимых миграциях в двух приложениях с одной БД
 - **Решение:**
-  - Создать migration script для обновления старых данных
-  - Убедиться, что все компоненты используют новую структуру
-  - Удалить старые файлы `FIX_IMAGES.md`, `CHANGES_SUMMARY.md` после завершения
+  - Закрепить single source of truth: миграции и seed только через `admin-panel`
+  - В `ldm-steel` не запускать `prisma migrate deploy` в деплой-пайплайне
+  - Проверять обратную совместимость чтения полей в `ldm-steel` после миграций `admin-panel`
 
 ### Конфликт #2: TypeScript strict mode
 
@@ -320,7 +333,7 @@
 - [ ] **Security**
   - Rate limiting на auth endpoints
   - CSRF protection (если нужно)
-  - Security headers в next.config.ts
+  - ✅ Security headers + baseline CSP в `next.config.ts`
   - Input validation везде
 
 - [x] **API документация**
@@ -328,10 +341,10 @@
   - ✅ Документация API routes (`/api-docs`)
   - ✅ Интерактивный Swagger UI (`/api-docs/swagger`)
 
-- [ ] **Завершить миграцию данных**
-  - Migration script для imageUrl → images[]
-  - Проверка целостности данных
-  - Удаление временных документов
+- [x] **Политика миграций для общей БД зафиксирована**
+  - ✅ Schema/data миграции и seed выполняются только через `admin-panel`
+  - ✅ В `ldm-steel` отключен запуск миграций в `vercel-build`
+  - 📌 Проверка: после миграций `admin-panel` прогонять smoke в `ldm-steel`
 
 ### Фаза 3: Оптимизация (1-2 недели)
 
@@ -341,10 +354,10 @@
   - Caching стратегия
   - Bundle size optimization
 
-- [ ] **Backup strategy**
-  - Automated DB backups
-  - Recovery процедуры
-  - Disaster recovery plan
+- [ ] **Backup strategy (owner: admin-panel)**
+  - Automated DB backups + PITR policy
+  - Recovery процедуры и restore-drill
+  - Post-restore compatibility smoke-check в `ldm-steel`
 
 - [ ] **Next.js optimization**
   - Security headers
@@ -396,9 +409,9 @@
 2. ✅ Настроить CI/CD
 3. ✅ Интегрировать Sentry
 4. ✅ Структурированное логирование
-5. ⏳ Rate limiting
-6. ⏳ Security headers
-7. ⏳ Database backups
+5. ✅ Rate limiting (базовый уровень)
+6. ✅ Security headers + baseline CSP
+7. ⏳ Backup/restore ownership + post-restore compatibility check
 8. ⏳ Завершить миграцию данных
 
 ### Можно отложить на v0.2.0:
@@ -415,11 +428,11 @@
 
 - [ ] HTTPS только (enforce)
 - [x] Password hashing (bcryptjs)
-- [ ] Rate limiting на auth endpoints
-- [ ] Rate limiting на API routes
+- [x] Rate limiting на auth endpoints
+- [x] Rate limiting на API routes
 - [x] SQL injection защита (Prisma ORM)
-- [ ] XSS защита (Content Security Policy)
-- [ ] Security headers (X-Frame-Options, etc.)
+- [x] XSS защита (Content Security Policy, baseline)
+- [x] Security headers (X-Frame-Options, etc.)
 - [ ] Dependency vulnerability scanning
 - [ ] Secret management (не хардкодить)
 - [x] Input validation (Zod)
@@ -502,7 +515,7 @@
 ## 📌 История изменений (март 2026)
 
 - ✅ Восстановлен и вмержен в `main` контур качества из ветки восстановления через PR
-- ✅ Включены required checks для `main`: `Lint, Unit/Integration, Build` и `E2E Smoke`
+- ✅ Включены required checks для `main`: `Format Check`, `Lint, Unit/Integration, Build` и `E2E Smoke`
 - ✅ Расширен e2e-контур checkout-сценариями и негативными кейсами (актуально: 6/6 тестов)
 - ✅ Добавлен интеграционный checkout order lifecycle тест (happy-path + callback)
 - ✅ Добавлен opt-in браузерный sandbox e2e checkout flow (по умолчанию skipped без sandbox env)
@@ -568,11 +581,11 @@
 
 - [x] Добавить централизованную Zod-валидацию env + fail-fast на старте
   - `shared/lib/env.ts` + `instrumentation.ts`
-- [ ] Добавить security headers и CSP в `next.config.ts`
-- [ ] Включить `reactStrictMode: true`
+- [x] Добавить security headers и CSP в `next.config.ts`
+- [x] Включить `reactStrictMode: true`
 - [ ] Внедрить структурированное логирование (pino) вместо `console.*`
 - [x] Добавить health endpoint `/api/health` с проверкой БД
-- [ ] Добавить rate limiting на auth и чувствительные API
+- [x] Добавить rate limiting на auth и чувствительные API
 - [ ] Добавить базовый request tracing (requestId + latency)
 
 ### 🧪 Тестовый контур и quality gate
@@ -584,16 +597,17 @@
 - [x] pre-commit: `npm run lint`
 - [x] pre-push: `npm run test:coverage && npm run build`
 - [x] Создать GitHub Actions workflow: lint + test + build
+- [x] Добавить отдельный CI check для форматирования: `npm run format:check`
 - [x] Добавить ручной release-gate workflow: lint + test:coverage + build + e2e
 - [x] Добавить документацию по branch protection: `docs/branch-protection.md`
-- [x] Включить required checks на ветке `main` (CI / Lint, Unit/Integration, Build; CI / E2E Smoke)
+- [x] Включить required checks на ветке `main` (CI / Format Check; CI / Lint, Unit/Integration, Build; CI / E2E Smoke)
 - [ ] После выделения отдельной test/sandbox БД: заполнить sandbox secrets и включить регулярный sandbox e2e прогон в release-gate
 
 ### 🧱 Deploy/операционка
 
 - [x] Добавить `Dockerfile`, `docker-compose.yml`, `.dockerignore`
 - [x] Добавить deploy runbook (env, миграции, rollback)
-- [⚠️] Backup strategy: Neon авто-backup есть, проверить PITR на текущем плане
+- [⚠️] Backup strategy: owner в `admin-panel`; проверить PITR/restore-drill и внедрить post-restore compatibility smoke-check для `ldm-steel`
 - [x] Добавить базовый мониторинг ошибок (Sentry)
 
 ### 🔁 Интеграция клиент ↔ админка (контракт данных)
@@ -617,4 +631,4 @@
 - [ ] Tenant-изоляция подтверждена тестами
 - [ ] Включены env validation, health checks, rate limiting, security headers
 - [x] Запущены unit/integration/e2e smoke тесты в CI (required checks включены и проходят)
-- [ ] Подготовлены Docker + runbook + backups + error monitoring
+- [ ] Подготовлены Docker + runbook + backups + post-restore compatibility checks + error monitoring

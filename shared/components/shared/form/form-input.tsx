@@ -31,14 +31,14 @@ export const FormInput: React.FC<Props> = ({ name, label, required, className, .
   return (
     <div className={className}>
       {label && (
-        <p className="font-medium mb-2">
+        <p className="mb-2 font-medium">
           {label}
           {required && <RequiredSymbol />}
         </p>
       )}
 
       <div className="relative">
-        <Input className="h-12 text-md" {...register(name)} {...props} />
+        <Input className="text-md h-12" {...register(name)} {...props} />
         {value && <ClearButton onClick={onClickClear} />}
       </div>
 

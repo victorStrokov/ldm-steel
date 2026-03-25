@@ -42,12 +42,12 @@ export const ProductsGroupList: React.FC<Props> = ({ title, items, listClassName
 
   return (
     <div className={className} id={title} ref={intersectionRef} style={{ scrollMarginTop: '120px' }}>
-      <Title text={title} size="lg" className="font-extrabold mb-5" />
+      <Title text={title} size="lg" className="mb-5 font-extrabold" />
 
       <div
         className={cn(
           // Адаптивная сетка: 1 колонка на мобилках, 2 на планшетах, 3 на десктопах
-          'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch',
+          'grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3',
           listClassName,
         )}
       >

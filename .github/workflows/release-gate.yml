@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       run_sandbox_e2e:
-        description: "Run checkout sandbox e2e flow (requires sandbox DB/payment secrets)"
+        description: 'Run checkout sandbox e2e flow (requires sandbox DB/payment secrets)'
         type: boolean
         required: false
         default: false
@@ -68,7 +68,7 @@ jobs:
     needs: release-gate
     if: ${{ github.event.inputs.run_sandbox_e2e == 'true' }}
     env:
-      E2E_SANDBOX_ENABLED: "1"
+      E2E_SANDBOX_ENABLED: '1'
       DATABASE_URL: ${{ secrets.SANDBOX_DATABASE_URL }}
       NEXTAUTH_SECRET: ${{ secrets.SANDBOX_NEXTAUTH_SECRET }}
       NEXTAUTH_URL: ${{ secrets.SANDBOX_NEXTAUTH_URL }}

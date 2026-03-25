@@ -22,26 +22,26 @@ export const SortPopup: React.FC<Props> = ({ className }) => {
   return (
     <div
       className={cn(
-        'relative inline-flex items-center bg-gray-50 px-5 h-[52px] rounded-2xl cursor-pointer select-none',
+        'relative inline-flex h-[52px] cursor-pointer items-center rounded-2xl bg-gray-50 px-5 select-none',
         className,
       )}
       onClick={() => setIsOpen((prev) => !prev)}
     >
       <ArrowUpDown size={16} />
-      <b className="ml-2 ">Сортировка:</b>
-      <b className="ml-1 text-primary">{order === 'asc' ? 'по возрастанию цены' : 'по убыванию цены'}</b>
+      <b className="ml-2">Сортировка:</b>
+      <b className="text-primary ml-1">{order === 'asc' ? 'по возрастанию цены' : 'по убыванию цены'}</b>
 
       {isOpen && (
-        <div className="absolute top-full mt-2 left-0 bg-white shadow-md rounded-xl p-2 z-20">
+        <div className="absolute top-full left-0 z-20 mt-2 rounded-xl bg-white p-2 shadow-md">
           <button
             onClick={(e) => onClickSort('asc', e)}
-            className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded-md"
+            className="block w-full rounded-md px-3 py-2 text-left hover:bg-gray-100"
           >
             Цена: от меньшей к большей
           </button>
           <button
             onClick={(e) => onClickSort('desc', e)}
-            className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded-md"
+            className="block w-full rounded-md px-3 py-2 text-left hover:bg-gray-100"
           >
             Цена: от большей к меньшей
           </button>

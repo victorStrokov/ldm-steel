@@ -46,11 +46,11 @@ export const Header: React.FC<Props> = ({ hasSearch = true, hasCart = true, clas
 
   return (
     <header className={cn('border-b', className)}>
-      <Container className="flex items-center justify-between py-8 ">
+      <Container className="flex items-center justify-between py-8">
         {/* Левая часть  */}
         <Link href={'/'}>
-          <div className="flex items-center gap-4 ">
-            <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16">
+          <div className="flex items-center gap-4">
+            <div className="relative h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16">
               <Image
                 src="/logoLDM.png"
                 alt="Logo"
@@ -61,8 +61,8 @@ export const Header: React.FC<Props> = ({ hasSearch = true, hasCart = true, clas
             </div>
 
             <div>
-              <h1 className="uppercase font-black text-2xl text-blue-deep/90 ">NEXT LDM STEEL</h1>
-              <p className="text-sm text-blue-medium leading-3">
+              <h1 className="text-blue-deep/90 text-2xl font-black uppercase">NEXT LDM STEEL</h1>
+              <p className="text-blue-medium text-sm leading-3">
                 Комплектующие <br />
                 для производства <br />
                 металлопластиковых окон

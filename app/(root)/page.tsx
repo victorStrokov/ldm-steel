@@ -9,7 +9,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Get
   return (
     <>
       <Container className="mt-10">
-        <Title size="lg" className="font-extrabold text-blue-deep/90">
+        <Title size="lg" className="text-blue-deep/90 font-extrabold">
           Каталог
         </Title>
       </Container>

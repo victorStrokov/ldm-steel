@@ -10,9 +10,9 @@ export const CartItemInfo: React.FC<Props> = ({ name, details, className }) => {
   return (
     <div>
       <div className={cn('flex items-center justify-between', className)}>
-        <h2 className="text-lg font-bold flex-1 leading-6">{name}</h2>
+        <h2 className="flex-1 text-lg leading-6 font-bold">{name}</h2>
       </div>
-      {details && <p className="text-xs text-gray-400 w-[90%]">{details}</p>}
+      {details && <p className="w-[90%] text-xs text-gray-400">{details}</p>}
     </div>
   );
 };

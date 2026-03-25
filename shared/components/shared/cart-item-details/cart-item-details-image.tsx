@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
+import { normalizeImageUrl } from '@/shared/lib/normalize-image-url';
 import { cn } from '@/shared/lib/utils';
 import Link from 'next/link';
 
@@ -9,9 +10,11 @@ interface Props {
 }
 
 export const CartItemDetailsImage: React.FC<Props> = ({ src, id, className }) => {
+  const normalizedImageUrl = normalizeImageUrl(src) ?? '/no-image.png';
+
   return (
     <Link href={`/product/${id}`}>
-      <img className={cn('w-[60px] h-[60px]', className)} src={src} />
+      <img className={cn('h-[60px] w-[60px]', className)} src={normalizedImageUrl} />
     </Link>
   );
 };

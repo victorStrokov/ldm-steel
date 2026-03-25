@@ -1,5 +1,6 @@
 'use client';
 
+import { normalizeImageUrl } from '@/shared/lib/normalize-image-url';
 import { cn } from '@/shared/lib/utils';
 import React from 'react';
 
@@ -12,14 +13,16 @@ interface Props {
 
 export const ProductImage: React.FC<Props> = ({ imageUrl, className, onClickImage, imgClassName }) => {
   const handleClick = onClickImage ?? (() => {});
+  const normalizedImageUrl = normalizeImageUrl(imageUrl) ?? '/no-image.png';
+
   return (
-    <div className={cn('flex items-center justify-center flex-1 relative w-full', className)}>
-      <div className="flex items-center justify-center bg-gray-50 rounded-lg w-full max-w-[400px] aspect-square">
+    <div className={cn('relative flex w-full flex-1 items-center justify-center', className)}>
+      <div className="flex aspect-square w-full max-w-[400px] items-center justify-center rounded-lg bg-gray-50">
         <img
-          src={imageUrl}
+          src={normalizedImageUrl}
           onClick={handleClick}
           alt="product"
-          className={cn('object-contain w-full h-full cursor-pointer', imgClassName)}
+          className={cn('h-full w-full cursor-pointer object-contain', imgClassName)}
         />
       </div>
     </div>

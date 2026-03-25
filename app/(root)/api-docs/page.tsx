@@ -26,17 +26,17 @@ export default function ApiDocsPage() {
   const paths = Object.entries(openApiDocument.paths) as Array<[string, PathItem]>;
 
   return (
-    <section className="py-8 md:py-12 space-y-6">
+    <section className="space-y-6 py-8 md:py-12">
       <div className="space-y-2">
-        <h1 className="text-2xl md:text-3xl font-bold">API Documentation</h1>
-        <p className="text-sm md:text-base text-slate-600">
+        <h1 className="text-2xl font-bold md:text-3xl">API Documentation</h1>
+        <p className="text-sm text-slate-600 md:text-base">
           OpenAPI спецификация доступна по ссылке{' '}
           <Link href="/api/openapi" className="underline underline-offset-4">
             /api/openapi
           </Link>
           .
         </p>
-        <p className="text-sm md:text-base text-slate-600">
+        <p className="text-sm text-slate-600 md:text-base">
           Интерактивная Swagger UI страница:{' '}
           <Link href="/api-docs/swagger" className="underline underline-offset-4">
             /api-docs/swagger
@@ -45,7 +45,7 @@ export default function ApiDocsPage() {
         </p>
       </div>
 
-      <div className="rounded-xl border border-slate-200 overflow-hidden">
+      <div className="overflow-hidden rounded-xl border border-slate-200">
         <div className="grid grid-cols-12 bg-slate-50 px-4 py-3 text-xs font-semibold tracking-wide text-slate-600 uppercase">
           <div className="col-span-2">Method</div>
           <div className="col-span-4">Path</div>
@@ -69,7 +69,7 @@ export default function ApiDocsPage() {
                         {method}
                       </span>
                     </div>
-                    <div className="col-span-4 font-mono text-xs md:text-sm break-all">/api{path}</div>
+                    <div className="col-span-4 font-mono text-xs break-all md:text-sm">/api{path}</div>
                     <div className="col-span-3 text-slate-700">{operation?.summary ?? '-'}</div>
                     <div className="col-span-3 text-slate-500">{operation?.tags?.[0] ?? '-'}</div>
                   </div>

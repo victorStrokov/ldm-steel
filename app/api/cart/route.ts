@@ -5,6 +5,7 @@ import { findOrCreateCart } from '@/shared/lib/find-or-create-cart';
 import { CreateCartItemValues } from '@/shared/services/dto/cart.dto';
 import { updateCartTotalAmount } from '@/app/actions';
 import { logger } from '@/shared/lib/logger';
+import { apiLimiter, getRateLimitId } from '@/shared/lib/rate-limit';
 
 const log = logger.child({ module: 'api/cart' });
 
@@ -66,6 +67,11 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const limit = await apiLimiter.limit(getRateLimitId(req, 'api:cart:post'));
+    if (!limit.success) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     let token = req.cookies.get('cartToken')?.value;
     // если токена нет — генерируем его
     if (!token) {

@@ -7,8 +7,9 @@ Target branch: main
 
 Enable these required status checks for pull requests to main:
 
-1. CI / Lint, Unit/Integration, Build
-2. CI / E2E Smoke
+1. CI / Format Check
+2. CI / Lint, Unit/Integration, Build
+3. CI / E2E Smoke
 
 Note: exact check names appear only after at least one successful run on GitHub Actions.
 
@@ -37,4 +38,4 @@ Manual full validation before release:
 
 1. Actions -> Release Gate
 2. Run workflow
-3. Confirm success for lint, coverage, build, and e2e smoke
+3. Confirm success for format, lint, coverage, build, and e2e smoke

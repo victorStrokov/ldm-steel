@@ -7,5 +7,5 @@ interface Props {
 }
 
 export const ErrorText: React.FC<Props> = ({ text, className }) => {
-  return <p className={cn('text-red-500 text-sm', className)}>{text}</p>;
+  return <p className={cn('text-sm text-red-500', className)}>{text}</p>;
 };

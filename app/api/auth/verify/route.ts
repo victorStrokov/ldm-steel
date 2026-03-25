@@ -1,11 +1,17 @@
 import { prisma } from '@/prisma/prisma-client';
 import { logger } from '@/shared/lib/logger';
+import { authLimiter, getRateLimitId } from '@/shared/lib/rate-limit';
 import { NextRequest, NextResponse } from 'next/server';
 
 const log = logger.child({ module: 'api/auth/verify' });
 
 export async function GET(req: NextRequest) {
   try {
+    const limit = await authLimiter.limit(getRateLimitId(req, 'auth:verify:get'));
+    if (!limit.success) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     const code = req.nextUrl.searchParams.get('code');
 
     if (!code) {

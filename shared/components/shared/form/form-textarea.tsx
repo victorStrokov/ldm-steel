@@ -12,13 +12,7 @@ interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   required?: boolean;
 }
 
-export const FormTextarea: React.FC<Props> = ({
-  className,
-  name,
-  label,
-  required,
-  ...props
-}) => {
+export const FormTextarea: React.FC<Props> = ({ className, name, label, required, ...props }) => {
   const {
     register,
     formState: { errors },
@@ -35,21 +29,17 @@ export const FormTextarea: React.FC<Props> = ({
 
   return (
     <div className={className}>
-      <p className='font-medium mb-2'>
-        {label} {required && <span className='text-red-500'>*</span>}
+      <p className="mb-2 font-medium">
+        {label} {required && <span className="text-red-500">*</span>}
       </p>
 
-      <div className='relative'>
-        <Textarea
-          className='h-12 text-md'
-          {...register(name)}
-          {...props}
-        />
+      <div className="relative">
+        <Textarea className="text-md h-12" {...register(name)} {...props} />
 
         {value && <ClearButton onClick={onClickClear} />}
       </div>
 
-      {errorText && <p className='text-red-500 text-sm mt-2'>{errorText}</p>}
+      {errorText && <p className="mt-2 text-sm text-red-500">{errorText}</p>}
     </div>
   );
 };

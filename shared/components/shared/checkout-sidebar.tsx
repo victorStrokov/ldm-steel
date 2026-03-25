@@ -25,8 +25,8 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmou
   const totalPrice = totalAmount + deliveryPrice + packingPrice;
 
   return (
-    <WhiteBlock className={cn('p-6 sticky top-4', className)}>
-      <div className="flex rounded-xl overflow-hidden border border-gray-200 mb-5 text-sm font-medium">
+    <WhiteBlock className={cn('sticky top-4 p-6', className)}>
+      <div className="mb-5 flex overflow-hidden rounded-xl border border-gray-200 text-sm font-medium">
         <button
           type="button"
           onClick={() => setIsDelivery(true)}
@@ -51,7 +51,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmou
       <div className="flex flex-col gap-1">
         <span className="text-xl">Итого:</span>
         {loading ? (
-          <Skeleton className=" h-11 w-48" />
+          <Skeleton className="h-11 w-48" />
         ) : (
           <span className="h-11 text-[34px] font-extrabold">{`${totalPrice} ₽`}</span>
         )}
@@ -63,51 +63,51 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmou
             Сумма заказа:
           </div>
         }
-        value={loading ? <Skeleton className=" h-6 w-16 rounded-[6px]" /> : `${totalAmount} ₽`}
+        value={loading ? <Skeleton className="h-6 w-16 rounded-[6px]" /> : `${totalAmount} ₽`}
       />
       <CheckoutItemDetails
         title={
           <div className="flex items-center">
-            <PackagePlus size={18} className="mr-3  text-gray-400" />
+            <PackagePlus size={18} className="mr-3 text-gray-400" />
             Услуги упаковки:
           </div>
         }
-        value={loading ? <Skeleton className=" h-6 w-14 rounded-[6px]" /> : `${packingPrice} ₽`}
+        value={loading ? <Skeleton className="h-6 w-14 rounded-[6px]" /> : `${packingPrice} ₽`}
       />
       <CheckoutItemDetails
         title={
           <div className="flex items-center">
-            <Truck size={18} className="mr-3  text-gray-400" />
+            <Truck size={18} className="mr-3 text-gray-400" />
             Доставка:
           </div>
         }
         value={
           loading ? (
-            <Skeleton className=" h-6 w-16 rounded-[6px]" />
+            <Skeleton className="h-6 w-16 rounded-[6px]" />
           ) : isDelivery ? (
             `${deliveryPrice} ₽`
           ) : (
-            <span className="text-green-600 font-medium">Бесплатно</span>
+            <span className="font-medium text-green-600">Бесплатно</span>
           )
         }
       />
       <CheckoutItemDetails
         title={
           <div className="flex items-center">
-            <ArrowBigRight size={18} className="mr-3  text-gray-400" />
+            <ArrowBigRight size={18} className="mr-3 text-gray-400" />
             НДС (22%):
           </div>
         }
-        value={loading ? <Skeleton className=" h-6 w-18 rounded-[6px]" /> : `${vatPrice} ₽`}
+        value={loading ? <Skeleton className="h-6 w-18 rounded-[6px]" /> : `${vatPrice} ₽`}
       />
       <Button
         loading={loading}
         type="submit"
         disabled={false}
-        className="w-full h-14 rounded-2xl mt-6 text-base font-bold"
+        className="mt-6 h-14 w-full rounded-2xl text-base font-bold"
       >
         Перейти к оплате
-        <ArrowBigRight size={20} className="w-5 ml-2" />
+        <ArrowBigRight size={20} className="ml-2 w-5" />
       </Button>
     </WhiteBlock>
   );
