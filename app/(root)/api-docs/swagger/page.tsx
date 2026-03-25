@@ -1,4 +1,6 @@
-import SwaggerUI from '@/shared/components/shared/swagger-ui';
+import dynamic from 'next/dynamic';
+
+const SwaggerUI = dynamic(() => import('@/shared/components/shared/swagger-ui'), { ssr: false });
 
 export default function SwaggerDocsPage() {
   return (
