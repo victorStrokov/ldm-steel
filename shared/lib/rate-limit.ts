@@ -54,5 +54,6 @@ export function getRateLimitId(req: NextRequest, scope: string): string {
     req.headers.get('x-client-ip') ||
     'unknown';
 
-  return `${scope}:${ip}`;
+  // const token = req.cookies?.get?.('cartToken')?.value; // Safely get cartToken (оставлено на будущее)
+  return `${scope}:${ip}`; // Return the scope and IP
 }
