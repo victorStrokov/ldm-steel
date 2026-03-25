@@ -30,6 +30,8 @@ describe('GET /api/auth/verify', () => {
     const req = {
       nextUrl: new URL('http://localhost:3000/api/auth/verify'),
       url: 'http://localhost:3000/api/auth/verify',
+      cookies: { get: vi.fn().mockReturnValue(undefined) },
+      headers: { get: vi.fn().mockReturnValue(undefined) },
     } as never;
 
     const res = await GET(req);
@@ -44,6 +46,8 @@ describe('GET /api/auth/verify', () => {
     const req = {
       nextUrl: new URL('http://localhost:3000/api/auth/verify?code=1234'),
       url: 'http://localhost:3000/api/auth/verify?code=1234',
+      cookies: { get: vi.fn().mockReturnValue(undefined) },
+      headers: { get: vi.fn().mockReturnValue(undefined) },
     } as never;
 
     const res = await GET(req);
@@ -58,10 +62,14 @@ describe('GET /api/auth/verify', () => {
       userId: 20,
       code: '1234',
     } as never);
+    vi.mocked(prisma.user.update).mockResolvedValue({ id: 20 } as never);
+    vi.mocked(prisma.verificationCode.delete).mockResolvedValue({ id: 10 } as never);
 
     const req = {
       nextUrl: new URL('http://localhost:3000/api/auth/verify?code=1234'),
       url: 'http://localhost:3000/api/auth/verify?code=1234',
+      cookies: { get: vi.fn().mockReturnValue(undefined) },
+      headers: { get: vi.fn().mockReturnValue(undefined) },
     } as never;
 
     const res = await GET(req);

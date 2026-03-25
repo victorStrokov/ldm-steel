@@ -2,7 +2,13 @@ FROM node:22-slim AS builder
 
 WORKDIR /app
 
+
+# Сначала копируем package.json и lock-файл
 COPY package*.json ./
+
+# Копируем prisma до npm ci, чтобы зависимости и генерация работали корректно
+COPY prisma ./prisma
+
 RUN npm ci
 
 COPY . .

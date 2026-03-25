@@ -25,8 +25,7 @@
     "prisma:preview": "prisma db pull",
     "seed": "tsx prisma/seed.ts",
     "update": "powershell -ExecutionPolicy Bypass -File ./update.ps1",
-    "postinstall": "prisma generate",
-    "prepare": "husky"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

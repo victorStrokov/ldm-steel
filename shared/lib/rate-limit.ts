@@ -54,6 +54,9 @@ export function getRateLimitId(req: NextRequest, scope: string): string {
     req.headers.get('x-client-ip') ||
     'unknown';
 
-  // const token = req.cookies?.get?.('cartToken')?.value; // Safely get cartToken (оставлено на будущее)
-  return `${scope}:${ip}`; // Return the scope and IP
+  const cartToken =
+    req && typeof req === 'object' && 'cookies' in req && req.cookies && typeof req.cookies.get === 'function'
+      ? req.cookies.get('cartToken')?.value
+      : undefined;
+  return `${scope}:${ip}:${cartToken ?? ''}`;
 }

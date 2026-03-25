@@ -40,6 +40,7 @@ describe('GET /api/cart', () => {
   it('returns empty cart when token cookie is missing', async () => {
     const res = await GET({
       cookies: { get: vi.fn().mockReturnValue(undefined) },
+      headers: { get: vi.fn().mockReturnValue(undefined) },
     } as never);
 
     expect(res.status).toBe(200);
@@ -54,6 +55,7 @@ describe('GET /api/cart', () => {
 
     const res = await GET({
       cookies: { get: vi.fn().mockReturnValue({ value: 'cart-token-1' }) },
+      headers: { get: vi.fn().mockReturnValue(undefined) },
     } as never);
 
     expect(res.status).toBe(200);
@@ -69,10 +71,12 @@ describe('POST /api/cart', () => {
   it('increments quantity when identical cart item already exists', async () => {
     vi.mocked(findOrCreateCart).mockResolvedValue({ id: 10 } as never);
     vi.mocked(prisma.cartItem.findFirst).mockResolvedValue({ id: 20, quantity: 2 } as never);
+    vi.mocked(prisma.cartItem.update).mockResolvedValue({ id: 20, quantity: 3 } as never);
     vi.mocked(updateCartTotalAmount).mockResolvedValue({ totalAmount: 300, items: [] } as never);
 
     const res = await POST({
       cookies: { get: vi.fn().mockReturnValue({ value: 'cart-token-1' }) },
+      headers: { get: vi.fn().mockReturnValue(undefined) },
       json: async () => ({ productItemId: 5, ingredients: [1, 2] }),
     } as never);
 
@@ -87,10 +91,12 @@ describe('POST /api/cart', () => {
   it('creates cart item when there is no identical item', async () => {
     vi.mocked(findOrCreateCart).mockResolvedValue({ id: 10 } as never);
     vi.mocked(prisma.cartItem.findFirst).mockResolvedValue(null as never);
+    vi.mocked(prisma.cartItem.create).mockResolvedValue({ id: 21, quantity: 1 } as never);
     vi.mocked(updateCartTotalAmount).mockResolvedValue({ totalAmount: 500, items: [] } as never);
 
     const res = await POST({
       cookies: { get: vi.fn().mockReturnValue(undefined) },
+      headers: { get: vi.fn().mockReturnValue(undefined) },
       json: async () => ({ productItemId: 5, ingredients: [1] }),
     } as never);
 
