@@ -17,5 +17,9 @@ export default async function ProductModalPage({ params }: { params: Promise<{ i
     },
   });
   if (!product) return notFound();
-  return <ChooseProductModal product={product} />;
+  return (
+    <div className="w-full max-w-2xl mx-auto px-4 md:px-8 py-8">
+      <ChooseProductModal product={product} />
+    </div>
+  );
 }

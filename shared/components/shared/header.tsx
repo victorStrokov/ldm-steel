@@ -46,10 +46,10 @@ export const Header: React.FC<Props> = ({ hasSearch = true, hasCart = true, clas
 
   return (
     <header className={cn('border-b', className)}>
-      <Container className="flex items-center justify-between py-8">
+      <Container className="flex flex-col md:flex-row items-center justify-between py-4 sm:py-6 md:py-8 px-2 sm:px-4 md:px-8 gap-3 md:gap-0 w-full">
         {/* Левая часть  */}
-        <Link href={'/'}>
-          <div className="flex items-center gap-4">
+        <Link href={'/'} className="w-full md:w-auto">
+          <div className="flex items-center gap-2 sm:gap-4">
             <div className="relative h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16">
               <Image
                 src="/logoLDM.png"
@@ -61,8 +61,8 @@ export const Header: React.FC<Props> = ({ hasSearch = true, hasCart = true, clas
             </div>
 
             <div>
-              <h1 className="text-blue-deep/90 text-2xl font-black uppercase">NEXT LDM STEEL</h1>
-              <p className="text-blue-medium text-sm leading-3">
+              <h1 className="text-blue-deep/90 text-lg sm:text-2xl font-black uppercase leading-tight">NEXT LDM STEEL</h1>
+              <p className="text-blue-medium text-xs sm:text-sm leading-3 max-w-[180px] sm:max-w-none">
                 Комплектующие <br />
                 для производства <br />
                 металлопластиковых окон
@@ -71,10 +71,14 @@ export const Header: React.FC<Props> = ({ hasSearch = true, hasCart = true, clas
           </div>
         </Link>
 
-        {hasSearch && <div className="mx-10 flex-1">{<SearchInput />}</div>}
+        {hasSearch && (
+          <div className="w-full md:mx-10 flex-1 order-3 md:order-none mt-3 md:mt-0">
+            <SearchInput />
+          </div>
+        )}
 
         {/* Правая часть */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 w-full md:w-auto justify-end order-2 md:order-none mt-3 md:mt-0">
           <AuthModal open={openAuthModal} onClose={() => setOpenAuthModal(false)} />
 
           <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />

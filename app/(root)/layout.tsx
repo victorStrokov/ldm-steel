@@ -14,7 +14,7 @@ export default function HomeLayout({
   modal: React.ReactNode;
 }>) {
   return (
-    <main className="flex min-h-screen flex-col">
+    <main className="flex min-h-screen flex-col bg-white text-neutral-900 antialiased">
       <Suspense>
         <Header />
       </Suspense>

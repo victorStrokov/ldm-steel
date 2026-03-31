@@ -40,7 +40,11 @@ const RangeSlider = React.forwardRef(
         step={step}
         value={localValues}
         onValueChange={handleValueChange}
-        className={cn('relative mb-6 flex w-full touch-none items-center select-none', className)}
+        className={cn(
+          // Responsive: увеличиваем вертикальные отступы на мобильных
+          'relative mb-6 flex w-full touch-none items-center select-none py-2 md:py-3',
+          className,
+        )}
         {...props}
       >
         <SliderPrimitive.Track className="bg-primary/20 relative h-1 w-full grow overflow-hidden rounded-full">
@@ -52,12 +56,20 @@ const RangeSlider = React.forwardRef(
               className="absolute text-center"
               style={{
                 left: `calc(${((value - min) / (max - min)) * 100}% + 0px)`,
-                top: `10px`,
+                // Responsive: увеличиваем отступ сверху на мобильных
+                top: `18px`,
               }}
             >
-              <span className="text-sm">{formatLabel ? formatLabel(value) : value}</span>
+              <span className="text-xs md:text-sm px-1 md:px-2">{formatLabel ? formatLabel(value) : value}</span>
             </div>
-            <SliderPrimitive.Thumb className="border-primary/50 focus-visible:ring-ring block h-4 w-4 rounded-full border bg-white shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50" />
+            <SliderPrimitive.Thumb
+              className={cn(
+                // Responsive: увеличиваем размер и область нажатия на мобильных
+                'border-primary/50 focus-visible:ring-ring block h-7 w-7 md:h-5 md:w-5 rounded-full border bg-white shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
+                // Увеличиваем область нажатия для мобильных
+                'after:content-[""] after:absolute after:-inset-2 md:after:-inset-1 after:rounded-full after:pointer-events-auto after:bg-transparent'
+              )}
+            />
           </React.Fragment>
         ))}
       </SliderPrimitive.Root>

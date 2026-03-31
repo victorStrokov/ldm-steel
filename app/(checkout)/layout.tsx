@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function CheckoutLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main className="min-h-screen bg-[#ebddf7]">
+    <main className="min-h-screen bg-[#ebddf7] text-neutral-900 antialiased">
       <Container>
         <Suspense>
           <Header hasSearch={false} hasCart={false} className="border-b-gray-300" />

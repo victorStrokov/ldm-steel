@@ -43,11 +43,11 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
   if (loading) {
     return (
       <div className={className}>
-        <p className="mb-3 font-bold">{title}</p>
+        <p className="mb-2 sm:mb-3 font-bold">{title}</p>
         {...Array(limit)
           .fill(0)
-          .map((_, index) => <Skeleton key={index} className="mb-4 h-5 rounded-[8px]" />)}
-        <Skeleton className="mb-4 h-5 w-[140px] rounded-[8px]" />
+          .map((_, index) => <Skeleton key={index} className="mb-2 sm:mb-4 h-4 sm:h-5 rounded-xl" />)}
+        <Skeleton className="mb-2 sm:mb-4 h-4 sm:h-5 w-25 sm:w-35 rounded-xl" />
       </div>
     );
   }
@@ -58,17 +58,17 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
 
   return (
     <div className={className}>
-      <p className="mb-3 font-bold">{title}</p>
+      <p className="mb-2 sm:mb-3 font-bold">{title}</p>
       {showAll && (
-        <div className="mb-5">
+        <div className="mb-3 sm:mb-5">
           <Input
             onChange={onChangeSearchInput}
             placeholder={searchInputPlaceholder}
-            className="border-none bg-gray-50"
+            className="border-none bg-gray-50 text-sm py-2"
           />
         </div>
       )}
-      <div className="scrollbar flex max-h-96 flex-col gap-4 overflow-x-auto pr-2">
+      <div className="scrollbar flex max-h-60 sm:max-h-96 flex-col gap-2 sm:gap-4 overflow-x-auto pr-1 sm:pr-2">
         {list.map((item, index) => (
           <FilterCheckbox
             key={index}
@@ -83,8 +83,8 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
       </div>
 
       {items.length > limit && (
-        <div className={showAll ? 'mt-4 border-t border-t-neutral-100' : ''}>
-          <button onClick={() => setShowAll(!showAll)} className="text-primary mt-3">
+        <div className={showAll ? 'mt-3 sm:mt-4 border-t border-t-neutral-100' : ''}>
+          <button onClick={() => setShowAll(!showAll)} className="text-primary mt-2 sm:mt-3 text-sm sm:text-base">
             {showAll ? 'Скрыть' : `+ Показать все (${items.length})`}
           </button>
         </div>

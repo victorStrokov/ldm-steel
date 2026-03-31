@@ -1,11 +1,13 @@
 'use client';
 
 import React from 'react';
+import { cn } from '@/shared/lib/utils';
 import { Title } from './title';
 import { Input } from '../ui';
 import { RangeSlider } from './range-slider';
 import { CheckboxFiltersGroup } from './checkbox-filters-group';
 import { useQueryFilters, useFilters, useIngredients } from '@/shared/hooks';
+import { SortPopup } from './sort-popup';
 
 interface Props {
   className?: string;
@@ -28,14 +30,16 @@ export const Filters: React.FC<Props> = ({ className }) => {
   // над кнопкой «Показать все» в CheckboxFiltersGroup. Отложено до v0.2.0.
 
   return (
-    <div className={className}>
-      <Title text="Фильтрация" size="sm" className="mb font-bold" />
+    <div className={cn(className, 'flex flex-col gap-3 sm:gap-5 px-2 sm:px-4')}>
+       <SortPopup />
+      
+      <Title text="Фильтрация" size="sm" className="mb-2 font-bold text-base sm:text-lg" />
       {/* верхние чекбоксы */}
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:gap-4">
         <CheckboxFiltersGroup
           name="materials"
-          className="mt-5"
+          className="mt-3 sm:mt-5"
           title="Материалы"
           onClickCheckbox={filters.setMaterialsTypes}
           selected={filters.materialsTypes}
@@ -50,10 +54,10 @@ export const Filters: React.FC<Props> = ({ className }) => {
           ]}
         />
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:gap-4">
         <CheckboxFiltersGroup
           name="sizes"
-          className="mt-5"
+          className="mt-3 sm:mt-5"
           title="Размеры"
           onClickCheckbox={filters.setSizes}
           selected={filters.sizes}
@@ -71,10 +75,10 @@ export const Filters: React.FC<Props> = ({ className }) => {
           ]}
         />
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:gap-4">
         <CheckboxFiltersGroup
           name="lengths"
-          className="mt-5"
+          className="mt-3 sm:mt-5"
           title="Длинна"
           onClickCheckbox={filters.setLength}
           selected={filters.length}
@@ -89,9 +93,9 @@ export const Filters: React.FC<Props> = ({ className }) => {
         />
       </div>
       {/* фильтр цен */}
-      <div className="mt-5 border-y border-y-neutral-100 py-6 pb-7">
-        <p className="mb-3 font-bold">Цена от и до</p>
-        <div className="mb-5 flex gap-3">
+      <div className="mt-4 sm:mt-5 border-y border-y-neutral-100 py-4 sm:py-6 pb-5 sm:pb-7">
+        <p className="mb-2 sm:mb-3 font-bold text-sm sm:text-base">Цена от и до</p>
+        <div className="mb-4 sm:mb-5 flex gap-2 sm:gap-3">
           <Input
             type="number"
             placeholder="0"
@@ -121,7 +125,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
         loading={loading}
         title="Комплектующие"
         name="ingredients"
-        className="mt-5"
+        className="mt-3 sm:mt-5"
         limit={6}
         defaultItems={items.slice(0, 6)}
         items={items}

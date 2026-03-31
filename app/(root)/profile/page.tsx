@@ -13,5 +13,9 @@ export default async function ProfilePage() {
     return redirect('/not-auth');
   }
 
-  return <ProfileForm data={user} />;
+  return (
+    <div className="w-full max-w-2xl mx-auto px-4 md:px-8 py-8">
+      <ProfileForm data={user} />
+    </div>
+  );
 }

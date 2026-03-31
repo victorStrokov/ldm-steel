@@ -57,7 +57,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
       <div ref={ref} className={cn('relative z-30 flex h-11 flex-1 justify-between rounded-2xl', className)}>
         <Search className="absolute top-1/2 left-3 h-5 translate-y-[-50%] text-gray-400" />
         <input
-          className="w-full rounded-2xl bg-gray-100 pl-11 outline-none"
+          className="w-full rounded-2xl bg-gray-100 pl-9 md:pl-11 outline-none"
           type="text"
           placeholder="Найти продукт..."
           onFocus={() => setFocused(true)}
@@ -76,7 +76,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
               <Link
                 onClick={onClickItem}
                 key={product.id}
-                className="hover:bg-primary/10 flex w-full items-center gap-3 px-3 py-2"
+                className="hover:bg-primary/10 flex w-full items-center gap-3 px-2 md:px-3 py-2"
                 href={`/product/${product.id}`}
               >
                 <img

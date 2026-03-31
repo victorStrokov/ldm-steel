@@ -35,7 +35,7 @@ export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent className="flex flex-col justify-between bg-[#ebddf7] pb-0">
+      <SheetContent className="flex flex-col justify-between bg-[#ebddf7] pb-0 px-2 sm:px-0">
         <div className={cn('flex h-full flex-col', !totalAmount && 'justify-center')}>
           <SheetHeader className="sr-only">
             <SheetTitle>Корзина</SheetTitle>
@@ -51,14 +51,14 @@ export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
           )}
 
           {!totalAmount && (
-            <div className="mx-auto flex w-72 flex-col items-center justify-center">
-              <Image src="/assets/empty-cart.png" width={200} height={200} alt="empty cart" />
+            <div className="mx-auto flex w-full max-w-xs flex-col items-center justify-center px-2 sm:w-72">
+              <Image src="/assets/empty-cart.png" width={160} height={160} alt="empty cart" className="mb-2 sm:mb-0" />
               <Title size="sm" text="Ваша корзина пуста" className="my-2 text-center font-bold" />
-              <p className="mb-5 text-center text-neutral-500">Добавьте товары в корзину что бы оформить заказ</p>
+              <p className="mb-4 sm:mb-5 text-center text-neutral-500 text-sm sm:text-base">Добавьте товары в корзину что бы оформить заказ</p>
 
               <SheetDescription className="sr-only"> Вернуться назад</SheetDescription>
               <SheetClose asChild>
-                <Button className="h-12 w-56 text-base" size="lg">
+                <Button className="h-11 sm:h-12 w-full sm:w-56 text-base" size="lg">
                   <ArrowLeft className="mr-2 w-5" />
                   Вернуться назад
                 </Button>
@@ -68,7 +68,7 @@ export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
 
           {totalAmount > 0 && (
             <>
-              <div className="scrollbar mx-1 mt-5 flex-1 overflow-auto">
+              <div className="scrollbar mx-0 sm:mx-1 mt-3 sm:mt-5 flex-1 overflow-auto">
                 {items.map((item) => (
                   <div key={item.id} className="mb-2">
                     <CartDrawerItem
@@ -90,15 +90,15 @@ export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
                 ))}
               </div>
 
-              <SheetFooter className="w-full bg-white p-8">
+              <SheetFooter className="w-full bg-white p-4 sm:p-8">
                 <div className="w-full">
-                  <div className="mb-4 flex">
-                    <span className="flex flex-1 text-lg text-neutral-500">
+                  <div className="mb-3 sm:mb-4 flex">
+                    <span className="flex flex-1 text-base sm:text-lg text-neutral-500">
                       Итого
-                      <div className="relative -top-1 mx-2 flex-1 border-b border-dashed border-b-neutral-200" />
+                      <div className="relative -top-1 mx-1 sm:mx-2 flex-1 border-b border-dashed border-b-neutral-200" />
                     </span>
 
-                    <span className="text-lg font-bold">{totalAmount} ₽</span>
+                    <span className="text-base sm:text-lg font-bold">{totalAmount} ₽</span>
                   </div>
 
                   <Link href="/checkout">
@@ -106,7 +106,7 @@ export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
                       onClick={() => setRedirecting(true)}
                       loading={redirecting}
                       type="submit"
-                      className="h-12 w-full text-base"
+                      className="h-11 sm:h-12 w-full text-base"
                     >
                       Оформить заказ
                       <ArrowRight size={16} className="ml-2 w-5" />

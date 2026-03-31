@@ -18,7 +18,7 @@ interface Props {
 export const CheckoutCart: React.FC<Props> = ({ items, onClickCountButton, removeCartItem, loading, className }) => {
   return (
     <WhiteBlock title="1. Корзина" className={className}>
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-3 sm:gap-5">
         {loading
           ? [...Array(4)].map((_, index) => <CheckoutItemSkeleton key={index} />)
           : items.map((item) => (

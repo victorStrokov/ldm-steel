@@ -26,7 +26,7 @@ export const CartDrawerItem: React.FC<Props> = ({
   return (
     <div
       className={cn(
-        'flex gap-6 bg-white p-5',
+        'flex gap-3 sm:gap-6 bg-white p-2 sm:p-5',
         {
           'pointer-events-none opacity-50': disabled,
         },
@@ -38,17 +38,17 @@ export const CartDrawerItem: React.FC<Props> = ({
       <div className="flex-1">
         <CartItem.Info name={name} details={details} />
 
-        <hr className="my-3" />
+        <hr className="my-2 sm:my-3" />
 
         <div className="flex items-center justify-between">
           <CountButton onClick={onClickCountButton} value={quantity} />
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <CartItem.Price value={price} />
             <Trash2Icon
               onClick={onClickRemove}
               className="cursor-pointer text-gray-400 hover:text-gray-600"
-              size={16}
+              size={18}
             />
           </div>
         </div>

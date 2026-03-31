@@ -29,17 +29,17 @@ export const FormTextarea: React.FC<Props> = ({ className, name, label, required
 
   return (
     <div className={className}>
-      <p className="mb-2 font-medium">
+      <p className="mb-1 sm:mb-2 font-medium text-sm sm:text-base">
         {label} {required && <span className="text-red-500">*</span>}
       </p>
 
       <div className="relative">
-        <Textarea className="text-md h-12" {...register(name)} {...props} />
+        <Textarea className="text-sm sm:text-md h-10 sm:h-12" {...register(name)} {...props} />
 
         {value && <ClearButton onClick={onClickClear} />}
       </div>
 
-      {errorText && <p className="mt-2 text-sm text-red-500">{errorText}</p>}
+      {errorText && <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-red-500">{errorText}</p>}
     </div>
   );
 };

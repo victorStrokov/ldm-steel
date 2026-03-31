@@ -18,20 +18,27 @@ interface Props {
 
 export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmount }) => {
   const [isDelivery, setIsDelivery] = useState(true);
+  const [isPacking, setIsPacking] = useState(true); // true = с упаковкой, false = без упаковки
 
-  const packingPrice = totalAmount < 300000 ? 500 : 0;
+  const packingPrice = isPacking && totalAmount < 30000 ? 500 : 0;
   const deliveryPrice = isDelivery ? (totalAmount < 100000 ? DELIVERY_PRICE : 0) : 0;
   const vatPrice = Math.round(((totalAmount + packingPrice + deliveryPrice) * VAT) / 100);
   const totalPrice = totalAmount + deliveryPrice + packingPrice;
 
   return (
-    <WhiteBlock className={cn('sticky top-4 p-6', className)}>
-      <div className="mb-5 flex overflow-hidden rounded-xl border border-gray-200 text-sm font-medium">
+    <WhiteBlock
+      className={cn(
+        'p-3 sm:p-4 md:p-6',
+        'md:sticky md:top-4',
+        className
+      )}
+    >
+      <div className="mb-2 sm:mb-3 flex overflow-hidden rounded-xl border border-gray-200 text-sm font-medium">
         <button
           type="button"
           onClick={() => setIsDelivery(true)}
           className={cn(
-            'flex-1 py-2.5 transition-colors',
+            'flex-1 py-2 transition-colors',
             isDelivery ? 'bg-black text-white' : 'bg-white text-gray-600 hover:bg-gray-50',
           )}
         >
@@ -41,19 +48,41 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmou
           type="button"
           onClick={() => setIsDelivery(false)}
           className={cn(
-            'flex-1 py-2.5 transition-colors',
+            'flex-1 py-2 transition-colors',
             !isDelivery ? 'bg-black text-white' : 'bg-white text-gray-600 hover:bg-gray-50',
           )}
         >
           Самовывоз
         </button>
       </div>
-      <div className="flex flex-col gap-1">
-        <span className="text-xl">Итого:</span>
+      <div className="mb-4 sm:mb-5 flex overflow-hidden rounded-xl border border-gray-200 text-sm font-medium">
+        <button
+          type="button"
+          onClick={() => setIsPacking(true)}
+          className={cn(
+            'flex-1 py-2 transition-colors',
+            isPacking ? 'bg-black text-white' : 'bg-white text-gray-600 hover:bg-gray-50',
+          )}
+        >
+          Упаковка
+        </button>
+        <button
+          type="button"
+          onClick={() => setIsPacking(false)}
+          className={cn(
+            'flex-1 py-2 transition-colors',
+            !isPacking ? 'bg-black text-white' : 'bg-white text-gray-600 hover:bg-gray-50',
+          )}
+        >
+          Без упаковки
+        </button>
+      </div>
+      <div className="flex flex-col gap-0.5 sm:gap-1">
+        <span className="text-lg sm:text-xl">Итого:</span>
         {loading ? (
-          <Skeleton className="h-11 w-48" />
+          <Skeleton className="h-10 sm:h-11 w-32 sm:w-48" />
         ) : (
-          <span className="h-11 text-[34px] font-extrabold">{`${totalPrice} ₽`}</span>
+          <span className="h-10 sm:h-11 text-2xl sm:text-[34px] font-extrabold">{`${totalPrice} ₽`}</span>
         )}
       </div>
       <CheckoutItemDetails
@@ -72,7 +101,15 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmou
             Услуги упаковки:
           </div>
         }
-        value={loading ? <Skeleton className="h-6 w-14 rounded-[6px]" /> : `${packingPrice} ₽`}
+        value={
+          loading ? (
+            <Skeleton className="h-6 w-14 rounded-[6px]" />
+          ) : isPacking && packingPrice > 0 ? (
+            `${packingPrice} ₽`
+          ) : (
+            <span className="font-medium text-green-600">Без упаковки</span>
+          )
+        }
       />
       <CheckoutItemDetails
         title={
@@ -87,7 +124,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmou
           ) : isDelivery ? (
             `${deliveryPrice} ₽`
           ) : (
-            <span className="font-medium text-green-600">Бесплатно</span>
+            <span className="font-medium text-green-600">Самовывоз</span>
           )
         }
       />
@@ -104,7 +141,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmou
         loading={loading}
         type="submit"
         disabled={false}
-        className="mt-6 h-14 w-full rounded-2xl text-base font-bold"
+        className="mt-4 sm:mt-6 h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl text-base sm:text-lg font-bold"
       >
         Перейти к оплате
         <ArrowBigRight size={20} className="ml-2 w-5" />

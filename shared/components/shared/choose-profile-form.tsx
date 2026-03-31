@@ -53,10 +53,15 @@ export const ChooseProfileForm: React.FC<Props> = ({
   };
 
   return (
-    <div className={cn('flex flex-1 flex-col gap-6 md:flex-row', className)}>
+    <div
+      className={cn(
+        'flex flex-1 flex-col gap-4 sm:gap-6 md:flex-row',
+        className
+      )}
+    >
       {/* Левая часть: картинка */}
-      <div className="flex w-full items-center justify-center md:w-1/2">
-        <div className="flex h-[300px] w-full max-w-[300px] items-center justify-center rounded-lg bg-gray-50">
+      <div className="flex w-full items-center justify-center md:w-1/2 mb-4 md:mb-0">
+        <div className="flex h-[220px] sm:h-[300px] w-full max-w-[220px] sm:max-w-[300px] items-center justify-center rounded-lg bg-gray-50 p-2 sm:p-0">
           <ProductImage
             imageUrl={imageUrl}
             onClickImage={onClickImage}
@@ -66,10 +71,10 @@ export const ChooseProfileForm: React.FC<Props> = ({
       </div>
 
       {/* Правая часть: текст + варианты + ингредиенты + кнопка */}
-      <div className="flex max-h-[80vh] w-full flex-col rounded-lg bg-[#f7f6f5] p-4 md:w-1/2 md:p-6">
-        <Title text={name} size="md" className="mb-3 font-extrabold" />
-        <p className="mb-4 text-gray-500">{textDetails}</p>
-        <div className="mb-4 flex items-center justify-end">
+      <div className="flex max-h-[80vh] w-full flex-col rounded-lg bg-[#f7f6f5] p-3 sm:p-4 md:w-1/2 md:p-6">
+        <Title text={name} size="md" className="mb-2 sm:mb-3 font-extrabold" />
+        <p className="mb-3 sm:mb-4 text-gray-500 text-sm sm:text-base">{textDetails}</p>
+        <div className="mb-3 sm:mb-4 flex items-center justify-end">
           <button
             // onClick={resetFilters}
             className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-red-600"
@@ -80,7 +85,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
         </div>
 
         {/* Контент с прокруткой */}
-        <div className="flex-1 space-y-5 overflow-y-auto pr-2">
+        <div className="flex-1 space-y-4 sm:space-y-5 overflow-y-auto pr-1 sm:pr-2">
           <GroupVariants
             items={availableSizes}
             value={String(size)}
@@ -94,10 +99,10 @@ export const ChooseProfileForm: React.FC<Props> = ({
           />
 
           {/* Ингредиенты */}
-          <div className="rounded-md bg-gray-50 p-5">
-            <h3 className="mb-4 text-lg font-semibold">С этим товаром берут</h3>
+          <div className="rounded-md bg-gray-50 p-3 sm:p-5">
+            <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold">С этим товаром берут</h3>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
               {ingredients?.map((ingredient) => (
                 <IngredientItem
                   key={ingredient.id}
@@ -106,16 +111,16 @@ export const ChooseProfileForm: React.FC<Props> = ({
                   price={ingredient.price}
                   onClick={() => addIngredient(ingredient.id)}
                   active={selectedIngredients.has(ingredient.id)}
-                  className="mt-4"
+                  className="mt-2 sm:mt-4"
                 />
               ))}
             </div>
           </div>
         </div>
 
-        {/* Кнопка всегда внизу */}
-        <div className="sticky bottom-0 bg-[#f7f6f5] pt-4">
-          <Button loading={loading} onClick={handleClickAdd} className="h-[55px] w-full rounded-[18px]">
+        {/* Кнопка всегда внизу на md+ */}
+        <div className="pt-3 sm:pt-4 md:sticky md:bottom-0 bg-[#f7f6f5]">
+          <Button loading={loading} onClick={handleClickAdd} className="h-[48px] sm:h-[55px] w-full rounded-[14px] sm:rounded-[18px] text-base sm:text-lg">
             Добавить в корзину за {totalPrice} ₽
           </Button>
         </div>

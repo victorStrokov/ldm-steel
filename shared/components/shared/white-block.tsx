@@ -19,13 +19,13 @@ export const WhiteBlock: React.FC<React.PropsWithChildren<Props>> = ({
   return (
     <div className={cn('rounded-3xl bg-white', className)}>
       {title && (
-        <div className="flex items-center justify-between border-b border-gray-100 p-5 px-7">
+        <div className="flex items-center justify-between border-b border-gray-100 p-4 md:p-5 md:px-7">
           <Title text={title} size="sm" className="font-bold" />
           {endAdornment}
         </div>
       )}
 
-      <div className={cn('px-5 py-4', contentClassName)}>{children}</div>
+      <div className={cn('px-4 md:px-7 py-4', contentClassName)}>{children}</div>
     </div>
   );
 };

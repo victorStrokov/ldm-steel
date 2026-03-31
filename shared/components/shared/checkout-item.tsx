@@ -27,23 +27,22 @@ export const CheckoutItem: React.FC<Props> = ({
   return (
     <div
       className={cn(
-        'flex flex-col gap-4 rounded-md border bg-white p-4 sm:flex-row sm:items-center sm:justify-between',
+        'flex flex-col gap-3 sm:gap-4 rounded-md border bg-white p-2 sm:p-4 sm:flex-row sm:items-center sm:justify-between',
         {
-          'pointer-events-none opacity-50': disabled, // pointer-events-none - убирает возможность кликать на элемент
+          'pointer-events-none opacity-50': disabled,
         },
         className,
       )}
     >
-      <div className="flex flex-1 items-start gap-4">
+      <div className="flex flex-1 items-start gap-2 sm:gap-4">
         <CartItemDetails.Image src={imageUrl ?? '/no-image.png'} id={id} />
         <CartItemDetails.Info className="min-w-0 flex-1" name={name} details={details} />
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-3 sm:flex-nowrap sm:justify-end sm:gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-2 sm:flex-nowrap sm:justify-end sm:gap-5">
         <CartItemDetails.Price value={price} />
-
         <CartItemDetails.CountButton onClick={onClickCountButton} value={quantity} />
-        <button type="button" onClick={onClickRemove}>
-          <X className="cursor-pointer text-gray-400 hover:text-gray-600" size={20} />
+        <button type="button" onClick={onClickRemove} className="ml-1 sm:ml-0 p-1 sm:p-0">
+          <X className="cursor-pointer text-gray-400 hover:text-gray-600" size={22} />
         </button>
       </div>
     </div>

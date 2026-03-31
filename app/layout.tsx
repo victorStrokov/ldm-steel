@@ -17,9 +17,10 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link data-rh="true" rel="icon" href="/logoLDM.png" />
       </head>
-      <body className={nunito.className}>
+      <body className={`${nunito.className} min-h-screen bg-white text-neutral-900 antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>

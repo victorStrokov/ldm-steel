@@ -33,7 +33,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   if (!product) return notFound();
 
   return (
-    <Container className="my-10 flex flex-col">
+    <Container className="w-full max-w-4xl mx-auto px-4 md:px-8 py-10 flex flex-col">
       <ProductForm product={product} />
     </Container>
   );

@@ -41,15 +41,29 @@ export const ProductsGroupList: React.FC<Props> = ({ title, items, listClassName
   }, [items, order]);
 
   return (
-    <div className={className} id={title} ref={intersectionRef} style={{ scrollMarginTop: '120px' }}>
-      <Title text={title} size="lg" className="mb-5 font-extrabold" />
-
+    <div
+      className={cn(
+        'px-2 py-4 sm:px-4 md:px-8',
+        className
+      )}
+      id={title}
+      ref={intersectionRef}
+      style={{ scrollMarginTop: '120px' }}
+    >
+      <Title
+        text={title}
+        size="lg"
+        className="mb-4 sm:mb-5 font-extrabold text-lg sm:text-xl md:text-2xl lg:text-3xl text-center sm:text-left"
+      />
       <div
         className={cn(
           // Адаптивная сетка: 1 колонка на мобилках, 2 на планшетах, 3 на десктопах
-          'grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3',
+          'grid grid-cols-1 items-stretch gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3',
+          // Горизонтальный скролл на очень маленьких экранах
+          'overflow-x-auto scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent',
           listClassName,
         )}
+        style={{ minWidth: 0 }}
       >
         {sortedItems.map((product) => (
           <ProductCard

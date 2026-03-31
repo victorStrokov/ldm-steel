@@ -22,7 +22,7 @@ export const SortPopup: React.FC<Props> = ({ className }) => {
   return (
     <div
       className={cn(
-        'relative inline-flex h-[52px] cursor-pointer items-center rounded-2xl bg-gray-50 px-5 select-none',
+        'relative inline-flex h-[52px] cursor-pointer items-center rounded-2xl bg-gray-50 px-3 md:px-5 select-none',
         className,
       )}
       onClick={() => setIsOpen((prev) => !prev)}
@@ -32,16 +32,16 @@ export const SortPopup: React.FC<Props> = ({ className }) => {
       <b className="text-primary ml-1">{order === 'asc' ? 'по возрастанию цены' : 'по убыванию цены'}</b>
 
       {isOpen && (
-        <div className="absolute top-full left-0 z-20 mt-2 rounded-xl bg-white p-2 shadow-md">
+        <div className="absolute top-full left-0 z-20 mt-2 rounded-xl bg-white p-1 md:p-2 shadow-md">
           <button
             onClick={(e) => onClickSort('asc', e)}
-            className="block w-full rounded-md px-3 py-2 text-left hover:bg-gray-100"
+            className="block w-full rounded-md px-2 md:px-3 py-2 text-left hover:bg-gray-100"
           >
             Цена: от меньшей к большей
           </button>
           <button
             onClick={(e) => onClickSort('desc', e)}
-            className="block w-full rounded-md px-3 py-2 text-left hover:bg-gray-100"
+            className="block w-full rounded-md px-2 md:px-3 py-2 text-left hover:bg-gray-100"
           >
             Цена: от большей к меньшей
           </button>

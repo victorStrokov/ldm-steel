@@ -16,7 +16,7 @@ export const CheckoutAddressForm: React.FC<Props> = ({ className }) => {
 
   return (
     <WhiteBlock title="3. Адрес доставки " className={className}>
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-3 sm:gap-5">
         {/* <Input name="address" className="text-base" placeholder="Введите адрес..." /> */}
 
         <Controller
@@ -30,7 +30,7 @@ export const CheckoutAddressForm: React.FC<Props> = ({ className }) => {
           )}
         />
 
-        <FormTextarea rows={5} name="comment" className="text-base" placeholder="Комментарий к заказу" />
+        <FormTextarea rows={5} name="comment" className="text-sm sm:text-base" placeholder="Комментарий к заказу" />
       </div>
     </WhiteBlock>
   );

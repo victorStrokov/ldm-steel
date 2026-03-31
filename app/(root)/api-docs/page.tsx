@@ -26,7 +26,7 @@ export default function ApiDocsPage() {
   const paths = Object.entries(openApiDocument.paths) as Array<[string, PathItem]>;
 
   return (
-    <section className="space-y-6 py-8 md:py-12">
+    <section className="space-y-6 py-8 md:py-12 px-4 md:px-8 max-w-5xl mx-auto">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold md:text-3xl">API Documentation</h1>
         <p className="text-sm text-slate-600 md:text-base">

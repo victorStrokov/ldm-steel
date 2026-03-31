@@ -14,7 +14,7 @@ export const CartItemDetailsImage: React.FC<Props> = ({ src, id, className }) =>
 
   return (
     <Link href={`/product/${id}`}>
-      <img className={cn('h-[60px] w-[60px]', className)} src={normalizedImageUrl} />
+      <img className={cn('h-10 w-10 sm:h-15 sm:w-15', className)} src={normalizedImageUrl} />
     </Link>
   );
 };

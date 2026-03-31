@@ -15,13 +15,18 @@ export const Categories: React.FC<Props> = ({ items, className }) => {
   const setActiveId = useCategoryStore((state) => state.setActiveId);
 
   return (
-    <div className={cn('inline-flex gap-1 rounded-2xl bg-gray-50 p-1', className)}>
+    <div
+      className={cn(
+        'flex flex-wrap gap-0.5 sm:gap-1 rounded-2xl bg-gray-50 p-0.5 sm:p-1',
+        className
+      )}
+    >
       {items.map(({ name, id }) => (
         <a
           key={id}
           href={`/#${name}`}
           onClick={(e) => {
-            e.preventDefault(); // отменяем стандартный переход
+            e.preventDefault();
             setActiveId(id);
             document.getElementById(name)?.scrollIntoView({
               behavior: 'smooth',
@@ -29,7 +34,7 @@ export const Categories: React.FC<Props> = ({ items, className }) => {
             });
           }}
           className={cn(
-            'flex h-11 items-center rounded-2xl px-5 font-bold',
+            'flex h-9 sm:h-11 items-center rounded-2xl px-3 sm:px-5 font-bold whitespace-nowrap transition-colors',
             categoryActiveId === id && 'text-blue-medium bg-white shadow-md shadow-gray-200',
           )}
         >
