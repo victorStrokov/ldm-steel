@@ -1,7 +1,24 @@
 'use server';
 
 import { prisma } from '@/prisma/prisma-client';
+import { logger } from '@/shared/lib/logger';
 import { Prisma, ProductMaterial } from '@prisma/client';
+
+type CategoryWithProducts = Prisma.CategoryGetPayload<{
+  include: {
+    products: {
+      include: {
+        images: true;
+        ingredients: {
+          include: {
+            images: true;
+          };
+        };
+        items: true;
+      };
+    };
+  };
+}>;
 
 export interface GetSearchParams {
   query?: string;
@@ -16,8 +33,49 @@ export interface GetSearchParams {
 
 const DEFAULT_MIN_PRICE = 0;
 const DEFAULT_MAX_PRICE = 300000;
+const MAX_DB_ATTEMPTS = 2;
+const RETRY_DELAY_MS = 250;
 
-export const findProducts = async (params: GetSearchParams) => {
+const log = logger.child({ module: 'find-products' });
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const isTransientConnectionError = (error: unknown): boolean => {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  const message = error.message.toLowerCase();
+  return (
+    message.includes('connection terminated unexpectedly') ||
+    message.includes("can't reach database server") ||
+    message.includes('connection closed') ||
+    message.includes('timeout')
+  );
+};
+
+const findCategoriesWithRetry = async <T extends Prisma.CategoryFindManyArgs>(
+  args: Prisma.SelectSubset<T, Prisma.CategoryFindManyArgs>,
+): Promise<Prisma.CategoryGetPayload<T>[]> => {
+  for (let attempt = 1; attempt <= MAX_DB_ATTEMPTS; attempt++) {
+    try {
+      return await prisma.category.findMany(args);
+    } catch (error) {
+      const canRetry = isTransientConnectionError(error) && attempt < MAX_DB_ATTEMPTS;
+
+      if (!canRetry) {
+        throw error;
+      }
+
+      log.warn({ attempt, error }, 'Transient DB error in find-products, retrying');
+      await sleep(RETRY_DELAY_MS);
+    }
+  }
+
+  return [] as Prisma.CategoryGetPayload<T>[];
+};
+
+export const findProducts = async (params: GetSearchParams): Promise<CategoryWithProducts[]> => {
   const sizes = params.sizes?.split(',').map(Number) ?? [];
   const materialTypes = params.materialTypes?.split(',').map(Number) ?? [];
   const length = params.length?.split(',').map(Number) ?? [];
@@ -50,30 +108,36 @@ export const findProducts = async (params: GetSearchParams) => {
 
   itemWhere.price = { gte: minPrice, lte: maxPrice };
 
-  const categories = await prisma.category.findMany({
-    include: {
-      products: {
-        orderBy: { id: 'desc' },
-        where: {
-          ingredients: ingredientsIdArr.length ? { some: { id: { in: ingredientsIdArr } } } : undefined,
-          items: { some: itemWhere },
-        },
-        include: {
-          images: true,
-          ingredients: {
-            include: {
-              images: true,
-            },
+  try {
+    const categories = await findCategoriesWithRetry({
+      include: {
+        products: {
+          orderBy: { id: 'desc' },
+          where: {
+            ingredients: ingredientsIdArr.length ? { some: { id: { in: ingredientsIdArr } } } : undefined,
+            items: { some: itemWhere },
           },
-          items: {
-            where: {
-              price: { gte: minPrice, lte: maxPrice },
+          include: {
+            images: true,
+            ingredients: {
+              include: {
+                images: true,
+              },
             },
-            orderBy: { price: 'desc' },
+            items: {
+              where: {
+                price: { gte: minPrice, lte: maxPrice },
+              },
+              orderBy: { price: 'desc' },
+            },
           },
         },
       },
-    },
-  });
-  return categories;
+    });
+
+    return categories;
+  } catch (error) {
+    log.error({ error }, 'find-products failed, returning empty category list');
+    return [];
+  }
 };

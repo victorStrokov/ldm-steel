@@ -17,8 +17,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<Get
       <Stories />
       <TopBar categories={categories.filter((category) => category.products.length > 0)} />
       <Container className="mt-10 mb-4">
-        <div className="flex flex-col md:flex-row gap-6 md:gap-[60px]">
-          <div className="w-full md:w-[250px]">
+        <div className="flex flex-col gap-6 md:flex-row md:gap-15">
+          <div className="w-full md:w-62.5">
             <Suspense fallback={<div>Loading...</div>}>
               <Filters />
             </Suspense>
