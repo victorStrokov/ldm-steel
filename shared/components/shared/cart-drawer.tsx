@@ -54,7 +54,9 @@ export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
             <div className="mx-auto flex w-full max-w-xs flex-col items-center justify-center px-2 sm:w-72">
               <Image src="/assets/empty-cart.png" width={160} height={160} alt="empty cart" className="mb-2 sm:mb-0" />
               <Title size="sm" text="Ваша корзина пуста" className="my-2 text-center font-bold" />
-              <p className="mb-4 sm:mb-5 text-center text-neutral-500 text-sm sm:text-base">Добавьте товары в корзину что бы оформить заказ</p>
+              <p className="mb-4 sm:mb-5 text-center text-neutral-500 text-sm sm:text-base">
+                Добавьте товары в корзину что бы оформить заказ
+              </p>
 
               <SheetDescription className="sr-only"> Вернуться назад</SheetDescription>
               <SheetClose asChild>

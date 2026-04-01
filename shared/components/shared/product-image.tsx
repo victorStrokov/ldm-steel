@@ -16,12 +16,7 @@ export const ProductImage: React.FC<Props> = ({ imageUrl, className, onClickImag
   const normalizedImageUrl = normalizeImageUrl(imageUrl) ?? '/no-image.png';
 
   return (
-    <div
-      className={cn(
-        'relative flex w-full flex-1 items-center justify-center px-2 sm:px-4 md:px-0',
-        className
-      )}
-    >
+    <div className={cn('relative flex w-full flex-1 items-center justify-center px-2 sm:px-4 md:px-0', className)}>
       <div
         className={cn(
           // Адаптивный max-w и скругление

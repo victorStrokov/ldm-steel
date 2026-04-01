@@ -41,7 +41,7 @@ export const Stories: React.FC<Props> = ({ className }) => {
           'overflow-x-auto',
           'flex items-center gap-1 md:gap-2',
           'flex-nowrap justify-start sm:justify-between',
-          className
+          className,
         )}
       >
         {stories.length === 0 &&

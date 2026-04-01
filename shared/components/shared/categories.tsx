@@ -15,12 +15,7 @@ export const Categories: React.FC<Props> = ({ items, className }) => {
   const setActiveId = useCategoryStore((state) => state.setActiveId);
 
   return (
-    <div
-      className={cn(
-        'flex flex-wrap gap-0.5 sm:gap-1 rounded-2xl bg-gray-50 p-0.5 sm:p-1',
-        className
-      )}
-    >
+    <div className={cn('flex flex-wrap gap-0.5 sm:gap-1 rounded-2xl bg-gray-50 p-0.5 sm:p-1', className)}>
       {items.map(({ name, id }) => (
         <a
           key={id}

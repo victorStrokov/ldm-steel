@@ -42,10 +42,7 @@ export const ProductsGroupList: React.FC<Props> = ({ title, items, listClassName
 
   return (
     <div
-      className={cn(
-        'px-2 py-4 sm:px-4 md:px-8',
-        className
-      )}
+      className={cn('px-2 py-4 sm:px-4 md:px-8', className)}
       id={title}
       ref={intersectionRef}
       style={{ scrollMarginTop: '120px' }}

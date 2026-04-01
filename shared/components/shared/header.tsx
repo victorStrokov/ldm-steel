@@ -61,7 +61,9 @@ export const Header: React.FC<Props> = ({ hasSearch = true, hasCart = true, clas
             </div>
 
             <div>
-              <h1 className="text-blue-deep/90 text-lg sm:text-2xl font-black uppercase leading-tight">NEXT LDM STEEL</h1>
+              <h1 className="text-blue-deep/90 text-lg sm:text-2xl font-black uppercase leading-tight">
+                NEXT LDM STEEL
+              </h1>
               <p className="text-blue-medium text-xs sm:text-sm leading-3 max-w-[180px] sm:max-w-none">
                 Комплектующие <br />
                 для производства <br />

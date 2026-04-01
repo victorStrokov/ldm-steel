@@ -67,7 +67,7 @@ const RangeSlider = React.forwardRef(
                 // Responsive: увеличиваем размер и область нажатия на мобильных
                 'border-primary/50 focus-visible:ring-ring block h-7 w-7 md:h-5 md:w-5 rounded-full border bg-white shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
                 // Увеличиваем область нажатия для мобильных
-                'after:content-[""] after:absolute after:-inset-2 md:after:-inset-1 after:rounded-full after:pointer-events-auto after:bg-transparent'
+                'after:content-[""] after:absolute after:-inset-2 md:after:-inset-1 after:rounded-full after:pointer-events-auto after:bg-transparent',
               )}
             />
           </React.Fragment>

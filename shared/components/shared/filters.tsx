@@ -31,8 +31,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={cn(className, 'flex flex-col gap-3 sm:gap-5 px-2 sm:px-4')}>
-       <SortPopup />
-      
+      <SortPopup />
+
       <Title text="Фильтрация" size="sm" className="mb-2 font-bold text-base sm:text-lg" />
       {/* верхние чекбоксы */}
 

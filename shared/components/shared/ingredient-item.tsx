@@ -24,7 +24,9 @@ export const IngredientItem: React.FC<Props> = ({ imageUrl, name, price, active,
       )}
       onClick={onClick}
     >
-      {active && <CircleCheck className="text-primary absolute top-1 right-1 sm:top-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6" />}
+      {active && (
+        <CircleCheck className="text-primary absolute top-1 right-1 sm:top-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6" />
+      )}
       <img
         src={normalizedImageUrl}
         alt={name}

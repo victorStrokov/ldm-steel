@@ -17,7 +17,9 @@ export const OrderSuccessTemplate: React.FC<Props> = ({ orderId, totalAmount, it
     <Html>
       <Head />
       <Body style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#f9f9f9', padding: '10px' }}>
-        <Container style={{ backgroundColor: '#ffffff', padding: '12px', borderRadius: '8px', maxWidth: 360, margin: '0 auto' }}>
+        <Container
+          style={{ backgroundColor: '#ffffff', padding: '12px', borderRadius: '8px', maxWidth: 360, margin: '0 auto' }}
+        >
           <Text style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px' }}>Спасибо за покупку!</Text>
           <Text style={{ fontSize: '15px', marginBottom: '10px' }}>Ваш заказ №{orderId} успешно оплачен.</Text>
           <Text style={{ fontSize: '15px', marginBottom: '10px' }}>
@@ -33,7 +35,8 @@ export const OrderSuccessTemplate: React.FC<Props> = ({ orderId, totalAmount, it
             <ul style={{ paddingLeft: '16px', fontSize: 14 }}>
               {items.map((item) => (
                 <li key={item.id} style={{ marginBottom: '4px' }}>
-                  {item.productItem.product.name} — {item.productItem.price}₽ × {item.quantity} = {item.productItem.price! * item.quantity}₽
+                  {item.productItem.product.name} — {item.productItem.price}₽ × {item.quantity} ={' '}
+                  {item.productItem.price! * item.quantity}₽
                 </li>
               ))}
             </ul>

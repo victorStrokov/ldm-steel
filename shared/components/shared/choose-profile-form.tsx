@@ -53,12 +53,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
   };
 
   return (
-    <div
-      className={cn(
-        'flex flex-1 flex-col gap-4 sm:gap-6 md:flex-row',
-        className
-      )}
-    >
+    <div className={cn('flex flex-1 flex-col gap-4 sm:gap-6 md:flex-row', className)}>
       {/* Левая часть: картинка */}
       <div className="flex w-full items-center justify-center md:w-1/2 mb-4 md:mb-0">
         <div className="flex h-[220px] sm:h-[300px] w-full max-w-[220px] sm:max-w-[300px] items-center justify-center rounded-lg bg-gray-50 p-2 sm:p-0">
@@ -120,7 +115,11 @@ export const ChooseProfileForm: React.FC<Props> = ({
 
         {/* Кнопка всегда внизу на md+ */}
         <div className="pt-3 sm:pt-4 md:sticky md:bottom-0 bg-[#f7f6f5]">
-          <Button loading={loading} onClick={handleClickAdd} className="h-[48px] sm:h-[55px] w-full rounded-[14px] sm:rounded-[18px] text-base sm:text-lg">
+          <Button
+            loading={loading}
+            onClick={handleClickAdd}
+            className="h-[48px] sm:h-[55px] w-full rounded-[14px] sm:rounded-[18px] text-base sm:text-lg"
+          >
             Добавить в корзину за {totalPrice} ₽
           </Button>
         </div>

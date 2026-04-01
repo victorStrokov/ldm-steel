@@ -16,7 +16,7 @@ export const InfoBlock: React.FC<Props> = ({ title, text, className, image }) =>
     <div
       className={cn(
         'flex flex-col md:flex-row w-full max-w-5xl items-center justify-between gap-6 md:gap-12 px-2 sm:px-4 py-6 mx-auto',
-        className
+        className,
       )}
     >
       <div className="flex flex-col w-full md:w-[445px] max-w-full">

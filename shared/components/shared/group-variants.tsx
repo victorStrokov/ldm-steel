@@ -21,7 +21,7 @@ export const GroupVariants: React.FC<Props> = ({ items, value, onClick, classNam
     <div
       className={cn(
         className,
-        'flex flex-wrap justify-between gap-1 sm:gap-2 rounded-2xl sm:rounded-3xl bg-[#F3F3F7] p-1 sm:p-2 select-none'
+        'flex flex-wrap justify-between gap-1 sm:gap-2 rounded-2xl sm:rounded-3xl bg-[#F3F3F7] p-1 sm:p-2 select-none',
       )}
     >
       {items.map((item) => (
@@ -42,4 +42,3 @@ export const GroupVariants: React.FC<Props> = ({ items, value, onClick, classNam
     </div>
   );
 };
-

@@ -20,12 +20,7 @@ export const ProductCard: React.FC<Props> = ({ id, name, price, imageUrl, ingred
   const normalizedImageUrl = normalizeImageUrl(imageUrl) ?? '/no-image.png';
 
   return (
-    <div
-      className={cn(
-        'h-full min-h-[320px] sm:min-h-[340px] md:min-h-[360px] flex',
-        className
-      )}
-    >
+    <div className={cn('h-full min-h-[320px] sm:min-h-[340px] md:min-h-[360px] flex', className)}>
       <Link
         href={`/product/${id}`}
         className="flex h-full flex-col justify-between rounded-md sm:rounded-lg bg-white dark:bg-neutral-900 shadow-sm px-2 py-2 sm:px-4 sm:py-4 gap-2 sm:gap-3"
@@ -51,7 +46,10 @@ export const ProductCard: React.FC<Props> = ({ id, name, price, imageUrl, ingred
           <span className="text-base sm:text-lg md:text-xl">
             от <b>{price} ₽</b>
           </span>
-          <Button variant="default" className="text-xs sm:text-sm md:text-base font-bold flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2">
+          <Button
+            variant="default"
+            className="text-xs sm:text-sm md:text-base font-bold flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2"
+          >
             <Plus size={18} className="" />
             Купить
           </Button>

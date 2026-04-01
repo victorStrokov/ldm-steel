@@ -23,7 +23,7 @@ export const CartButton: React.FC<Props> = ({ className }) => {
           className={cn(
             'group relative px-2 sm:px-4 py-2 sm:py-3 min-w-20 h-10 sm:h-12',
             { 'w-20': loading },
-            className
+            className,
           )}
         >
           <b className="text-sm sm:text-base">{totalAmount} ₽</b>

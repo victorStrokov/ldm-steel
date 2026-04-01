@@ -13,7 +13,7 @@ export const ClearButton: React.FC<Props> = ({ onClick, className }) => {
       onClick={onClick}
       className={cn(
         'absolute top-1/2 right-3 sm:right-4 -translate-y-1/2 cursor-pointer opacity-30 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition',
-        className
+        className,
       )}
       type="button"
       tabIndex={0}

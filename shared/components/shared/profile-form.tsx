@@ -61,19 +61,12 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
       <div className="w-full max-w-md px-2 sm:px-4">
         <Title text={`Личные данные | # ${data.fullName}`} size="md" className="font-bold text-center mb-6" />
         <FormProvider {...form}>
-          <form
-            className="mt-6 flex flex-col gap-4"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form className="mt-6 flex flex-col gap-4" onSubmit={form.handleSubmit(onSubmit)}>
             <FormInput name="email" label="E-mail" required />
             <FormInput name="fullName" label="Полное имя" required />
             <FormInput type="password" name="password" label="Новый пароль" required />
             <FormInput type="password" name="confirmPassword" label="Повторите пароль" required />
-            <Button
-              disabled={form.formState.isSubmitting}
-              className="mt-6 text-base"
-              type="submit"
-            >
+            <Button disabled={form.formState.isSubmitting} className="mt-6 text-base" type="submit">
               Сохранить
             </Button>
             <Button

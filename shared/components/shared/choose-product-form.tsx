@@ -29,12 +29,7 @@ export const ChooseProductForm: React.FC<Props> = ({
   const normalizedImageUrl = normalizeImageUrl(imageUrl) ?? '/no-image.png';
 
   return (
-    <div
-      className={cn(
-        'flex flex-1 flex-col gap-4 sm:gap-6 p-3 sm:p-4 md:flex-row md:p-6',
-        className
-      )}
-    >
+    <div className={cn('flex flex-1 flex-col gap-4 sm:gap-6 p-3 sm:p-4 md:flex-row md:p-6', className)}>
       {/* Левая часть: картинка */}
       <div className="flex w-full items-center justify-center md:w-1/2 mb-4 md:mb-0">
         <div className="flex h-45 sm:h-60 md:h-75 w-full max-w-45 sm:max-w-60 md:max-w-75 items-center justify-center rounded-lg bg-gray-50 p-2 sm:p-0">

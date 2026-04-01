@@ -26,13 +26,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmou
   const totalPrice = totalAmount + deliveryPrice + packingPrice;
 
   return (
-    <WhiteBlock
-      className={cn(
-        'p-3 sm:p-4 md:p-6',
-        'md:sticky md:top-4',
-        className
-      )}
-    >
+    <WhiteBlock className={cn('p-3 sm:p-4 md:p-6', 'md:sticky md:top-4', className)}>
       <div className="mb-2 sm:mb-3 flex overflow-hidden rounded-xl border border-gray-200 text-sm font-medium">
         <button
           type="button"

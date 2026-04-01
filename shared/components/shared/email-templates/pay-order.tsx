@@ -15,7 +15,9 @@ export const PayOrderTemplate: React.FC<Props> = ({ orderId, totalAmount, paymen
     <Html>
       <Head />
       <Body style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#f9f9f9', padding: '10px' }}>
-        <Container style={{ backgroundColor: '#ffffff', padding: '12px', borderRadius: '8px', maxWidth: 360, margin: '0 auto' }}>
+        <Container
+          style={{ backgroundColor: '#ffffff', padding: '12px', borderRadius: '8px', maxWidth: 360, margin: '0 auto' }}
+        >
           <Text style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px' }}>
             Здравствуйте! Заказ №{orderId} создан
           </Text>
