@@ -6,7 +6,7 @@ export type CartItemDTO = CartItem & {
       images: ProductImage[]; // ✔ добавили картинки
     };
   };
-  ingredients: Ingredient[];
+  ingredients?: Ingredient[];
 };
 
 export interface CartDTO extends Cart {

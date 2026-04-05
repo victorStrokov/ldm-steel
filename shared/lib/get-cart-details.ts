@@ -28,7 +28,7 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
     steelSize: item.productItem.steelSize,
     productThickness: item.productItem.productThickness,
     disabled: false,
-    ingredients: item.ingredients.map((ingredient) => ({
+    ingredients: (item.ingredients ?? []).map((ingredient) => ({
       name: ingredient.name,
       price: ingredient.price,
     })),

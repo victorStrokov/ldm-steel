@@ -81,20 +81,52 @@ export async function POST(req: NextRequest) {
     const userCart = await findOrCreateCart(token);
 
     const data = (await req.json()) as CreateCartItemValues;
+    const ingredientIds = Array.from(new Set(data.ingredients ?? [])).sort((a, b) => a - b);
 
-    // проверка товара в корзине на идентичность найти решение с учетом ингредиентов и без ингредиентов иначе товар дублируется
-    const findCartItem = await prisma.cartItem.findFirst({
-      where: {
-        cartId: userCart.id,
-        productItemId: data.productItemId,
-        ingredients: {
-          every: {
-            id: { in: data.ingredients },
+    let findCartItem: {
+      id: number;
+      quantity: number;
+    } | null = null;
+
+    if (ingredientIds.length === 0) {
+      findCartItem = await prisma.cartItem.findFirst({
+        where: {
+          cartId: userCart.id,
+          productItemId: data.productItemId,
+          ingredients: {
+            none: {},
           },
-          some: {},
         },
-      },
-    });
+      });
+    } else {
+      const candidateItems = await prisma.cartItem.findMany({
+        where: {
+          cartId: userCart.id,
+          productItemId: data.productItemId,
+        },
+        select: {
+          id: true,
+          quantity: true,
+          ingredients: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+
+      findCartItem =
+        candidateItems.find((item) => {
+          const existingIds = item.ingredients.map((ingredient) => ingredient.id).sort((a, b) => a - b);
+
+          if (existingIds.length !== ingredientIds.length) {
+            return false;
+          }
+
+          return existingIds.every((id, index) => id === ingredientIds[index]);
+        }) ?? null;
+    }
+
     // если товар есть в корзине — увеличиваем его количество + 1
     if (findCartItem) {
       await prisma.cartItem.update({
@@ -111,7 +143,7 @@ export async function POST(req: NextRequest) {
           cartId: userCart.id,
           productItemId: data.productItemId,
           quantity: 1,
-          ingredients: { connect: data.ingredients?.map((id) => ({ id })) },
+          ingredients: ingredientIds.length > 0 ? { connect: ingredientIds.map((id) => ({ id })) } : undefined,
         },
       });
     }
