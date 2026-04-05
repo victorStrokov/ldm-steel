@@ -7,7 +7,7 @@ import { Input } from '../ui';
 import { RangeSlider } from './range-slider';
 import { CheckboxFiltersGroup } from './checkbox-filters-group';
 import { useQueryFilters, useFilters, useIngredients } from '@/shared/hooks';
-import { SortPopup } from './sort-popup';
+// import { SortPopup } from './sort-popup';
 
 interface Props {
   className?: string;
@@ -31,7 +31,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={cn(className, 'flex flex-col gap-3 sm:gap-5 px-2 sm:px-4')}>
-      <SortPopup />
+      {/* <SortPopup /> */}
 
       <Title text="Фильтрация" size="sm" className="mb-2 font-bold text-base sm:text-lg" />
       {/* верхние чекбоксы */}
