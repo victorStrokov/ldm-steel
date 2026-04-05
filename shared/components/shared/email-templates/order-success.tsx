@@ -1,4 +1,4 @@
-import { CartItemDTO } from '@/shared/services/dto/cart.dto';
+import { CartItemDTO, OrderSnapshotItem } from '@/shared/services/dto/cart.dto';
 import { Html, Head, Body, Container, Text, Hr, Section } from '@react-email/components';
 
 import React from 'react';
@@ -7,11 +7,27 @@ import { calcTotalOrder } from '@/shared/lib';
 interface Props {
   orderId: number;
   totalAmount: number;
-  items: CartItemDTO[];
+  items: Array<CartItemDTO | OrderSnapshotItem>;
 }
 
 export const OrderSuccessTemplate: React.FC<Props> = ({ orderId, totalAmount, items }) => {
   const { packingPrice, deliveryPrice, totalWithExtras } = calcTotalOrder(totalAmount);
+
+  const getItemName = (item: CartItemDTO | OrderSnapshotItem) => {
+    if ('productName' in item) {
+      return item.productName;
+    }
+
+    return item.productItem.product.name;
+  };
+
+  const getItemPrice = (item: CartItemDTO | OrderSnapshotItem) => {
+    if ('unitPrice' in item) {
+      return item.unitPrice;
+    }
+
+    return item.productItem.price ?? 0;
+  };
 
   return (
     <Html>
@@ -35,8 +51,7 @@ export const OrderSuccessTemplate: React.FC<Props> = ({ orderId, totalAmount, it
             <ul style={{ paddingLeft: '16px', fontSize: 14 }}>
               {items.map((item) => (
                 <li key={item.id} style={{ marginBottom: '4px' }}>
-                  {item.productItem.product.name} — {item.productItem.price}₽ × {item.quantity} ={' '}
-                  {item.productItem.price! * item.quantity}₽
+                  {getItemName(item)} — {getItemPrice(item)}₽ × {item.quantity} = {getItemPrice(item) * item.quantity}₽
                 </li>
               ))}
             </ul>

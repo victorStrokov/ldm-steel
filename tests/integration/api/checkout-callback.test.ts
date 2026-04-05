@@ -72,4 +72,26 @@ describe('POST /api/checkout/callback', () => {
     expect(prisma.order.update).toHaveBeenCalled();
     expect(sendEmail).toHaveBeenCalled();
   });
+
+  it('works with object items format from new order snapshot', async () => {
+    vi.mocked(prisma.order.findFirst).mockResolvedValue({
+      id: 11,
+      email: 'new-user@example.com',
+      items: [{ id: 7, quantity: 2, productName: 'Профиль', unitPrice: 500 }],
+      totalAmount: 1000,
+    } as never);
+
+    vi.mocked(prisma.order.update).mockResolvedValue({ id: 11 } as never);
+
+    const res = await POST({
+      json: async () => ({ object: { metadata: { order_id: '11' }, status: 'succeeded' } }),
+    } as never);
+
+    expect(res.status).toBe(200);
+    expect(prisma.order.update).toHaveBeenCalledWith({
+      where: { id: 11 },
+      data: { status: 'SUCCEEDED' },
+    });
+    expect(sendEmail).toHaveBeenCalled();
+  });
 });

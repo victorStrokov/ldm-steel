@@ -4,7 +4,7 @@ import { OrderFailedTemplate } from '@/shared/components/shared/email-templates/
 import { OrderSuccessTemplate } from '@/shared/components/shared/email-templates/order-success';
 import { sendEmail } from '@/shared/lib';
 import { logger } from '@/shared/lib/logger';
-import { CartItemDTO } from '@/shared/services/dto/cart.dto';
+import { CartItemDTO, OrderSnapshotItem } from '@/shared/services/dto/cart.dto';
 
 const log = logger.child({ module: 'api/checkout/callback' });
 import { OrderStatus } from '@prisma/client';
@@ -33,7 +33,10 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    const items = JSON.parse(order.items as string) as CartItemDTO[];
+    const rawItems = order.items as unknown;
+    const items = (typeof rawItems === 'string' ? JSON.parse(rawItems) : rawItems) as
+      | OrderSnapshotItem[]
+      | CartItemDTO[];
 
     if (!items) {
       return NextResponse.json({ error: 'Order items not found' }, { status: 404 });

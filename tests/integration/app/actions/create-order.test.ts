@@ -50,7 +50,23 @@ describe('createOrder', () => {
       user: { tenantId: 2 },
       items: [
         {
-          productItem: { product: { tenantId: 2 } },
+          id: 1,
+          quantity: 1,
+          productItemId: 101,
+          ingredients: [],
+          productItem: {
+            id: 101,
+            price: 1500,
+            sku: 'SKU-101',
+            steelSize: null,
+            productThickness: null,
+            product: {
+              id: 1001,
+              name: 'Тестовый профиль',
+              tenantId: 2,
+              images: [{ url: '/uploads/products/test.png' }],
+            },
+          },
         },
       ],
     } as never);
@@ -75,7 +91,20 @@ describe('createOrder', () => {
     });
 
     expect(result).toBe('https://pay.example/1');
-    expect(prisma.order.create).toHaveBeenCalled();
+    expect(prisma.order.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          items: [
+            expect.objectContaining({
+              productName: expect.any(String),
+              productItemId: expect.any(Number),
+              unitPrice: expect.any(Number),
+              lineTotal: expect.any(Number),
+            }),
+          ],
+        }),
+      }),
+    );
     expect(prisma.cart.update).toHaveBeenCalled();
     expect(prisma.cartItem.deleteMany).toHaveBeenCalled();
     expect(prisma.order.update).toHaveBeenCalledWith({

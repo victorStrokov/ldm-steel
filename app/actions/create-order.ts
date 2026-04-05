@@ -4,9 +4,10 @@ import { prisma } from '@/prisma/prisma-client';
 import { CheckoutFormValues, PayOrderTemplate } from '@/shared/components';
 import { createPayment, sendEmail } from '@/shared/lib';
 import { logger } from '@/shared/lib/logger';
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus, Prisma } from '@prisma/client';
 import { cookies } from 'next/headers';
 import React from 'react';
+import { OrderSnapshotItem } from '@/shared/services/dto/cart.dto';
 
 const log = logger.child({ module: 'create-order' });
 
@@ -56,6 +57,31 @@ export async function createOrder(data: CheckoutFormValues) {
       throw new Error('Tenant ID not found');
     }
 
+    const orderItemsSnapshot: OrderSnapshotItem[] = userCart.items.map((item) => {
+      const ingredientTotal = (item.ingredients ?? []).reduce((sum, ingredient) => sum + ingredient.price, 0);
+      const unitPrice = (item.productItem.price ?? 0) + ingredientTotal;
+
+      return {
+        id: item.id,
+        cartItemId: item.id,
+        quantity: item.quantity,
+        productItemId: item.productItemId,
+        productId: item.productItem.product.id,
+        productName: item.productItem.product.name,
+        sku: item.productItem.sku,
+        unitPrice,
+        lineTotal: unitPrice * item.quantity,
+        imageUrl: item.productItem.product.images?.[0]?.url ?? null,
+        steelSize: item.productItem.steelSize ?? null,
+        productThickness: item.productItem.productThickness ?? null,
+        ingredients: (item.ingredients ?? []).map((ingredient) => ({
+          id: ingredient.id,
+          name: ingredient.name,
+          price: ingredient.price,
+        })),
+      };
+    });
+
     /* Создаем  заказ */
     const order = await prisma.order.create({
       data: {
@@ -67,7 +93,7 @@ export async function createOrder(data: CheckoutFormValues) {
         comment: data.comment,
         totalAmount: userCart.totalAmount, // нужен для понимания сколько стоил заказ в админку
         status: OrderStatus.PENDING,
-        items: JSON.stringify(userCart.items), // нужен для понимания что в заказе какие товары
+        items: orderItemsSnapshot as unknown as Prisma.InputJsonValue,
         tenantId,
       },
     });

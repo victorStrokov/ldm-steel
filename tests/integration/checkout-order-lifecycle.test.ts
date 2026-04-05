@@ -77,7 +77,7 @@ describe('checkout order lifecycle integration', () => {
     vi.mocked(prisma.order.findFirst).mockResolvedValue({
       id: 101,
       email: 'buyer@example.com',
-      items: JSON.stringify([{ id: 1, quantity: 2 }]),
+      items: [{ id: 1, quantity: 2, productName: 'Профиль', unitPrice: 1250 }],
       totalAmount: 2500,
     } as never);
 
