@@ -49,7 +49,7 @@ test.describe('Checkout sandbox payment flow', () => {
     await page.locator('input').nth(4).fill('Москва, Тверская 1');
     await page.getByPlaceholder('Комментарий к заказу').fill('sandbox checkout e2e');
 
-    await page.getByRole('button', { name: 'Перейти к оплате' }).click();
+    await page.getByRole('button', { name: 'Отправить заявку менеджеру' }).click();
 
     await expect
       .poll(() => page.url(), { timeout: 20000, message: 'Checkout did not redirect to payment page/url in time' })

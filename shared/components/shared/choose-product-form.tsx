@@ -1,6 +1,7 @@
 'use client';
 
 import { normalizeImageUrl } from '@/shared/lib/normalize-image-url';
+import { PriceMode, canShowPrices, shouldShowPriceOnRequestLabel } from '@/shared/lib/catalog-mode';
 import { cn } from '@/shared/lib/utils';
 import React from 'react';
 import { Title } from './title';
@@ -13,6 +14,7 @@ interface Props {
   loading?: boolean;
   items?: { price?: number }[];
   price: number;
+  priceMode?: PriceMode;
   onSubmit?: VoidFunction;
   onClickImage?: () => void;
 }
@@ -24,9 +26,11 @@ export const ChooseProductForm: React.FC<Props> = ({
   onSubmit,
   loading,
   price,
+  priceMode,
   onClickImage,
 }) => {
   const normalizedImageUrl = normalizeImageUrl(imageUrl) ?? '/no-image.png';
+  const effectivePriceMode: PriceMode = priceMode ?? 'visible';
 
   return (
     <div className={cn('flex flex-1 flex-col gap-4 sm:gap-6 p-3 sm:p-4 md:flex-row md:p-6', className)}>
@@ -53,7 +57,11 @@ export const ChooseProductForm: React.FC<Props> = ({
             onClick={() => onSubmit?.()}
             className="h-11 sm:h-14 w-full rounded-[14px] sm:rounded-[18px] px-4 sm:px-6 text-base sm:text-lg whitespace-normal"
           >
-            Добавить в корзину за {price} ₽
+            {canShowPrices(effectivePriceMode)
+              ? `Добавить в корзину за ${price} ₽`
+              : shouldShowPriceOnRequestLabel(effectivePriceMode)
+                ? 'Добавить в заявку'
+                : 'Добавить в заявку'}
           </Button>
         </div>
       </div>

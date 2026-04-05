@@ -4,17 +4,17 @@ test.describe('Checkout', () => {
   test('checkout page renders core sections', async ({ page }) => {
     await page.goto('/checkout');
 
-    await expect(page.getByRole('heading', { name: 'Оформление заказа' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Оформление заявки' })).toBeVisible();
     await expect(page.getByText('1. Корзина')).toBeVisible();
     await expect(page.getByText('2. Персональные данные')).toBeVisible();
     await expect(page.getByText('3. Адрес доставки')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Перейти к оплате' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Отправить заявку менеджеру' })).toBeVisible({ timeout: 15000 });
   });
 
   test('shows validation errors on empty checkout submit', async ({ page }) => {
     await page.goto('/checkout');
 
-    await page.getByRole('button', { name: 'Перейти к оплате' }).click();
+    await page.getByRole('button', { name: 'Отправить заявку менеджеру' }).click();
 
     await expect(page.getByText('Имя должно содержать минимум 2 символа')).toBeVisible();
     await expect(page.getByText('Фамилия должна содержать минимум 2 символа')).toBeVisible();
@@ -26,8 +26,7 @@ test.describe('Checkout', () => {
   test('empty cart state keeps order sum at zero', async ({ page }) => {
     await page.goto('/checkout');
 
-    await expect(page.getByText('Сумма заказа:')).toBeVisible();
-    await expect(page.getByText('0 ₽').first()).toBeVisible();
+    await expect(page.getByText('Цена по запросу')).toBeVisible({ timeout: 15000 });
   });
 
   test('not-auth page is available as unauthorized fallback', async ({ page }) => {

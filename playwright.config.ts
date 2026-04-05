@@ -8,12 +8,12 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : [['list'], ['html', { open: 'never' }]],
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3001',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
   },
   webServer: {
-    command: process.env.CI ? 'npm run build && npm run start -- --port 3001' : 'npm run dev -- --port 3001',
-    url: 'http://localhost:3001/dashboard',
+    command: process.env.CI ? 'npm run build && npm run start -- --port 3000' : 'npx next dev --port 3000 --webpack',
+    url: 'http://localhost:3000/',
     reuseExistingServer: !process.env.CI,
     timeout: process.env.CI ? 300000 : 120000,
   },

@@ -18,20 +18,85 @@ export const Stories: React.FC<Props> = ({ className }) => {
   const [open, setOpen] = React.useState(false);
   const [selectedStory, setSelectedStory] = React.useState<IStory>();
 
+  const selectedStorySlides = React.useMemo(() => {
+    if (!selectedStory) {
+      return [];
+    }
+
+    return selectedStory.items
+      .map((item) => {
+        const normalized = normalizeImageUrl(item.sourceUrl) ?? item.sourceUrl;
+        if (!normalized) {
+          return null;
+        }
+
+        const trimmed = normalized.trim();
+        if (!trimmed) {
+          return null;
+        }
+
+        if (trimmed.startsWith('/')) {
+          return { url: trimmed };
+        }
+
+        try {
+          const parsed = new URL(trimmed);
+          // Avoid mixed-content failures in HTTPS by skipping insecure resources.
+          if (parsed.protocol !== 'https:') {
+            return null;
+          }
+
+          return { url: parsed.toString() };
+        } catch {
+          return null;
+        }
+      })
+      .filter((slide): slide is { url: string } => slide !== null);
+  }, [selectedStory]);
+
   React.useEffect(() => {
     async function fetchStories() {
-      const data = await Api.stories.getAll();
-      setStories(data);
+      try {
+        const data = await Api.stories.getAll();
+        setStories(data);
+      } catch {
+        setStories([]);
+      }
     }
 
     fetchStories();
   }, []);
 
   const onClickStory = (story: IStory) => {
-    setSelectedStory(story);
-    if (story.items.length > 0) {
-      setOpen(true);
+    const hasPlayableSlide = story.items.some((item) => {
+      const normalized = normalizeImageUrl(item.sourceUrl) ?? item.sourceUrl;
+      if (!normalized) {
+        return false;
+      }
+
+      const trimmed = normalized.trim();
+      if (!trimmed) {
+        return false;
+      }
+
+      if (trimmed.startsWith('/')) {
+        return true;
+      }
+
+      try {
+        const parsed = new URL(trimmed);
+        return parsed.protocol === 'https:';
+      } catch {
+        return false;
+      }
+    });
+
+    if (!hasPlayableSlide) {
+      return;
     }
+
+    setSelectedStory(story);
+    setOpen(true);
   };
   return (
     <>
@@ -64,18 +129,15 @@ export const Stories: React.FC<Props> = ({ className }) => {
 
         {open && (
           <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/80 px-2">
-            <div className="relative w-full max-w-130 mx-auto max-h-150">
-              <button className="r-10 absolute top-5 right-5 z-30" onClick={() => setOpen(false)}>
+            <div className="relative mx-auto max-h-150 w-full max-w-130">
+              <button className="absolute right-5 top-5 z-30" onClick={() => setOpen(false)}>
                 <X className="h-8 w-8 text-white/50" />
               </button>
               <ReactStories
                 onAllStoriesEnd={() => setOpen(false)}
-                stories={
-                  selectedStory?.items.map((item) => ({
-                    url: normalizeImageUrl(item.sourceUrl) ?? item.sourceUrl,
-                  })) || []
-                }
+                stories={selectedStorySlides}
                 defaultInterval={3000}
+                preloadCount={0}
                 width={'100%'}
                 height={600}
               />

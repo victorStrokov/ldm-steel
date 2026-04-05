@@ -17,15 +17,19 @@ import { createClientLogger } from '@/shared/lib/client-logger';
 
 const log = createClientLogger('CheckoutPage');
 import { createOrder } from '@/app/actions/create-order';
+import { createInquiry } from '@/app/actions/create-inquiry';
 import toast from 'react-hot-toast';
 import React from 'react';
 import { useSession } from 'next-auth/react';
 import { Api } from '@/shared/services/api-client';
+import { useCatalogSettings } from '@/shared/hooks/use-catalog-settings';
+import { isInquiryMode } from '@/shared/lib/catalog-mode';
 
 export default function CheckoutPage() {
   const [submitting, setSubmitting] = React.useState(false);
   const { totalAmount, items, updateItemQuantity, removeCartItem, loading } = useCart();
   const { data: session } = useSession();
+  const { priceMode, checkoutMode } = useCatalogSettings();
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -56,15 +60,32 @@ export default function CheckoutPage() {
   const onSubmit = async (data: CheckoutFormValues) => {
     try {
       setSubmitting(true);
-      const url = await createOrder(data);
-      toast.success('Заказ успешно оформлен! 🎉 Переход на страницу оплаты', { icon: '✅' });
-      if (url) {
-        location.href = url;
+      if (isInquiryMode(checkoutMode)) {
+        const inquiryId = await createInquiry(data);
+
+        if (!inquiryId) {
+          throw new Error('Inquiry was not created');
+        }
+
+        toast.success(`Заявка №${inquiryId} успешно отправлена`, { icon: '✅' });
+        location.href = '/';
+        return;
       }
+
+      const url = await createOrder(data);
+
+      if (!url) {
+        throw new Error('Payment URL not found');
+      }
+
+      toast.success('Заказ успешно оформлен! Переход на страницу оплаты', { icon: '✅' });
+      location.href = url;
     } catch (error) {
-      log.error('createOrder failed', error);
+      log.error('checkout submit failed', error);
       setSubmitting(false);
-      toast.error('Не удалось создать заказ', { icon: '❌' });
+      toast.error(isInquiryMode(checkoutMode) ? 'Не удалось отправить заявку' : 'Не удалось создать заказ', {
+        icon: '❌',
+      });
     }
   };
 
@@ -75,7 +96,10 @@ export default function CheckoutPage() {
 
   return (
     <Container className="mt-6">
-      <Title text="Оформление заказа" className="text-blue-deep/90 mb-10 text-2xl md:text-[36px] font-extrabold" />
+      <Title
+        text={isInquiryMode(checkoutMode) ? 'Оформление заявки' : 'Оформление заказа'}
+        className="text-blue-deep/90 mb-10 text-2xl md:text-[36px] font-extrabold"
+      />
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col md:flex-row gap-4 md:gap-10">
@@ -93,7 +117,12 @@ export default function CheckoutPage() {
 
             {/* Правая часть */}
             <div className="w-full md:w-112.5">
-              <CheckoutSidebar totalAmount={totalAmount} loading={loading || submitting} />
+              <CheckoutSidebar
+                totalAmount={totalAmount}
+                loading={loading || submitting}
+                priceMode={priceMode}
+                checkoutMode={checkoutMode}
+              />
             </div>
           </div>
         </form>

@@ -1,6 +1,7 @@
 import { ProductItem } from '@prisma/client';
 import { SteelSizes, ProductThickness } from '../constants/profile';
 import { IngredientBase } from '@/@types/IngredientBase';
+import { PriceMode, canShowPrices } from './catalog-mode';
 
 /**
  * Вычисляет общую цену продукта с учётом выбранных ингредиентов
@@ -19,13 +20,16 @@ export const calcTotalProductPrice = (
   items: ProductItem[],
   ingredients: IngredientBase[],
   selectedIngredients: Set<number> = new Set<number>(),
+  priceMode: PriceMode = 'visible',
 ) => {
   const productPrice =
     items?.find((item) => item.steelSize === size && item.productThickness === thickness)?.price || 0;
-  const totalIngredientsPrice =
-    ingredients
-      ?.filter((ingredient) => selectedIngredients.has(ingredient.id))
-      .reduce((acc, ingredient) => acc + ingredient.price, 0) || 0;
+  const shouldIncludeIngredientPrice = canShowPrices(priceMode);
+  const totalIngredientsPrice = shouldIncludeIngredientPrice
+    ? ingredients
+        ?.filter((ingredient) => selectedIngredients.has(ingredient.id))
+        .reduce((acc, ingredient) => acc + ingredient.price, 0) || 0
+    : 0;
 
   return productPrice + totalIngredientsPrice;
 };

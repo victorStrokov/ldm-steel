@@ -5,6 +5,7 @@ import { createClientLogger } from '@/shared/lib/client-logger';
 const log = createClientLogger('ProductForm');
 
 import { ProductWithRelations } from '@/@types/prisma';
+import { PriceMode } from '@/shared/lib/catalog-mode';
 import { useCartStore } from '@/shared/store';
 import React from 'react';
 import toast from 'react-hot-toast';
@@ -14,9 +15,10 @@ import { ChooseProductForm } from './choose-product-form';
 interface Props {
   product: ProductWithRelations;
   onSubmit?: VoidFunction;
+  priceMode?: PriceMode;
 }
 
-export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit }) => {
+export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, priceMode }) => {
   const firstItem = product.items?.[0];
   const isProfileForm = Boolean(firstItem?.steelSize);
   const addCartItem = useCartStore((state) => state.addCartItem);
@@ -60,6 +62,7 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit }) =
         name={product.name}
         ingredients={product.ingredients}
         items={product.items}
+        priceMode={priceMode}
         onSubmit={onSubmit}
         loading={loading}
         onClickImage={handleImageClick}
@@ -71,6 +74,7 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit }) =
       name={product.name}
       imageUrl={product.images?.[0]?.url ?? '/no-image.png'}
       price={firstItem?.price ?? 0}
+      priceMode={priceMode}
       onSubmit={onSubmit}
       loading={loading}
       onClickImage={handleImageClick}

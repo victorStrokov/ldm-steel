@@ -6,8 +6,9 @@ import { ProductItem } from '@prisma/client';
 import { ProductImage } from './product-image';
 import { Title } from './title';
 import { Button } from '../ui';
+import { PriceMode, canShowPrices, shouldShowPriceOnRequestLabel } from '@/shared/lib/catalog-mode';
 import { GroupVariants } from './group-variants';
-import { SteelSizes, ProductThickness, productThickness } from '@/shared/constants/profile';
+import { SteelSizes, ProductThickness } from '@/shared/constants/profile';
 import { IngredientItem } from './ingredient-item';
 import { cn } from '@/shared/lib/utils';
 import { getProductDetails } from '@/shared/lib/get-product-details';
@@ -23,6 +24,7 @@ interface Props {
   name: string;
   items: ProductItem[];
   ingredients: IngredientWithImages[];
+  priceMode?: PriceMode;
   loading?: boolean;
   onSubmit: (itemId: number, ingredients: number[]) => void;
   onClickImage?: () => void;
@@ -35,16 +37,34 @@ export const ChooseProfileForm: React.FC<Props> = ({
   className,
   ingredients,
   items,
+  priceMode,
   onSubmit,
   onClickImage,
   loading,
 }) => {
-  const { thickness, size, selectedIngredients, availableSizes, currentItemId, setSize, setThickness, addIngredient } =
-    useProductOptions(items);
+  const effectivePriceMode: PriceMode = priceMode ?? 'visible';
+  const {
+    thickness,
+    size,
+    selectedIngredients,
+    availableSizes,
+    availableThicknesses,
+    currentItemId,
+    setSize,
+    setThickness,
+    addIngredient,
+  } = useProductOptions(items);
 
   // Разобраться с ценообразованием профилей
 
-  const { totalPrice, textDetails } = getProductDetails(thickness, size, items, ingredients, selectedIngredients);
+  const { totalPrice, textDetails } = getProductDetails(
+    thickness,
+    size,
+    items,
+    ingredients,
+    selectedIngredients,
+    effectivePriceMode,
+  );
 
   const handleClickAdd = () => {
     if (currentItemId) {
@@ -56,7 +76,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
     <div className={cn('flex flex-1 flex-col gap-4 sm:gap-6 md:flex-row', className)}>
       {/* Левая часть: картинка */}
       <div className="flex w-full items-center justify-center md:w-1/2 mb-4 md:mb-0">
-        <div className="flex h-[220px] sm:h-[300px] w-full max-w-[220px] sm:max-w-[300px] items-center justify-center rounded-lg bg-gray-50 p-2 sm:p-0">
+        <div className="flex h-55 sm:h-75 w-full max-w-55 sm:max-w-75 items-center justify-center rounded-lg bg-gray-50 p-2 sm:p-0">
           <ProductImage
             imageUrl={imageUrl}
             onClickImage={onClickImage}
@@ -71,6 +91,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
         <p className="mb-3 sm:mb-4 text-gray-500 text-sm sm:text-base">{textDetails}</p>
         <div className="mb-3 sm:mb-4 flex items-center justify-end">
           <button
+            type="button"
             // onClick={resetFilters}
             className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-red-600"
           >
@@ -88,7 +109,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
           />
 
           <GroupVariants
-            items={productThickness}
+            items={availableThicknesses}
             value={String(thickness)}
             onClick={(value) => setThickness(Number(value) as ProductThickness)}
           />
@@ -117,10 +138,15 @@ export const ChooseProfileForm: React.FC<Props> = ({
         <div className="pt-3 sm:pt-4 md:sticky md:bottom-0 bg-[#f7f6f5]">
           <Button
             loading={loading}
+            disabled={!currentItemId}
             onClick={handleClickAdd}
-            className="h-[48px] sm:h-[55px] w-full rounded-[14px] sm:rounded-[18px] text-base sm:text-lg"
+            className="h-12 sm:h-13.75 w-full rounded-[14px] sm:rounded-[18px] text-base sm:text-lg"
           >
-            Добавить в корзину за {totalPrice} ₽
+            {canShowPrices(effectivePriceMode)
+              ? `Добавить в корзину за ${totalPrice} ₽`
+              : shouldShowPriceOnRequestLabel(effectivePriceMode)
+                ? 'Добавить в заявку'
+                : 'Добавить в заявку'}
           </Button>
         </div>
       </div>

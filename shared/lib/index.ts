@@ -8,5 +8,6 @@ export { productLengtRename } from './product-length-rename';
 export { sendEmail } from './sendEmail';
 export { createPayment } from './creat-payment';
 export { calcTotalOrder } from './calc-total-order';
+export { DEFAULT_CATALOG_SETTINGS, canShowPrices, isInquiryMode, shouldShowPriceOnRequestLabel } from './catalog-mode';
 // export { buildVariants } from './build-variants';
 // export { getLabel } from './getLabel';

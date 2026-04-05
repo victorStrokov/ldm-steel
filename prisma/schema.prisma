@@ -14,11 +14,14 @@ model Tenant {
   name          String
   createdAt     DateTime       @default(now())
   categories    Category[]
+  inquiries     Inquiry[]
   inventory     Inventory[]
   inventoryLogs InventoryLog[]
+  managerAssignments ManagerAssignment[]
   orders        Order[]
   products      Product[]
   users         User[]
+  settings      TenantSettings?
 }
 
 model User {
@@ -34,11 +37,14 @@ model User {
   updatedAt          DateTime          @updatedAt
   mustChangePassword Boolean           @default(false)
   banned             Boolean           @default(false)
+  handlesAllCategories Boolean         @default(false)
   tenantId           Int
   activityLogs       ActivityLog[]
   cart               Cart?
   orders             Order[]
   sessions           Session[]
+  managedInquiries   Inquiry[]         @relation("InquiryManager")
+  managerAssignments ManagerAssignment[]
   tenant             Tenant            @relation(fields: [tenantId], references: [id])
   verificationCode   VerificationCode?
 
@@ -83,8 +89,29 @@ model Category {
   tenantId  Int
   parent    Category?  @relation("CategoryParent", fields: [parentId], references: [id])
   children  Category[] @relation("CategoryParent")
+  managerAssignments ManagerAssignment[]
   tenant    Tenant     @relation(fields: [tenantId], references: [id])
   products  Product[]
+}
+
+model ManagerAssignment {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  categoryId Int?
+  productId  Int?
+  tenantId   Int
+  isPrimary  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  product    Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([userId])
+  @@index([categoryId])
+  @@index([productId])
 }
 
 model Product {
@@ -100,6 +127,7 @@ model Product {
   status      ProductStatus  @default(ACTIVE)
   category    Category       @relation(fields: [categoryId], references: [id])
   tenant      Tenant         @relation(fields: [tenantId], references: [id])
+  managerAssignments ManagerAssignment[]
   images      ProductImage[]
   items       ProductItem[]
   ingredients Ingredient[]   @relation("IngredientToProduct")
@@ -123,6 +151,7 @@ model ProductItem {
   steelSize        Int?
   sku              String           @unique
   cartItem         CartItem[]       @relation("ProductItemToCartItem")
+  inquiryItems     InquiryItem[]
   inventory        Inventory?
   product          Product          @relation(fields: [productId], references: [id])
 
@@ -240,6 +269,46 @@ model Order {
   @@index([tenantId])
 }
 
+model Inquiry {
+  id        Int           @id @default(autoincrement())
+  token     String
+  fullName  String        @db.VarChar(150)
+  email     String        @db.VarChar(255)
+  phone     String        @db.VarChar(20)
+  comment   String?       @db.VarChar(1000)
+  managerComment String?  @db.VarChar(2000)
+  status    InquiryStatus @default(NEW)
+  managerId Int?
+  lastContactAt DateTime?
+  nextFollowUpAt DateTime?
+  routeModeSnapshot InquiryRouteMode?
+  routeCoveredCategoryIds Json?
+  routeMissingCategoryIds Json?
+  tenantId  Int
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  manager   User?         @relation("InquiryManager", fields: [managerId], references: [id])
+  tenant    Tenant        @relation(fields: [tenantId], references: [id])
+  items     InquiryItem[]
+
+  @@index([tenantId])
+  @@index([managerId])
+  @@index([email])
+}
+
+model InquiryItem {
+  id            Int         @id @default(autoincrement())
+  inquiryId     Int
+  productItemId Int
+  quantity      Int         @default(1)
+  createdAt     DateTime    @default(now())
+  inquiry       Inquiry     @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  productItem   ProductItem @relation(fields: [productItemId], references: [id])
+
+  @@index([inquiryId])
+  @@index([productItemId])
+}
+
 model VerificationCode {
   id        Int      @id @default(autoincrement())
   userId    Int      @unique
@@ -272,6 +341,21 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum InquiryStatus {
+  NEW
+  IN_PROGRESS
+  RESPONDED
+  CLOSED
+}
+
+enum InquiryRouteMode {
+  UNASSIGNED
+  UNIVERSAL
+  FULL
+  PARTIAL
+  FALLBACK
+}
+
 enum UserRole {
   USER
   ADMIN
@@ -290,4 +374,25 @@ enum ProductStatus {
   ACTIVE
   ARCHIVED
   DRAFT
+}
+
+enum PriceMode {
+  visible
+  hidden
+  request
+}
+
+enum CheckoutMode {
+  order
+  inquiry
+}
+
+model TenantSettings {
+  id           Int          @id @default(autoincrement())
+  tenantId     Int          @unique
+  priceMode    PriceMode    @default(request)
+  checkoutMode CheckoutMode @default(inquiry)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  tenant       Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }

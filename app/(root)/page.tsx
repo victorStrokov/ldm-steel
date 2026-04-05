@@ -1,10 +1,12 @@
 import { Container, Title, TopBar, Filters, ProductsGroupList, Stories } from '@/shared//components/shared';
 import { Suspense } from 'react';
 import { findProducts, GetSearchParams } from '../actions/find-products';
+import { getCatalogSettings } from '../actions/get-catalog-settings';
 
 export default async function Home({ searchParams }: { searchParams: Promise<GetSearchParams> }) {
   const params: GetSearchParams = await searchParams;
 
+  const catalogSettings = await getCatalogSettings();
   const categories = await findProducts(params);
   return (
     <>
@@ -34,6 +36,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Get
                       title={category.name}
                       categoryId={category.id}
                       items={category.products}
+                      priceMode={catalogSettings.priceMode}
                     />
                   ),
               )}

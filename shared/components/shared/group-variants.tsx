@@ -27,6 +27,7 @@ export const GroupVariants: React.FC<Props> = ({ items, value, onClick, classNam
       {items.map((item) => (
         <button
           key={item.name}
+          type="button"
           onClick={() => onClick?.(item.value)}
           className={cn(
             'flex h-8 sm:h-9 flex-1 min-w-[80px] max-w-full cursor-pointer items-center justify-center rounded-2xl sm:rounded-3xl px-3 sm:px-5 text-xs sm:text-sm transition-all duration-400',

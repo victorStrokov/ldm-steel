@@ -6,13 +6,15 @@ import { Dialog, DialogTitle, DialogContent, DialogDescription } from '@/shared/
 import { useRouter } from 'next/navigation';
 import { ProductWithRelations } from '@/@types/prisma';
 import { ProductForm } from '../product-form';
+import { PriceMode } from '@/shared/lib/catalog-mode';
 
 interface Props {
   product: ProductWithRelations;
+  priceMode?: PriceMode;
   className?: string;
 }
 
-export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
+export const ChooseProductModal: React.FC<Props> = ({ product, priceMode, className }) => {
   const router = useRouter();
 
   return (
@@ -26,7 +28,7 @@ export const ChooseProductModal: React.FC<Props> = ({ product, className }) => {
         <DialogTitle className="sr-only">{product.name}</DialogTitle>
         <DialogDescription>Настройте параметры товара перед добавлением в корзину</DialogDescription>
 
-        <ProductForm product={product} onSubmit={() => router.back()} />
+        <ProductForm product={product} priceMode={priceMode} onSubmit={() => router.back()} />
       </DialogContent>
     </Dialog>
   );

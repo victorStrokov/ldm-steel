@@ -22,9 +22,12 @@ import { ProductThickness, SteelSizes } from '@/shared/constants/profile';
 import { Title } from './title';
 import { cn } from '@/shared/lib/utils';
 import { useCart } from '@/shared/hooks';
+import { useCatalogSettings } from '@/shared/hooks/use-catalog-settings';
+import { canShowPrices, isInquiryMode } from '@/shared/lib/catalog-mode';
 
 export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
   const { totalAmount, items, updateItemQuantity, removeCartItem } = useCart();
+  const { priceMode, checkoutMode } = useCatalogSettings();
   const [redirecting, setRedirecting] = React.useState(false);
 
   const onClickCountButton = (id: number, quantity: number, type: 'plus' | 'minus') => {
@@ -55,7 +58,7 @@ export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
               <Image src="/assets/empty-cart.png" width={160} height={160} alt="empty cart" className="mb-2 sm:mb-0" />
               <Title size="sm" text="Ваша корзина пуста" className="my-2 text-center font-bold" />
               <p className="mb-4 sm:mb-5 text-center text-neutral-500 text-sm sm:text-base">
-                Добавьте товары в корзину что бы оформить заказ
+                Добавьте товары в корзину чтобы отправить заявку менеджеру
               </p>
 
               <SheetDescription className="sr-only"> Вернуться назад</SheetDescription>
@@ -94,14 +97,15 @@ export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
 
               <SheetFooter className="w-full bg-white p-4 sm:p-8">
                 <div className="w-full">
-                  <div className="mb-3 sm:mb-4 flex">
-                    <span className="flex flex-1 text-base sm:text-lg text-neutral-500">
-                      Итого
-                      <div className="relative -top-1 mx-1 sm:mx-2 flex-1 border-b border-dashed border-b-neutral-200" />
-                    </span>
-
-                    <span className="text-base sm:text-lg font-bold">{totalAmount} ₽</span>
-                  </div>
+                  {canShowPrices(priceMode) && (
+                    <div className="mb-3 sm:mb-4 flex">
+                      <span className="flex flex-1 text-base sm:text-lg text-neutral-500">
+                        Итого
+                        <div className="relative -top-1 mx-1 sm:mx-2 flex-1 border-b border-dashed border-b-neutral-200" />
+                      </span>
+                      <span className="text-base sm:text-lg font-bold">{totalAmount} ₽</span>
+                    </div>
+                  )}
 
                   <Link href="/checkout">
                     <Button
@@ -110,7 +114,7 @@ export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
                       type="submit"
                       className="h-11 sm:h-12 w-full text-base"
                     >
-                      Оформить заказ
+                      {isInquiryMode(checkoutMode) ? 'Отправить заявку менеджеру' : 'Оформить заказ'}
                       <ArrowRight size={16} className="ml-2 w-5" />
                     </Button>
                   </Link>

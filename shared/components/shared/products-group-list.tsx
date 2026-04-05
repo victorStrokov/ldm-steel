@@ -8,16 +8,25 @@ import { ProductCard } from './product-card';
 import { useCategoryStore } from '@/shared/store/category';
 import { ProductWithRelations } from '@/@types/prisma';
 import { useSortStore } from '@/shared/store';
+import { PriceMode } from '@/shared/lib/catalog-mode';
 
 interface Props {
   title: string;
   items: ProductWithRelations[];
   categoryId: number;
+  priceMode?: PriceMode;
   className?: string;
   listClassName?: string;
 }
 
-export const ProductsGroupList: React.FC<Props> = ({ title, items, listClassName, categoryId, className }) => {
+export const ProductsGroupList: React.FC<Props> = ({
+  title,
+  items,
+  listClassName,
+  categoryId,
+  priceMode,
+  className,
+}) => {
   const setActiveCategoryId = useCategoryStore((state) => state.setActiveId);
   const { order } = useSortStore();
   const intersectionRef = React.useRef<HTMLDivElement>(null);
@@ -70,6 +79,7 @@ export const ProductsGroupList: React.FC<Props> = ({ title, items, listClassName
             imageUrl={product.images?.[0]?.url ?? '/no-image.png'}
             price={product.items?.[0]?.price ?? 0}
             ingredients={product.ingredients}
+            priceMode={priceMode}
           />
         ))}
       </div>
