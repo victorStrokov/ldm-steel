@@ -19,6 +19,7 @@ model Tenant {
   inventoryLogs InventoryLog[]
   managerAssignments ManagerAssignment[]
   orders        Order[]
+  productRelations ProductRelatedProduct[]
   products      Product[]
   users         User[]
   settings      TenantSettings?
@@ -131,8 +132,32 @@ model Product {
   images      ProductImage[]
   items       ProductItem[]
   ingredients Ingredient[]   @relation("IngredientToProduct")
+  relatedProducts ProductRelatedProduct[] @relation("ProductRelatedOutgoing")
+  relatedToProducts ProductRelatedProduct[] @relation("ProductRelatedIncoming")
 
   @@index([categoryId])
+}
+
+model ProductRelatedProduct {
+  id                Int                @id @default(autoincrement())
+  productId         Int
+  relatedProductId  Int
+  tenantId          Int
+  kind              RelatedProductKind @default(RECOMMENDED)
+  sortOrder         Int                @default(0)
+  isRequired        Boolean            @default(false)
+  compatibilityNote String?            @db.VarChar(500)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  product        Product @relation("ProductRelatedOutgoing", fields: [productId], references: [id], onDelete: Cascade)
+  relatedProduct Product @relation("ProductRelatedIncoming", fields: [relatedProductId], references: [id], onDelete: Cascade)
+  tenant         Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, relatedProductId])
+  @@index([tenantId])
+  @@index([productId, sortOrder])
+  @@index([relatedProductId])
 }
 
 model ProductItem {
@@ -374,6 +399,12 @@ enum ProductStatus {
   ACTIVE
   ARCHIVED
   DRAFT
+}
+
+enum RelatedProductKind {
+  RECOMMENDED
+  ACCESSORY
+  COMPATIBLE
 }
 
 enum PriceMode {
