@@ -16,6 +16,22 @@ export default async function ProductModalPage({ params }: { params: Promise<{ i
         },
       },
       images: true,
+      relatedProducts: {
+        where: {
+          relatedProduct: {
+            status: 'ACTIVE',
+          },
+        },
+        include: {
+          relatedProduct: {
+            include: {
+              items: true,
+              images: true,
+            },
+          },
+        },
+        orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
+      },
     },
   });
   if (!product) return notFound();

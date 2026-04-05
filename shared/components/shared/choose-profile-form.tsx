@@ -114,24 +114,25 @@ export const ChooseProfileForm: React.FC<Props> = ({
             onClick={(value) => setThickness(Number(value) as ProductThickness)}
           />
 
-          {/* Ингредиенты */}
-          <div className="rounded-md bg-gray-50 p-3 sm:p-5">
-            <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold">С этим товаром берут</h3>
+          {ingredients.length > 0 ? (
+            <div className="rounded-md bg-gray-50 p-3 sm:p-5">
+              <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold">С этим товаром берут</h3>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-              {ingredients?.map((ingredient) => (
-                <IngredientItem
-                  key={ingredient.id}
-                  imageUrl={ingredient.images?.[0]?.url ?? '/no-image.png'}
-                  name={ingredient.name || undefined}
-                  price={ingredient.price}
-                  onClick={() => addIngredient(ingredient.id)}
-                  active={selectedIngredients.has(ingredient.id)}
-                  className="mt-2 sm:mt-4"
-                />
-              ))}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                {ingredients.map((ingredient) => (
+                  <IngredientItem
+                    key={ingredient.id}
+                    imageUrl={ingredient.images?.[0]?.url ?? '/no-image.png'}
+                    name={ingredient.name || undefined}
+                    price={ingredient.price}
+                    onClick={() => addIngredient(ingredient.id)}
+                    active={selectedIngredients.has(ingredient.id)}
+                    className="mt-2 sm:mt-4"
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
 
         {/* Кнопка всегда внизу на md+ */}

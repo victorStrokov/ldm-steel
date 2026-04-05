@@ -19,6 +19,23 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         },
       },
 
+      relatedProducts: {
+        where: {
+          relatedProduct: {
+            status: 'ACTIVE',
+          },
+        },
+        include: {
+          relatedProduct: {
+            include: {
+              items: true,
+              images: true,
+            },
+          },
+        },
+        orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
+      },
+
       category: {
         include: {
           products: {
