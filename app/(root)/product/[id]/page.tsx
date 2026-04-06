@@ -12,13 +12,6 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     include: {
       items: true,
       images: true, // ← изображения продукта
-
-      ingredients: {
-        include: {
-          images: true,
-        },
-      },
-
       relatedProducts: {
         where: {
           relatedProduct: {

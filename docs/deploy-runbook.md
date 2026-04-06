@@ -135,7 +135,6 @@ Pass criteria: HTTP 200 and healthy DB check.
 
 ```bash
 curl -fsS "$BASE_URL/api/products/search?query=test"
-curl -fsS "$BASE_URL/api/ingredients"
 curl -fsS "$BASE_URL/api/stories"
 ```
 

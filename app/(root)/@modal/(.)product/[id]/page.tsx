@@ -10,11 +10,6 @@ export default async function ProductModalPage({ params }: { params: Promise<{ i
     where: { id: Number(id) },
     include: {
       items: true,
-      ingredients: {
-        include: {
-          images: true,
-        },
-      },
       images: true,
       relatedProducts: {
         where: {
