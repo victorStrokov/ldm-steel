@@ -3,8 +3,8 @@
 import React from 'react';
 import { cn } from '@/shared/lib/utils';
 import { Title } from './title';
-import { Input } from '../ui';
-import { RangeSlider } from './range-slider';
+// import { Input } from '../ui';
+// import { RangeSlider } from './range-slider';
 import { CheckboxFiltersGroup } from './checkbox-filters-group';
 import { useQueryFilters, useFilters } from '@/shared/hooks';
 // import { SortPopup } from './sort-popup';
@@ -18,10 +18,10 @@ export const Filters: React.FC<Props> = ({ className }) => {
 
   useQueryFilters(filters);
 
-  const updatePrices = (prices: number[]) => {
-    filters.setPrices('priceFrom', prices[0]);
-    filters.setPrices('priceTo', prices[1]);
-  };
+  // const updatePrices = (prices: number[]) => {
+  //   filters.setPrices('priceFrom', prices[0]);
+  //   filters.setPrices('priceTo', prices[1]);
+  // };
 
   // Note: когда список свёрнут и есть выбранные элементы — нужно выводить их
   // над кнопкой «Показать все» в CheckboxFiltersGroup. Отложено до v0.2.0.
@@ -90,7 +90,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
         />
       </div>
       {/* фильтр цен */}
-      <div className="mt-4 sm:mt-5 border-y border-y-neutral-100 py-4 sm:py-6 pb-5 sm:pb-7">
+      {/* <div className="mt-4 sm:mt-5 border-y border-y-neutral-100 py-4 sm:py-6 pb-5 sm:pb-7">
         <p className="mb-2 sm:mb-3 font-bold text-sm sm:text-base">Цена от и до</p>
         <div className="mb-4 sm:mb-5 flex gap-2 sm:gap-3">
           <Input
@@ -117,7 +117,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
           value={[filters.prices.priceFrom || 0, filters.prices.priceTo || 300000]}
           onValueChange={updatePrices}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

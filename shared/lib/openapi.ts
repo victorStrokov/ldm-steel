@@ -127,10 +127,6 @@ export const openApiDocument = {
               },
             ],
           },
-          ingredients: {
-            type: 'array',
-            items: { $ref: '#/components/schemas/Ingredient' },
-          },
         },
       },
       CartResponse: {
@@ -162,7 +158,6 @@ export const openApiDocument = {
                   images: [{ id: 5, url: '/assets/products/pizza.png' }],
                 },
               },
-              ingredients: [{ id: 1, name: 'Сыр моцарелла', price: 59 }],
             },
           ],
         },
@@ -252,10 +247,6 @@ export const openApiDocument = {
           images: {
             type: 'array',
             items: { $ref: '#/components/schemas/ProductImage' },
-          },
-          ingredients: {
-            type: 'array',
-            items: { $ref: '#/components/schemas/Ingredient' },
           },
         },
       },
@@ -644,35 +635,6 @@ export const openApiDocument = {
         },
       },
     },
-    '/ingredients': {
-      get: {
-        tags: ['catalog'],
-        summary: 'Список всех ингредиентов',
-        description: 'Возвращает полный список ингредиентов с изображениями.',
-        responses: {
-          '200': {
-            description: 'Массив ингредиентов',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'array',
-                  items: { $ref: '#/components/schemas/Ingredient' },
-                },
-                example: [
-                  {
-                    id: 1,
-                    name: 'Сыр моцарелла',
-                    price: 59,
-                    images: [{ id: 10, url: '/assets/ingredients/cheese.png' }],
-                  },
-                  { id: 2, name: 'Пепперони', price: 79, images: [] },
-                ],
-              },
-            },
-          },
-        },
-      },
-    },
     '/products/search': {
       get: {
         tags: ['catalog'],
@@ -704,7 +666,6 @@ export const openApiDocument = {
                     categoryId: 2,
                     items: [{ id: 42, price: 449, size: 30, pizzaType: 1, productId: 7 }],
                     images: [{ id: 5, url: '/assets/products/pizza.png' }],
-                    ingredients: [{ id: 1, name: 'Сыр моцарелла', price: 59, images: [] }],
                   },
                 ],
               },
