@@ -1,5 +1,4 @@
 import { Product, ProductImage, ProductItem } from '@prisma/client';
-import { IngredientWithImages } from './IngredientWithImages';
 
 export type ProductRelatedProductWithTarget = {
   id: number;
@@ -15,7 +14,6 @@ export type ProductRelatedProductWithTarget = {
 };
 
 export type ProductWithRelations = Product & {
-  ingredients: IngredientWithImages[];
   items: ProductItem[];
   images: ProductImage[];
   relatedProducts?: ProductRelatedProductWithTarget[];

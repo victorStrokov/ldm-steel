@@ -9,11 +9,6 @@ type CategoryWithProducts = Prisma.CategoryGetPayload<{
     products: {
       include: {
         images: true;
-        ingredients: {
-          include: {
-            images: true;
-          };
-        };
         items: true;
       };
     };
@@ -26,7 +21,6 @@ export interface GetSearchParams {
   materialTypes?: string;
   sizes?: string;
   length?: string;
-  ingredients?: string;
   priceFrom?: string;
   priceTo?: string;
 }
@@ -79,7 +73,6 @@ export const findProducts = async (params: GetSearchParams): Promise<CategoryWit
   const sizes = params.sizes?.split(',').map(Number) ?? [];
   const materialTypes = params.materialTypes?.split(',').map(Number) ?? [];
   const length = params.length?.split(',').map(Number) ?? [];
-  const ingredientsIdArr = params.ingredients?.split(',').map(Number) ?? [];
   const minPrice = Number(params.priceFrom) || DEFAULT_MIN_PRICE;
   const maxPrice = Number(params.priceTo) || DEFAULT_MAX_PRICE;
   const mapProductMaterialEnum: Record<number, ProductMaterial> = {
@@ -114,16 +107,10 @@ export const findProducts = async (params: GetSearchParams): Promise<CategoryWit
         products: {
           orderBy: { id: 'desc' },
           where: {
-            ingredients: ingredientsIdArr.length ? { some: { id: { in: ingredientsIdArr } } } : undefined,
             items: { some: itemWhere },
           },
           include: {
             images: true,
-            ingredients: {
-              include: {
-                images: true,
-              },
-            },
             items: {
               where: {
                 price: { gte: minPrice, lte: maxPrice },

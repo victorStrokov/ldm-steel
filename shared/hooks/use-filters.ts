@@ -14,7 +14,6 @@ export interface Filters {
   length: Set<string>;
   thickness: Set<string>;
   materialsTypes: Set<string>;
-  selectedIngredients: Set<string>;
   prices: PriceProps;
 }
 
@@ -24,15 +23,10 @@ interface ReturnProps extends Filters {
   setSizes: (value: string) => void;
   setLength: (value: string) => void;
   setThickness: (value: string) => void;
-  setSelectedIngredients: (value: string) => void;
 }
 
 export const useFilters = (): ReturnProps => {
   const searchParams = useSearchParams();
-
-  const [selectedIngredients, { toggle: toggleIngredients }] = useSet(
-    new Set(searchParams.get('ingredients')?.split(',') ?? []),
-  );
 
   const [sizes, { toggle: toggleSizes }] = useSet(new Set(searchParams.get('steelSize')?.split(',') ?? []));
   const [length, { toggle: toggleLength }] = useSet(new Set(searchParams.get('profileLength')?.split(',') ?? []));
@@ -58,7 +52,6 @@ export const useFilters = (): ReturnProps => {
     () => ({
       sizes,
       materialsTypes,
-      selectedIngredients,
       length,
       thickness,
       prices,
@@ -67,9 +60,8 @@ export const useFilters = (): ReturnProps => {
       setSizes: toggleSizes,
       setThickness: toggleThickness,
       setLength: toggleLength,
-      setSelectedIngredients: toggleIngredients,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sizes, materialsTypes, selectedIngredients, length, thickness, prices],
+    [sizes, materialsTypes, length, thickness, prices],
   );
 };

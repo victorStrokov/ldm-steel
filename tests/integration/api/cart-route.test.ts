@@ -21,7 +21,6 @@ vi.mock('@/prisma/prisma-client', () => ({
     },
     cartItem: {
       findFirst: vi.fn(),
-      findMany: vi.fn(),
       update: vi.fn(),
       create: vi.fn(),
     },
@@ -71,18 +70,19 @@ describe('POST /api/cart', () => {
 
   it('increments quantity when identical cart item already exists', async () => {
     vi.mocked(findOrCreateCart).mockResolvedValue({ id: 10 } as never);
-    vi.mocked(prisma.cartItem.findMany).mockResolvedValue([
-      { id: 20, quantity: 2, ingredients: [{ id: 1 }, { id: 2 }] },
-    ] as never);
+    vi.mocked(prisma.cartItem.findFirst).mockResolvedValue({ id: 20, quantity: 2 } as never);
     vi.mocked(prisma.cartItem.update).mockResolvedValue({ id: 20, quantity: 3 } as never);
     vi.mocked(updateCartTotalAmount).mockResolvedValue({ totalAmount: 300, items: [] } as never);
 
     const res = await POST({
       cookies: { get: vi.fn().mockReturnValue({ value: 'cart-token-1' }) },
       headers: { get: vi.fn().mockReturnValue(undefined) },
-      json: async () => ({ productItemId: 5, ingredients: [1, 2] }),
+      json: async () => ({ productItemId: 5 }),
     } as never);
 
+    expect(prisma.cartItem.findFirst).toHaveBeenCalledWith({
+      where: { cartId: 10, productItemId: 5, ingredients: { none: {} } },
+    });
     expect(prisma.cartItem.update).toHaveBeenCalledWith({
       where: { id: 20 },
       data: { quantity: 3 },
@@ -91,19 +91,21 @@ describe('POST /api/cart', () => {
     expect(res.status).toBe(200);
   });
 
-  it('creates cart item when there is no identical item', async () => {
+  it('creates cart item when there is no existing item', async () => {
     vi.mocked(findOrCreateCart).mockResolvedValue({ id: 10 } as never);
-    vi.mocked(prisma.cartItem.findMany).mockResolvedValue([] as never);
+    vi.mocked(prisma.cartItem.findFirst).mockResolvedValue(null as never);
     vi.mocked(prisma.cartItem.create).mockResolvedValue({ id: 21, quantity: 1 } as never);
     vi.mocked(updateCartTotalAmount).mockResolvedValue({ totalAmount: 500, items: [] } as never);
 
     const res = await POST({
       cookies: { get: vi.fn().mockReturnValue(undefined) },
       headers: { get: vi.fn().mockReturnValue(undefined) },
-      json: async () => ({ productItemId: 5, ingredients: [1] }),
+      json: async () => ({ productItemId: 5 }),
     } as never);
 
-    expect(prisma.cartItem.create).toHaveBeenCalled();
+    expect(prisma.cartItem.create).toHaveBeenCalledWith({
+      data: { cartId: 10, productItemId: 5, quantity: 1 },
+    });
     expect(updateCartTotalAmount).toHaveBeenCalledWith('generated-cart-token');
     expect(res.status).toBe(200);
   });
@@ -136,7 +138,6 @@ describe('POST /api/cart', () => {
 
   it('creates new cart item for related product (no ingredients) not yet in cart', async () => {
     vi.mocked(findOrCreateCart).mockResolvedValue({ id: 10 } as never);
-    // no existing item for this productItemId without ingredients
     vi.mocked(prisma.cartItem.findFirst).mockResolvedValue(null as never);
     vi.mocked(prisma.cartItem.create).mockResolvedValue({ id: 40, quantity: 1 } as never);
     vi.mocked(updateCartTotalAmount).mockResolvedValue({ totalAmount: 350, items: [] } as never);
@@ -159,7 +160,6 @@ describe('POST /api/cart', () => {
         cartId: 10,
         productItemId: 202,
         quantity: 1,
-        ingredients: undefined,
       },
     });
     expect(updateCartTotalAmount).toHaveBeenCalledWith('cart-token-3');

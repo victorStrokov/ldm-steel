@@ -4,7 +4,6 @@ import React from 'react';
 import { Title } from './title';
 import { Button } from '../ui';
 import { Plus } from 'lucide-react';
-import { IngredientWithImages } from '@/@types/IngredientWithImages';
 import { normalizeImageUrl } from '@/shared/lib/normalize-image-url';
 import { PriceMode, canShowPrices, shouldShowPriceOnRequestLabel } from '@/shared/lib/catalog-mode';
 
@@ -13,12 +12,11 @@ interface Props {
   name: string;
   price: number;
   imageUrl: string;
-  ingredients: IngredientWithImages[];
   priceMode?: PriceMode;
   className?: string;
 }
 
-export const ProductCard: React.FC<Props> = ({ id, name, price, imageUrl, ingredients, priceMode, className }) => {
+export const ProductCard: React.FC<Props> = ({ id, name, price, imageUrl, priceMode, className }) => {
   const normalizedImageUrl = normalizeImageUrl(imageUrl) ?? '/no-image.png';
   const effectivePriceMode: PriceMode = priceMode ?? 'visible';
 
@@ -39,9 +37,6 @@ export const ProductCard: React.FC<Props> = ({ id, name, price, imageUrl, ingred
           </div>
 
           <Title text={name} size="xs" className="mt-2 mb-1 line-clamp-2 font-bold text-base sm:text-lg" />
-          <p className="line-clamp-2 text-xs sm:text-sm text-gray-500">
-            {ingredients.map((ingredient) => ingredient.name).join(', ')}
-          </p>
         </div>
 
         {/* Нижняя часть */}

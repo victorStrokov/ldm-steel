@@ -25,7 +25,6 @@ export async function createOrder(data: CheckoutFormValues) {
         user: true,
         items: {
           include: {
-            ingredients: true,
             productItem: {
               include: {
                 product: {
@@ -58,8 +57,7 @@ export async function createOrder(data: CheckoutFormValues) {
     }
 
     const orderItemsSnapshot: OrderSnapshotItem[] = userCart.items.map((item) => {
-      const ingredientTotal = (item.ingredients ?? []).reduce((sum, ingredient) => sum + ingredient.price, 0);
-      const unitPrice = (item.productItem.price ?? 0) + ingredientTotal;
+      const unitPrice = item.productItem.price ?? 0;
 
       return {
         id: item.id,
@@ -74,11 +72,7 @@ export async function createOrder(data: CheckoutFormValues) {
         imageUrl: item.productItem.product.images?.[0]?.url ?? null,
         steelSize: item.productItem.steelSize ?? null,
         productThickness: item.productItem.productThickness ?? null,
-        ingredients: (item.ingredients ?? []).map((ingredient) => ({
-          id: ingredient.id,
-          name: ingredient.name,
-          price: ingredient.price,
-        })),
+        ingredients: [],
       };
     });
 

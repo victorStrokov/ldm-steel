@@ -18,7 +18,6 @@ export const useQueryFilters = (filters: Filters) => {
         sizes: Array.from(filters.sizes),
         materialsTypes: Array.from(filters.materialsTypes),
         length: Array.from(filters.length),
-        ingredients: Array.from(filters.selectedIngredients),
       };
 
       const query = qs.stringify(params, {

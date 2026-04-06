@@ -6,7 +6,7 @@ import { Title } from './title';
 import { Input } from '../ui';
 import { RangeSlider } from './range-slider';
 import { CheckboxFiltersGroup } from './checkbox-filters-group';
-import { useQueryFilters, useFilters, useIngredients } from '@/shared/hooks';
+import { useQueryFilters, useFilters } from '@/shared/hooks';
 // import { SortPopup } from './sort-popup';
 
 interface Props {
@@ -14,12 +14,9 @@ interface Props {
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
-  const { ingredients, loading } = useIngredients();
   const filters = useFilters();
 
   useQueryFilters(filters);
-
-  const items = ingredients.map((item) => ({ value: String(item.id), text: item.name }));
 
   const updatePrices = (prices: number[]) => {
     filters.setPrices('priceFrom', prices[0]);
@@ -121,18 +118,6 @@ export const Filters: React.FC<Props> = ({ className }) => {
           onValueChange={updatePrices}
         />
       </div>
-      <CheckboxFiltersGroup
-        loading={loading}
-        title="Комплектующие"
-        name="ingredients"
-        className="mt-3 sm:mt-5"
-        limit={6}
-        defaultItems={items.slice(0, 6)}
-        items={items}
-        onClickCheckbox={filters.setSelectedIngredients}
-        searchInputPlaceholder="Поиск комплектующих..."
-        selected={filters.selectedIngredients}
-      />
     </div>
   );
 };
