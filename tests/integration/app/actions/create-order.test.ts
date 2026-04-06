@@ -131,4 +131,105 @@ describe('createOrder', () => {
     expect(result).toBeUndefined();
     expect(prisma.order.create).not.toHaveBeenCalled();
   });
+
+  it('builds correct snapshot for cart with main product and related accessory (no ingredients)', async () => {
+    vi.mocked(cookies).mockResolvedValue({
+      get: vi.fn().mockReturnValue({ value: 'cart-token-related' }),
+    } as never);
+
+    vi.mocked(prisma.cart.findFirst).mockResolvedValue({
+      totalAmount: 5600,
+      user: { tenantId: 3 },
+      items: [
+        {
+          id: 1,
+          quantity: 1,
+          productItemId: 101,
+          ingredients: [],
+          productItem: {
+            id: 101,
+            price: 5000,
+            sku: 'PROF-001',
+            steelSize: 6,
+            productThickness: 2,
+            product: {
+              id: 1001,
+              name: 'Профиль ПВХ',
+              tenantId: 3,
+              images: [{ url: '/uploads/prof.jpg' }],
+            },
+          },
+        },
+        {
+          id: 2,
+          quantity: 2,
+          productItemId: 202,
+          ingredients: [],
+          productItem: {
+            id: 202,
+            price: 300,
+            sku: 'ACC-001',
+            steelSize: null,
+            productThickness: null,
+            product: {
+              id: 2002,
+              name: 'Крепёж универсальный',
+              tenantId: 3,
+              images: [],
+            },
+          },
+        },
+      ],
+    } as never);
+
+    vi.mocked(prisma.order.create).mockResolvedValue({
+      id: 20,
+      totalAmount: 5600,
+    } as never);
+
+    vi.mocked(createPayment).mockResolvedValue({
+      id: 'pay_related',
+      confirmation: { confirmation_url: 'https://pay.example/related' },
+    } as never);
+
+    const result = await createOrder({
+      firstName: 'Anna',
+      lastName: 'Ivanova',
+      email: 'anna@example.com',
+      phone: '+79990000000',
+      address: 'SPb',
+      comment: '',
+    });
+
+    expect(result).toBe('https://pay.example/related');
+
+    const createCall = vi.mocked(prisma.order.create).mock.calls[0][0];
+    const snapshot = createCall.data.items as Array<{
+      productItemId: number;
+      productName: string;
+      sku: string;
+      unitPrice: number;
+      lineTotal: number;
+      ingredients: unknown[];
+      imageUrl: string | null;
+    }>;
+
+    expect(snapshot).toHaveLength(2);
+
+    const mainItem = snapshot.find((i) => i.productItemId === 101)!;
+    expect(mainItem.productName).toBe('Профиль ПВХ');
+    expect(mainItem.sku).toBe('PROF-001');
+    expect(mainItem.unitPrice).toBe(5000);
+    expect(mainItem.lineTotal).toBe(5000); // 5000 × 1
+    expect(mainItem.ingredients).toEqual([]);
+    expect(mainItem.imageUrl).toBe('/uploads/prof.jpg');
+
+    const accessoryItem = snapshot.find((i) => i.productItemId === 202)!;
+    expect(accessoryItem.productName).toBe('Крепёж универсальный');
+    expect(accessoryItem.sku).toBe('ACC-001');
+    expect(accessoryItem.unitPrice).toBe(300);
+    expect(accessoryItem.lineTotal).toBe(600); // 300 × 2
+    expect(accessoryItem.ingredients).toEqual([]);
+    expect(accessoryItem.imageUrl).toBeNull();
+  });
 });
