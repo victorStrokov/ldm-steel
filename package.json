@@ -24,6 +24,7 @@
     "prisma:push": "prisma db push",
     "prisma:preview": "prisma db pull",
     "seed": "tsx prisma/seed.ts",
+    "backfill": "dotenv -e .env -- tsx prisma/backfill-ingredients.ts",
     "update": "powershell -ExecutionPolicy Bypass -File ./update.ps1",
     "postinstall": "prisma generate"
   },
