@@ -1,4 +1,4 @@
-import { Cart, CartItem, Ingredient, Product, ProductItem, ProductImage } from '@prisma/client';
+import { Cart, CartItem, Product, ProductItem, ProductImage } from '@prisma/client';
 
 export type CartItemDTO = CartItem & {
   productItem: ProductItem & {
@@ -6,7 +6,6 @@ export type CartItemDTO = CartItem & {
       images: ProductImage[]; // ✔ добавили картинки
     };
   };
-  ingredients?: Ingredient[];
 };
 
 export interface CartDTO extends Cart {
@@ -15,13 +14,6 @@ export interface CartDTO extends Cart {
 
 export interface CreateCartItemValues {
   productItemId: number;
-  ingredients?: number[];
-}
-
-export interface OrderSnapshotIngredient {
-  id: number;
-  name: string;
-  price: number;
 }
 
 export interface OrderSnapshotItem {
@@ -37,5 +29,4 @@ export interface OrderSnapshotItem {
   imageUrl: string | null;
   steelSize: number | null;
   productThickness: number | null;
-  ingredients: OrderSnapshotIngredient[];
 }

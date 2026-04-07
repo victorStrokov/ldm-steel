@@ -131,7 +131,6 @@ model Product {
   managerAssignments ManagerAssignment[]
   images      ProductImage[]
   items       ProductItem[]
-  ingredients Ingredient[]   @relation("IngredientToProduct")
   relatedProducts ProductRelatedProduct[] @relation("ProductRelatedOutgoing")
   relatedToProducts ProductRelatedProduct[] @relation("ProductRelatedIncoming")
 
@@ -222,25 +221,6 @@ model InventoryLog {
   tenant        Tenant    @relation(fields: [tenantId], references: [id])
 }
 
-model Ingredient {
-  id        Int               @id @default(autoincrement())
-  name      String
-  price     Int
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
-  images    IngredientImage[]
-  cartItem  CartItem[]        @relation("CartItemToIngredient")
-  products  Product[]         @relation("IngredientToProduct")
-}
-
-model IngredientImage {
-  id           Int        @id @default(autoincrement())
-  ingredientId Int
-  url          String
-  sortOrder    Int        @default(0)
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
-}
-
 model Cart {
   id          Int        @id @default(autoincrement())
   userId      Int?       @unique
@@ -263,7 +243,6 @@ model CartItem {
   updatedAt     DateTime     @updatedAt
   cart          Cart         @relation(fields: [cartId], references: [id])
   productItem   ProductItem  @relation("ProductItemToCartItem", fields: [productItemId], references: [id])
-  ingredients   Ingredient[] @relation("CartItemToIngredient")
 
   @@index([cartId])
   @@index([productItemId])

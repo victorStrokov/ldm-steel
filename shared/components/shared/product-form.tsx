@@ -29,13 +29,12 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, pri
 
   const relatedProducts = (product.relatedProducts ?? []).filter((relation) => relation.relatedProduct?.items?.length);
 
-  const onSubmit = async (productItemId?: number, ingredients?: number[]) => {
+  const onSubmit = async (productItemId?: number) => {
     try {
       const itemId = productItemId ?? firstItem?.id;
 
       await addCartItem({
         productItemId: itemId,
-        ingredients,
       });
 
       toast.success(product.name + '  добавлен в корзину');
@@ -144,7 +143,6 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, pri
         <ChooseProfileForm
           imageUrl={product.images?.[0]?.url ?? '/no-image.png'}
           name={product.name}
-          ingredients={[]}
           items={product.items}
           priceMode={effectivePriceMode}
           onSubmit={onSubmit}

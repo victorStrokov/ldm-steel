@@ -6,6 +6,7 @@ export const categories = [
   { id: 5, name: 'Фурнитура' },
   { id: 6, name: 'Комплектующие' },
   { id: 7, name: 'Масла' },
+  { id: 8, name: 'Крепеж' },
 ];
 
 export const _ingredients = [

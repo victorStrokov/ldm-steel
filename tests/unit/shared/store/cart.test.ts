@@ -69,9 +69,9 @@ describe('shared/store/cart', () => {
     vi.mocked(Api.cart.addCartItem).mockResolvedValue(apiCart as never);
     vi.mocked(getCartDetails).mockReturnValue(mappedCart as never);
 
-    await useCartStore.getState().addCartItem({ productItemId: 44, ingredients: [1, 2] });
+    await useCartStore.getState().addCartItem({ productItemId: 44 });
 
-    expect(Api.cart.addCartItem).toHaveBeenCalledWith({ productItemId: 44, ingredients: [1, 2] });
+    expect(Api.cart.addCartItem).toHaveBeenCalledWith({ productItemId: 44 });
     expect(useCartStore.getState().totalAmount).toBe(1400);
     expect(useCartStore.getState().items).toEqual(mappedCart.items);
     expect(useCartStore.getState().loading).toBe(false);

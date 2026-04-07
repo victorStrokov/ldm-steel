@@ -49,7 +49,7 @@ describe('shared/services/cart', () => {
 
   it('addCartItem posts values and returns cart payload', async () => {
     const payload = { totalAmount: 1500, items: [{ id: 10 }] };
-    const values = { productItemId: 42, ingredients: [1, 2] };
+    const values = { productItemId: 42 };
     vi.mocked(axiosInstance.post).mockResolvedValue({ data: payload } as never);
 
     const result = await cartService.addCartItem(values);

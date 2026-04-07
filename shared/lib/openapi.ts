@@ -39,12 +39,6 @@ export const openApiDocument = {
             description: 'ID варианта товара (ProductItem)',
             example: 42,
           },
-          ingredients: {
-            type: 'array',
-            items: { type: 'integer' },
-            description: 'Массив ID ингредиентов (опционально)',
-            example: [1, 3, 7],
-          },
         },
       },
       CartPatchRequest: {
@@ -56,24 +50,6 @@ export const openApiDocument = {
             minimum: 1,
             description: 'Новое количество единиц товара',
             example: 3,
-          },
-        },
-      },
-      Ingredient: {
-        type: 'object',
-        properties: {
-          id: { type: 'integer', example: 1 },
-          name: { type: 'string', example: 'Сыр моцарелла' },
-          price: { type: 'number', example: 59 },
-          images: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                id: { type: 'integer', example: 10 },
-                url: { type: 'string', example: '/assets/ingredients/cheese.png' },
-              },
-            },
           },
         },
       },
@@ -393,7 +369,7 @@ export const openApiDocument = {
         tags: ['cart'],
         summary: 'Добавить товар в корзину',
         description:
-          'Если товар с теми же `productItemId` и `ingredients` уже в корзине — увеличивает `quantity` на 1. Иначе создаёт новую позицию.',
+          'Если товар с тем же `productItemId` уже в корзине — увеличивает `quantity` на 1. Иначе создаёт новую позицию.',
         requestBody: {
           required: true,
           content: {
@@ -401,12 +377,8 @@ export const openApiDocument = {
               schema: { $ref: '#/components/schemas/CartAddItemRequest' },
               examples: {
                 simple: {
-                  summary: 'Без ингредиентов',
+                  summary: 'Добавление по productItemId',
                   value: { productItemId: 42 },
-                },
-                withIngredients: {
-                  summary: 'С ингредиентами',
-                  value: { productItemId: 42, ingredients: [1, 3, 7] },
                 },
               },
             },
@@ -639,8 +611,7 @@ export const openApiDocument = {
       get: {
         tags: ['catalog'],
         summary: 'Поиск товаров по названию',
-        description:
-          'Полнотекстовый поиск (case-insensitive). Возвращает до 5 товаров с вариантами, изображениями и ингредиентами.',
+        description: 'Полнотекстовый поиск (case-insensitive). Возвращает до 5 товаров с вариантами и изображениями.',
         parameters: [
           {
             name: 'query',

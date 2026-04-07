@@ -9,12 +9,10 @@ import { Button } from '../ui';
 import { PriceMode, canShowPrices, shouldShowPriceOnRequestLabel } from '@/shared/lib/catalog-mode';
 import { GroupVariants } from './group-variants';
 import { SteelSizes, ProductThickness } from '@/shared/constants/profile';
-import { IngredientItem } from './ingredient-item';
 import { cn } from '@/shared/lib/utils';
 import { getProductDetails } from '@/shared/lib/get-product-details';
 import { useProductOptions } from '@/shared/hooks';
 import { X } from 'lucide-react';
-import { IngredientWithImages } from '@/@types/IngredientWithImages';
 // import { SIZE_MAP, LENGTH_MAP, COLOR_MAP, SHAPE_MAP, TYPE_MAP } from '@/shared/constants/profile';
 // import { getLabel } from '@/shared/lib';
 // import { ProductVariants } from './product-variants';
@@ -23,10 +21,9 @@ interface Props {
   imageUrl: string;
   name: string;
   items: ProductItem[];
-  ingredients: IngredientWithImages[];
   priceMode?: PriceMode;
   loading?: boolean;
-  onSubmit: (itemId: number, ingredients: number[]) => void;
+  onSubmit: (itemId: number) => void;
   onClickImage?: () => void;
   className?: string;
 }
@@ -35,7 +32,6 @@ export const ChooseProfileForm: React.FC<Props> = ({
   imageUrl,
   name,
   className,
-  ingredients,
   items,
   priceMode,
   onSubmit,
@@ -43,32 +39,16 @@ export const ChooseProfileForm: React.FC<Props> = ({
   loading,
 }) => {
   const effectivePriceMode: PriceMode = priceMode ?? 'visible';
-  const {
-    thickness,
-    size,
-    selectedIngredients,
-    availableSizes,
-    availableThicknesses,
-    currentItemId,
-    setSize,
-    setThickness,
-    addIngredient,
-  } = useProductOptions(items);
+  const { thickness, size, availableSizes, availableThicknesses, currentItemId, setSize, setThickness } =
+    useProductOptions(items);
 
   // Разобраться с ценообразованием профилей
 
-  const { totalPrice, textDetails } = getProductDetails(
-    thickness,
-    size,
-    items,
-    ingredients,
-    selectedIngredients,
-    effectivePriceMode,
-  );
+  const { totalPrice, textDetails } = getProductDetails(thickness, size, items, effectivePriceMode);
 
   const handleClickAdd = () => {
     if (currentItemId) {
-      onSubmit(currentItemId, Array.from(selectedIngredients));
+      onSubmit(currentItemId);
     }
   };
 
@@ -85,7 +65,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Правая часть: текст + варианты + ингредиенты + кнопка */}
+      {/* Правая часть: текст + варианты + кнопка */}
       <div className="flex max-h-[80vh] w-full flex-col rounded-lg bg-[#f7f6f5] p-3 sm:p-4 md:w-1/2 md:p-6">
         <Title text={name} size="md" className="mb-2 sm:mb-3 font-extrabold" />
         <p className="mb-3 sm:mb-4 text-gray-500 text-sm sm:text-base">{textDetails}</p>
@@ -113,26 +93,6 @@ export const ChooseProfileForm: React.FC<Props> = ({
             value={String(thickness)}
             onClick={(value) => setThickness(Number(value) as ProductThickness)}
           />
-
-          {ingredients.length > 0 ? (
-            <div className="rounded-md bg-gray-50 p-3 sm:p-5">
-              <h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold">С этим товаром берут</h3>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                {ingredients.map((ingredient) => (
-                  <IngredientItem
-                    key={ingredient.id}
-                    imageUrl={ingredient.images?.[0]?.url ?? '/no-image.png'}
-                    name={ingredient.name || undefined}
-                    price={ingredient.price}
-                    onClick={() => addIngredient(ingredient.id)}
-                    active={selectedIngredients.has(ingredient.id)}
-                    className="mt-2 sm:mt-4"
-                  />
-                ))}
-              </div>
-            </div>
-          ) : null}
         </div>
 
         {/* Кнопка всегда внизу на md+ */}

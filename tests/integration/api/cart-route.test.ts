@@ -81,7 +81,7 @@ describe('POST /api/cart', () => {
     } as never);
 
     expect(prisma.cartItem.findFirst).toHaveBeenCalledWith({
-      where: { cartId: 10, productItemId: 5, ingredients: { none: {} } },
+      where: { cartId: 10, productItemId: 5 },
     });
     expect(prisma.cartItem.update).toHaveBeenCalledWith({
       where: { id: 20 },
@@ -110,7 +110,7 @@ describe('POST /api/cart', () => {
     expect(res.status).toBe(200);
   });
 
-  it('increments quantity for item without ingredients', async () => {
+  it('increments quantity for existing item with same productItemId', async () => {
     vi.mocked(findOrCreateCart).mockResolvedValue({ id: 10 } as never);
     vi.mocked(prisma.cartItem.findFirst).mockResolvedValue({ id: 30, quantity: 1 } as never);
     vi.mocked(prisma.cartItem.update).mockResolvedValue({ id: 30, quantity: 2 } as never);
@@ -126,7 +126,6 @@ describe('POST /api/cart', () => {
       where: {
         cartId: 10,
         productItemId: 7,
-        ingredients: { none: {} },
       },
     });
     expect(prisma.cartItem.update).toHaveBeenCalledWith({
@@ -136,7 +135,7 @@ describe('POST /api/cart', () => {
     expect(res.status).toBe(200);
   });
 
-  it('creates new cart item for related product (no ingredients) not yet in cart', async () => {
+  it('creates new cart item for related product not yet in cart', async () => {
     vi.mocked(findOrCreateCart).mockResolvedValue({ id: 10 } as never);
     vi.mocked(prisma.cartItem.findFirst).mockResolvedValue(null as never);
     vi.mocked(prisma.cartItem.create).mockResolvedValue({ id: 40, quantity: 1 } as never);
@@ -152,7 +151,6 @@ describe('POST /api/cart', () => {
       where: {
         cartId: 10,
         productItemId: 202,
-        ingredients: { none: {} },
       },
     });
     expect(prisma.cartItem.create).toHaveBeenCalledWith({

@@ -1,12 +1,18 @@
 import { prisma } from './prisma-client';
-import { categories, _ingredients } from './constants';
+import { categories, _ingredients, products } from './constants';
+
+function slugifySeed(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-zа-я0-9]+/gi, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
 async function down() {
   await prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "Tenant" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "Category" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "Product" RESTART IDENTITY CASCADE`;
-  await prisma.$executeRaw`TRUNCATE TABLE "Ingredient" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "Cart" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "CartItem" RESTART IDENTITY CASCADE`;
 }
@@ -28,12 +34,48 @@ async function up() {
     })),
   });
 
-  // Создание ингредиентов с изображениями
+  // Создание базовых товаров каталога
+  for (const [index, product] of products.entries()) {
+    const createdProduct = await prisma.product.create({
+      data: {
+        name: product.name,
+        slug: `${slugifySeed(product.name)}-${index + 1}`,
+        tenantId: tenant.id,
+        categoryId: product.categoryId,
+        images: {
+          create: [
+            {
+              url: product.imageUrl,
+              sortOrder: 0,
+            },
+          ],
+        },
+      },
+    });
+
+    await prisma.productItem.create({
+      data: {
+        productId: createdProduct.id,
+        price: 1000,
+        sku: `SEED-PRODUCT-${index + 1}`,
+        inventory: {
+          create: {
+            quantity: 0,
+            tenantId: tenant.id,
+          },
+        },
+      },
+    });
+  }
+
+  // Legacy ingredients переезжают в обычные товары категории "Крепеж"
   for (const ingredient of _ingredients) {
-    await prisma.ingredient.create({
+    const createdProduct = await prisma.product.create({
       data: {
         name: ingredient.name,
-        price: ingredient.price,
+        slug: `${slugifySeed(ingredient.name)}-fastener-${ingredient.id}`,
+        tenantId: tenant.id,
+        categoryId: 8,
         images: {
           create: [
             {
@@ -41,6 +83,20 @@ async function up() {
               sortOrder: 0,
             },
           ],
+        },
+      },
+    });
+
+    await prisma.productItem.create({
+      data: {
+        productId: createdProduct.id,
+        price: ingredient.price,
+        sku: `SEED-FASTENER-${ingredient.id}`,
+        inventory: {
+          create: {
+            quantity: 0,
+            tenantId: tenant.id,
+          },
         },
       },
     });

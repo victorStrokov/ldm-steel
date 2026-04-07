@@ -54,7 +54,6 @@ describe('checkout order lifecycle integration', () => {
         id: 1,
         quantity: 2,
         productItem: { product: { tenantId: 7 } },
-        ingredients: [],
       },
     ];
 
@@ -137,7 +136,7 @@ describe('checkout order lifecycle integration', () => {
       get: vi.fn().mockReturnValue({ value: 'cart-token-related' }),
     } as never);
 
-    // Cart contains: 1× main profile + 2× related accessory (both without ingredients)
+    // Cart contains: 1× main profile + 2× related accessory
     vi.mocked(prisma.cart.findFirst).mockResolvedValue({
       totalAmount: 5600,
       user: { tenantId: 7 },
@@ -146,7 +145,6 @@ describe('checkout order lifecycle integration', () => {
           id: 1,
           quantity: 1,
           productItemId: 101,
-          ingredients: [],
           productItem: {
             id: 101,
             price: 5000,
@@ -165,7 +163,6 @@ describe('checkout order lifecycle integration', () => {
           id: 2,
           quantity: 2,
           productItemId: 202,
-          ingredients: [],
           productItem: {
             id: 202,
             price: 300,
@@ -219,12 +216,10 @@ describe('checkout order lifecycle integration', () => {
     const snapshot = createCall.data.items as Array<{
       productItemId: number;
       lineTotal: number;
-      ingredients: unknown[];
     }>;
     expect(snapshot).toHaveLength(2);
     expect(snapshot.find((i) => i.productItemId === 101)?.lineTotal).toBe(5000);
     expect(snapshot.find((i) => i.productItemId === 202)?.lineTotal).toBe(600);
-    expect(snapshot.every((i) => i.ingredients.length === 0)).toBe(true);
 
     expect(prisma.cart.update).toHaveBeenCalledWith({
       where: { token: 'cart-token-related' },

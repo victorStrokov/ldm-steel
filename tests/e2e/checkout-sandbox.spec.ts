@@ -32,7 +32,6 @@ test.describe('Checkout sandbox payment flow', () => {
     const addToCartRes = await page.request.post('/api/cart', {
       data: {
         productItemId: productItem.id,
-        ingredients: [],
       },
     });
 

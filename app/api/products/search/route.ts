@@ -15,11 +15,6 @@ export async function GET(req: NextRequest) {
     include: {
       items: true,
       images: true,
-      ingredients: {
-        include: {
-          images: true,
-        },
-      },
     },
   });
 

@@ -53,7 +53,6 @@ describe('createOrder', () => {
           id: 1,
           quantity: 1,
           productItemId: 101,
-          ingredients: [],
           productItem: {
             id: 101,
             price: 1500,
@@ -132,7 +131,7 @@ describe('createOrder', () => {
     expect(prisma.order.create).not.toHaveBeenCalled();
   });
 
-  it('builds correct snapshot for cart with main product and related accessory (no ingredients)', async () => {
+  it('builds correct snapshot for cart with main product and related accessory', async () => {
     vi.mocked(cookies).mockResolvedValue({
       get: vi.fn().mockReturnValue({ value: 'cart-token-related' }),
     } as never);
@@ -145,7 +144,6 @@ describe('createOrder', () => {
           id: 1,
           quantity: 1,
           productItemId: 101,
-          ingredients: [],
           productItem: {
             id: 101,
             price: 5000,
@@ -164,7 +162,6 @@ describe('createOrder', () => {
           id: 2,
           quantity: 2,
           productItemId: 202,
-          ingredients: [],
           productItem: {
             id: 202,
             price: 300,
@@ -210,7 +207,6 @@ describe('createOrder', () => {
       sku: string;
       unitPrice: number;
       lineTotal: number;
-      ingredients: unknown[];
       imageUrl: string | null;
     }>;
 
@@ -221,7 +217,6 @@ describe('createOrder', () => {
     expect(mainItem.sku).toBe('PROF-001');
     expect(mainItem.unitPrice).toBe(5000);
     expect(mainItem.lineTotal).toBe(5000); // 5000 × 1
-    expect(mainItem.ingredients).toEqual([]);
     expect(mainItem.imageUrl).toBe('/uploads/prof.jpg');
 
     const accessoryItem = snapshot.find((i) => i.productItemId === 202)!;
@@ -229,7 +224,6 @@ describe('createOrder', () => {
     expect(accessoryItem.sku).toBe('ACC-001');
     expect(accessoryItem.unitPrice).toBe(300);
     expect(accessoryItem.lineTotal).toBe(600); // 300 × 2
-    expect(accessoryItem.ingredients).toEqual([]);
     expect(accessoryItem.imageUrl).toBeNull();
   });
 });

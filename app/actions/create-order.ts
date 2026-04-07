@@ -72,7 +72,6 @@ export async function createOrder(data: CheckoutFormValues) {
         imageUrl: item.productItem.product.images?.[0]?.url ?? null,
         steelSize: item.productItem.steelSize ?? null,
         productThickness: item.productItem.productThickness ?? null,
-        ingredients: [],
       };
     });
 

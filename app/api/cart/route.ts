@@ -81,12 +81,11 @@ export async function POST(req: NextRequest) {
 
     const data = (await req.json()) as CreateCartItemValues;
 
-    // Dedup: find existing item for this productItemId without ingredients
+    // Dedup by product item only.
     const findCartItem = await prisma.cartItem.findFirst({
       where: {
         cartId: userCart.id,
         productItemId: data.productItemId,
-        ingredients: { none: {} },
       },
     });
 

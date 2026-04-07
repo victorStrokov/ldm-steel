@@ -1,5 +1,4 @@
 import { SteelSizes, ProductThickness } from '@/shared/constants/profile';
-import { useSet } from 'react-use';
 import { Variant } from '../components/shared/group-variants';
 import React from 'react';
 import { getAvailableProductThickness } from '../lib';
@@ -8,13 +7,11 @@ import { ProductItem } from '@prisma/client';
 interface ReturnProps {
   size: SteelSizes;
   thickness: ProductThickness;
-  selectedIngredients: Set<number>;
   availableSizes: Variant[];
   availableThicknesses: Variant[];
   currentItemId?: number;
   setThickness: (thickness: ProductThickness) => void;
   setSize: (size: SteelSizes) => void;
-  addIngredient: (id: number) => void;
 }
 
 export const useProductOptions = (items: ProductItem[]): ReturnProps => {
@@ -23,7 +20,6 @@ export const useProductOptions = (items: ProductItem[]): ReturnProps => {
   const [thickness, setThickness] = React.useState<ProductThickness>(
     (defaultItem?.productThickness as ProductThickness) ?? 1,
   );
-  const [selectedIngredients, { toggle: addIngredient }] = useSet(new Set<number>([]));
   const availableSizes = getAvailableProductThickness(thickness, items);
   const availableThicknesses = React.useMemo(
     () =>
@@ -63,10 +59,8 @@ export const useProductOptions = (items: ProductItem[]): ReturnProps => {
     size,
     availableSizes,
     availableThicknesses,
-    selectedIngredients,
     currentItemId,
     setSize,
     setThickness,
-    addIngredient,
   };
 };
