@@ -10,7 +10,6 @@ export type CartStateItem = {
   disabled?: boolean;
   steelSize?: number | null;
   productThickness?: number | null;
-  ingredients: Array<{ name: string; price: number }>;
 };
 
 interface ReturnProps {
@@ -28,7 +27,6 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
     steelSize: item.productItem.steelSize,
     productThickness: item.productItem.productThickness,
     disabled: false,
-    ingredients: [],
   })) as CartStateItem[];
 
   return {

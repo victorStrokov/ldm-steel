@@ -1,5 +1,5 @@
 import { prisma } from './prisma-client';
-import { categories, _ingredients, products } from './constants';
+import { categories, products } from './constants';
 
 function slugifySeed(value: string) {
   return value
@@ -56,42 +56,8 @@ async function up() {
     await prisma.productItem.create({
       data: {
         productId: createdProduct.id,
-        price: 1000,
+        price: product.price ?? 1000,
         sku: `SEED-PRODUCT-${index + 1}`,
-        inventory: {
-          create: {
-            quantity: 0,
-            tenantId: tenant.id,
-          },
-        },
-      },
-    });
-  }
-
-  // Legacy ingredients переезжают в обычные товары категории "Крепеж"
-  for (const ingredient of _ingredients) {
-    const createdProduct = await prisma.product.create({
-      data: {
-        name: ingredient.name,
-        slug: `${slugifySeed(ingredient.name)}-fastener-${ingredient.id}`,
-        tenantId: tenant.id,
-        categoryId: 8,
-        images: {
-          create: [
-            {
-              url: ingredient.imageUrl,
-              sortOrder: 0,
-            },
-          ],
-        },
-      },
-    });
-
-    await prisma.productItem.create({
-      data: {
-        productId: createdProduct.id,
-        price: ingredient.price,
-        sku: `SEED-FASTENER-${ingredient.id}`,
         inventory: {
           create: {
             quantity: 0,

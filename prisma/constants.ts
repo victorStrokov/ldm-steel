@@ -9,7 +9,7 @@ export const categories = [
   { id: 8, name: 'Крепеж' },
 ];
 
-export const _ingredients = [
+const fastenerProducts = [
   {
     name: 'Соединитель механический импоста Montblanc Eco 60',
     price: 1500,
@@ -125,7 +125,7 @@ export const _ingredients = [
     price: 79,
     imageUrl: 'https://avatars.mds.yandex.net/i?id=81bc11268994b2db9fa6e8e6ecdd844599c98e58-5288655-images-thumbs&n=13',
   },
-].map((obj, index) => ({ id: index + 1, ...obj }));
+].map((obj) => ({ ...obj, categoryId: 8 }));
 
 export const products = [
   {
@@ -278,4 +278,5 @@ export const products = [
     imageUrl: '/assets/Komplect_petlay_stvorka_Roto_NT.jpg',
     categoryId: 5,
   },
+  ...fastenerProducts,
 ];

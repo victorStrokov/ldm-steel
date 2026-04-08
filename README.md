@@ -81,3 +81,11 @@ SENTRY_AUTH_TOKEN=<token>
 - `RESEND_API_KEY`
 
 Sentry-переменные опциональны локально, но рекомендуются для production.
+
+## Prisma и миграции
+
+- `ldm-steel` не является владельцем Prisma-миграций.
+- Любые изменения схемы и запуск миграций выполняются только из `admin-panel`.
+- Команда `npm run prisma:migrate` в этом проекте намеренно заблокирована.
+- Папка [prisma/migrations/0000_baseline](prisma/migrations/0000_baseline) хранится только как исторический baseline-артефакт и не должна рассматриваться как актуальная схема БД.
+- Актуальный источник истины для схемы и миграций: `../admin-panel/prisma/schema.prisma` и `../admin-panel/prisma/migrations`.

@@ -24,12 +24,10 @@
     "prisma:push": "prisma db push",
     "prisma:preview": "prisma db pull",
     "seed": "tsx prisma/seed.ts",
-    "backfill": "dotenv -e .env -- tsx prisma/backfill-ingredients.ts",
     "update": "powershell -ExecutionPolicy Bypass -File ./update.ps1",
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.2.2",
     "@hookform/resolvers": "^5.2.2",
     "@neondatabase/serverless": "^1.0.2",
     "@prisma/adapter-neon": "^7.4.1",
@@ -46,6 +44,7 @@
     "@react-email/components": "^1.0.1",
     "@react-email/render": "^2.0.0",
     "@sentry/nextjs": "^10.45.0",
+    "@tailwindcss/postcss": "^4.2.2",
     "@types/qs": "^6.14.0",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.37.0",
@@ -85,6 +84,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/swagger-ui-react": "^5.18.0",
+    "@types/tailwindcss": "^3.0.11",
     "@vitest/coverage-v8": "^4.1.0",
     "autoprefixer": "^10.4.27",
     "baseline-browser-mapping": "^2.9.19",

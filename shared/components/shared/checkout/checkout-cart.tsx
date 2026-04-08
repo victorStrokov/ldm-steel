@@ -26,11 +26,7 @@ export const CheckoutCart: React.FC<Props> = ({ items, onClickCountButton, remov
                 key={item.id}
                 id={item.id}
                 imageUrl={item.imageUrl}
-                details={getCartItemDetails(
-                  item.ingredients,
-                  item.productThickness as ProductThickness,
-                  item.steelSize as SteelSizes,
-                )}
+                details={getCartItemDetails(item.productThickness as ProductThickness, item.steelSize as SteelSizes)}
                 disabled={item.disabled}
                 name={item.name}
                 price={item.price ?? 0}
