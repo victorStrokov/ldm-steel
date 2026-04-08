@@ -10,13 +10,13 @@ export default async function Home({ searchParams }: { searchParams: Promise<Get
   const categories = await findProducts(params);
   return (
     <>
+      <Stories />
       <Container className="mt-10">
         <Title size="lg" className="text-blue-deep/90 font-extrabold text-2xl md:text-4xl">
           Каталог
         </Title>
       </Container>
 
-      <Stories />
       <TopBar categories={categories.filter((category) => category.products.length > 0)} />
       <Container className="mt-10 mb-4">
         <div className="flex flex-col gap-6 md:flex-row md:gap-15">
