@@ -116,6 +116,28 @@ Runbook контроля перед релизом:
 2. Шаг закрыт: runtime-зависимость от `ingredients` полностью удалена.
 3. Финальная модель: дополнительные позиции задаются как обычные товары, а рекомендации реализуются через связи вида "с этим товаром обычно берут".
 
+### 4) Release-gate регрессия (cart/order/search/inquiry)
+
+Зачем нужен шаг:
+
+- Подтверждает, что после полного отказа от `ingredients` критичные B2B/retail сценарии проходят без регрессий.
+- Даёт воспроизводимый релизный контроль перед выкладкой.
+
+Проверка от 09.04.2026:
+
+1. `admin-panel`: полный e2e пакет `tests/e2e` -> `5 passed`.
+2. `ldm-steel`: полный `npm test` -> `17 files passed`, `55 tests passed`.
+
+Важно:
+
+1. Для стабилизации e2e устранен флаки-сценарий `inquiries-reassign` (убран hardcoded inquiry id, добавлены e2e manager fixtures).
+2. Для исключения `429 Too many requests` в e2e включен последовательный запуск Playwright (`workers: 1`, `fullyParallel: false`).
+
+Вывод по шагу:
+
+1. Release-gate регрессия закрыта.
+2. Сценарии cart/order/search/inquiry подтверждены на текущем состоянии main.
+
 Текущее состояние:
 
 - Runtime flow переведен на товарную модель: cart, order, search и product-form больше не зависят от `ingredients`.
