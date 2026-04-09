@@ -56,7 +56,7 @@ async function up() {
     await prisma.productItem.create({
       data: {
         productId: createdProduct.id,
-        price: product.price ?? 1000,
+        price: 'price' in product ? product.price : 1000,
         sku: `SEED-PRODUCT-${index + 1}`,
         inventory: {
           create: {
