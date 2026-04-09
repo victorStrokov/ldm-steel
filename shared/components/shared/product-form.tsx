@@ -28,6 +28,21 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, pri
   const loading = useCartStore((state) => state.loading);
 
   const relatedProducts = (product.relatedProducts ?? []).filter((relation) => relation.relatedProduct?.items?.length);
+  const relatedKinds: Array<'RECOMMENDED' | 'ACCESSORY' | 'COMPATIBLE'> = ['RECOMMENDED', 'ACCESSORY', 'COMPATIBLE'];
+
+  const groupedRelatedProducts = React.useMemo(() => {
+    const grouped: Record<'RECOMMENDED' | 'ACCESSORY' | 'COMPATIBLE', typeof relatedProducts> = {
+      RECOMMENDED: [],
+      ACCESSORY: [],
+      COMPATIBLE: [],
+    };
+
+    for (const relation of relatedProducts) {
+      grouped[relation.kind].push(relation);
+    }
+
+    return grouped;
+  }, [relatedProducts]);
 
   const onSubmit = async (productItemId?: number) => {
     try {
@@ -75,6 +90,12 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, pri
     return 'Рекомендуем';
   };
 
+  const getKindTitle = (kind: 'RECOMMENDED' | 'ACCESSORY' | 'COMPATIBLE') => {
+    if (kind === 'ACCESSORY') return 'Аксессуары';
+    if (kind === 'COMPATIBLE') return 'Совместимые товары';
+    return 'Рекомендуем добавить';
+  };
+
   const renderRelatedProducts = () => {
     if (!relatedProducts.length) return null;
 
@@ -82,44 +103,69 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, pri
       <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-4 sm:p-6">
         <h3 className="mb-4 text-lg font-semibold">С этим товаром берут</h3>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {relatedProducts.map((relation) => {
-            const related = relation.relatedProduct;
-            const relatedImage = normalizeImageUrl(related.images?.[0]?.url) ?? '/no-image.png';
-            const relatedPrice = related.items?.[0]?.price ?? 0;
+        <div className="space-y-5">
+          {relatedKinds.map((kind) => {
+            const relations = groupedRelatedProducts[kind];
+            if (!relations.length) return null;
 
             return (
-              <div
-                key={relation.id}
-                className="flex items-center gap-3 rounded-xl border border-gray-100 bg-[#f7f6f5] p-3"
-              >
-                <img
-                  src={relatedImage}
-                  alt={related.name}
-                  className="h-16 w-16 shrink-0 rounded-lg object-contain bg-white"
-                />
-
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{related.name}</p>
-                  <p className="text-xs text-gray-500">{getKindLabel(relation.kind)}</p>
-                  {relation.compatibilityNote ? (
-                    <p className="mt-1 line-clamp-2 text-xs text-gray-500">{relation.compatibilityNote}</p>
-                  ) : null}
+              <section key={kind} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-semibold text-gray-800">{getKindTitle(kind)}</h4>
+                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">{relations.length}</span>
                 </div>
 
-                <Button
-                  type="button"
-                  loading={loading}
-                  onClick={() => handleAddRelated(relation.relatedProductId)}
-                  className="h-9 whitespace-nowrap rounded-lg px-3 text-xs"
-                >
-                  {canShowPrices(effectivePriceMode)
-                    ? `Добавить за ${relatedPrice} ₽`
-                    : shouldShowPriceOnRequestLabel(effectivePriceMode)
-                      ? 'В заявку'
-                      : 'В заявку'}
-                </Button>
-              </div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {relations.map((relation) => {
+                    const related = relation.relatedProduct;
+                    const relatedImage = normalizeImageUrl(related.images?.[0]?.url) ?? '/no-image.png';
+                    const relatedPrice = related.items?.[0]?.price ?? 0;
+
+                    return (
+                      <div
+                        key={relation.id}
+                        className="flex items-center gap-3 rounded-xl border border-gray-100 bg-[#f7f6f5] p-3"
+                      >
+                        <img
+                          src={relatedImage}
+                          alt={related.name}
+                          className="h-16 w-16 shrink-0 rounded-lg object-contain bg-white"
+                        />
+
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium">{related.name}</p>
+                          <div className="mt-0.5 flex flex-wrap items-center gap-1">
+                            <span className="rounded bg-gray-200 px-1.5 py-0.5 text-[10px] text-gray-700">
+                              {getKindLabel(relation.kind)}
+                            </span>
+                            {relation.isRequired ? (
+                              <span className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] text-red-700">
+                                Обязательно
+                              </span>
+                            ) : null}
+                          </div>
+                          {relation.compatibilityNote ? (
+                            <p className="mt-1 line-clamp-2 text-xs text-gray-500">{relation.compatibilityNote}</p>
+                          ) : null}
+                        </div>
+
+                        <Button
+                          type="button"
+                          loading={loading}
+                          onClick={() => handleAddRelated(relation.relatedProductId)}
+                          className="h-9 whitespace-nowrap rounded-lg px-3 text-xs"
+                        >
+                          {canShowPrices(effectivePriceMode)
+                            ? `Добавить за ${relatedPrice} ₽`
+                            : shouldShowPriceOnRequestLabel(effectivePriceMode)
+                              ? 'В заявку'
+                              : 'В заявку'}
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
             );
           })}
         </div>
