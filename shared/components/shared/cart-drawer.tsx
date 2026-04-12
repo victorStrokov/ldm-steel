@@ -41,24 +41,24 @@ export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
       <SheetContent className="flex flex-col justify-between bg-[#ebddf7] pb-0 px-2 sm:px-0">
         <div className={cn('flex h-full flex-col', !totalAmount && 'justify-center')}>
           <SheetHeader className="sr-only">
-            <SheetTitle>Корзина</SheetTitle>
+            <SheetTitle>Заказ</SheetTitle>
           </SheetHeader>
 
           {totalAmount > 0 && (
             <SheetHeader>
               <SheetTitle>
-                В корзине <span className="font-bold">{productLengtRename(items.length)}</span>
+                В заказе <span className="font-bold">{productLengtRename(items.length)}</span>
               </SheetTitle>
-              <SheetDescription>Проверьте состав корзины перед оформлением</SheetDescription>
+              <SheetDescription>Проверьте состав заказа перед оформлением</SheetDescription>
             </SheetHeader>
           )}
 
           {!totalAmount && (
             <div className="mx-auto flex w-full max-w-xs flex-col items-center justify-center px-2 sm:w-72">
               <Image src="/assets/empty-cart.png" width={160} height={160} alt="empty cart" className="mb-2 sm:mb-0" />
-              <Title size="sm" text="Ваша корзина пуста" className="my-2 text-center font-bold" />
+              <Title size="sm" text="Ваш заказ пуст" className="my-2 text-center font-bold" />
               <p className="mb-4 sm:mb-5 text-center text-neutral-500 text-sm sm:text-base">
-                Добавьте товары в корзину чтобы отправить заявку менеджеру
+                Добавьте товары в заказ, чтобы отправить заказ менеджеру
               </p>
 
               <SheetDescription className="sr-only"> Вернуться назад</SheetDescription>
@@ -113,7 +113,7 @@ export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
                       type="submit"
                       className="h-11 sm:h-12 w-full text-base"
                     >
-                      {isInquiryMode(checkoutMode) ? 'Отправить заявку менеджеру' : 'Оформить заказ'}
+                      {isInquiryMode(checkoutMode) ? 'Отправить заказ менеджеру' : 'Оформить заказ'}
                       <ArrowRight size={16} className="ml-2 w-5" />
                     </Button>
                   </Link>

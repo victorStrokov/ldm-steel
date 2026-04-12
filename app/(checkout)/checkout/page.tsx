@@ -67,7 +67,7 @@ export default function CheckoutPage() {
           throw new Error('Inquiry was not created');
         }
 
-        toast.success(`Заявка №${inquiryId} успешно отправлена`, { icon: '✅' });
+        toast.success(`Заказ №${inquiryId} успешно отправлен`, { icon: '✅' });
         location.href = '/';
         return;
       }
@@ -83,7 +83,7 @@ export default function CheckoutPage() {
     } catch (error) {
       log.error('checkout submit failed', error);
       setSubmitting(false);
-      toast.error(isInquiryMode(checkoutMode) ? 'Не удалось отправить заявку' : 'Не удалось создать заказ', {
+      toast.error(isInquiryMode(checkoutMode) ? 'Не удалось отправить заказ' : 'Не удалось создать заказ', {
         icon: '❌',
       });
     }
@@ -96,10 +96,7 @@ export default function CheckoutPage() {
 
   return (
     <Container className="mt-6">
-      <Title
-        text={isInquiryMode(checkoutMode) ? 'Оформление заявки' : 'Оформление заказа'}
-        className="text-blue-deep/90 mb-10 text-2xl md:text-[36px] font-extrabold"
-      />
+      <Title text="Оформление заказа" className="text-blue-deep/90 mb-10 text-2xl md:text-[36px] font-extrabold" />
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col md:flex-row gap-4 md:gap-10">

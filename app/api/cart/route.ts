@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (!userCart) {
-      // корзина не найдена — возвращаем дефолт
+      // заявка не найдена — возвращаем дефолт
       return NextResponse.json({ totalAmount: 0, items: [] });
     }
 

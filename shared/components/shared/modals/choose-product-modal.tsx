@@ -26,7 +26,7 @@ export const ChooseProductModal: React.FC<Props> = ({ product, priceMode, classN
         )}
       >
         <DialogTitle className="sr-only">{product.name}</DialogTitle>
-        <DialogDescription>Настройте параметры товара перед добавлением в корзину</DialogDescription>
+        <DialogDescription>Настройте параметры товара перед добавлением в заказ</DialogDescription>
 
         <ProductForm product={product} priceMode={priceMode} onSubmit={() => router.back()} />
       </DialogContent>

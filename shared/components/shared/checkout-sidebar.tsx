@@ -152,7 +152,7 @@ export const CheckoutSidebar: React.FC<Props> = ({
         disabled={false}
         className="mt-4 sm:mt-6 h-12 sm:h-14 w-full rounded-xl sm:rounded-2xl text-base sm:text-lg font-bold"
       >
-        {isInquiryMode(checkoutMode) ? 'Отправить заявку менеджеру' : 'Перейти к оплате'}
+        {isInquiryMode(checkoutMode) ? 'Отправить заказ менеджеру' : 'Перейти к оплате'}
         <ArrowBigRight size={20} className="ml-2 w-5" />
       </Button>
     </WhiteBlock>

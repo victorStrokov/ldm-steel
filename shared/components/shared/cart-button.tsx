@@ -32,7 +32,7 @@ export const CartButton: React.FC<Props> = ({ className }) => {
           {canShowPrices(priceMode) ? (
             <b className="text-sm sm:text-base">{totalAmount} ₽</b>
           ) : (
-            <b className="text-sm sm:text-base">Корзина</b>
+            <b className="text-sm sm:text-base">Заказ</b>
           )}
           <span className="mx-2 sm:mx-3 h-full w-px bg-white/30 hidden sm:inline-block" />
           <div className="flex items-center gap-1 sm:gap-2 transition duration-300 group-hover:opacity-0">

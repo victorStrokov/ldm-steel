@@ -42,11 +42,11 @@ export async function createOrder(data: CheckoutFormValues) {
       },
     });
 
-    /* Если корзина не нашлась — бросаем ошибку */
+    /* Если заявка не нашлась — бросаем ошибку */
     if (!userCart) {
       throw new Error('User cart not found');
     }
-    /* Если корзина пустая — бросаем ошибку */
+    /* Если заявка пустая — бросаем ошибку */
     if (userCart?.totalAmount === 0) {
       throw new Error('Cart is empty');
     }
