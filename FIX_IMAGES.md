@@ -8,8 +8,7 @@
 
 ### 1. API Endpoints
 
-- ✅ **app/actions/find-products.ts** - добавлен `include: { images: true }` для загрузки изображений продуктов и ингредиентов
-- ✅ **app/api/ingredients/route.ts** - добавлен `include: { images: true }` для загрузки изображений ингредиентов
+- ✅ **app/actions/find-products.ts** - добавлен `include: { images: true }` для загрузки изображений продуктов
 
 ### 2. Seed файл
 
@@ -71,24 +70,6 @@ VALUES (1, '/assets/your-image.jpg', 0);
     {
       id: number,
       productId: number,
-      url: string,
-      sortOrder: number
-    }
-  ]
-}
-```
-
-### Ingredient
-
-```typescript
-{
-  id: number,
-  name: string,
-  price: number,
-  images: [
-    {
-      id: number,
-      ingredientId: number,
       url: string,
       sortOrder: number
     }
