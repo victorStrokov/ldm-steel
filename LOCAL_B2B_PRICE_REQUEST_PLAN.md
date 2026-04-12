@@ -200,6 +200,12 @@ PR-A4 (Cart/Order переход на товарные доп. позиции):
 2. Перевести расчет `cart.totalAmount` и snapshot заказа на товарную модель.
 3. Добавить regression-тесты на cart/checkout с сопутствующими товарами.
 
+Статус на 12.04.2026:
+
+1. PR-A4 закрыт: cart API и createOrder работают на единой товарной модели без runtime-полей `ingredients[]`.
+2. Расчет `totalAmount` и snapshot заказа подтверждены через integration-тесты cart/create-order, включая сценарий с сопутствующим товаром.
+3. Regression-покрытие дополнено проверкой отсутствия legacy ingredient-полей в order snapshot.
+
 PR-A5 (Data migration + legacy fallback):
 
 1. Сделать backfill: перенести ингредиенты в товары (категория "Крепеж" или целевая категория).

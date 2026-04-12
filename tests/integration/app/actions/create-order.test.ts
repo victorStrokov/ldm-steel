@@ -225,5 +225,13 @@ describe('createOrder', () => {
     expect(accessoryItem.unitPrice).toBe(300);
     expect(accessoryItem.lineTotal).toBe(600); // 300 × 2
     expect(accessoryItem.imageUrl).toBeNull();
+
+    // Legacy ingredient payload must not be present in order snapshot.
+    for (const item of snapshot as Array<Record<string, unknown>>) {
+      expect(item).not.toHaveProperty('ingredients');
+      expect(item).not.toHaveProperty('ingredientId');
+      expect(item).not.toHaveProperty('ingredientName');
+      expect(item).not.toHaveProperty('ingredientPrice');
+    }
   });
 });
