@@ -5,10 +5,12 @@ import { cn } from '@/shared/lib/utils';
 import { X } from 'lucide-react';
 import { CartItemProps } from './cart-item-details/cart-item-details.types';
 import * as CartItemDetails from './cart-item-details';
+import { PriceMode, canShowPrices } from '@/shared/lib/catalog-mode';
 
 interface Props extends CartItemProps {
   onClickCountButton?: (type: 'plus' | 'minus') => void; // вызов функции из родительского компонента для изменения количества товара в корзине
   onClickRemove?: () => void;
+  priceMode?: PriceMode;
   className?: string;
 }
 
@@ -21,6 +23,7 @@ export const CheckoutItem: React.FC<Props> = ({
   details,
   className,
   disabled,
+  priceMode = 'visible',
   onClickCountButton,
   onClickRemove,
 }) => {
@@ -39,7 +42,7 @@ export const CheckoutItem: React.FC<Props> = ({
         <CartItemDetails.Info className="min-w-0 flex-1" name={name} details={details} />
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 sm:flex-nowrap sm:justify-end sm:gap-5">
-        <CartItemDetails.Price value={price} />
+        {canShowPrices(priceMode) && <CartItemDetails.Price value={price} />}
         <CartItemDetails.CountButton onClick={onClickCountButton} value={quantity} />
         <button type="button" onClick={onClickRemove} className="ml-1 sm:ml-0 p-1 sm:p-0">
           <X className="cursor-pointer text-gray-400 hover:text-gray-600" size={22} />

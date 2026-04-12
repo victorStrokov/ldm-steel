@@ -4,10 +4,12 @@ import * as CartItem from './cart-item-details';
 import { CartItemProps } from './cart-item-details/cart-item-details.types';
 import { CountButton } from './count-button';
 import { Trash2Icon } from 'lucide-react';
+import { PriceMode, canShowPrices } from '@/shared/lib/catalog-mode';
 
 interface Props extends CartItemProps {
   onClickCountButton: (type: 'plus' | 'minus') => void;
   onClickRemove?: () => void;
+  priceMode?: PriceMode;
   className?: string;
 }
 
@@ -19,6 +21,7 @@ export const CartDrawerItem: React.FC<Props> = ({
   price,
   quantity,
   disabled,
+  priceMode = 'visible',
   onClickCountButton,
   onClickRemove,
   className,
@@ -44,7 +47,7 @@ export const CartDrawerItem: React.FC<Props> = ({
           <CountButton onClick={onClickCountButton} value={quantity} />
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <CartItem.Price value={price} />
+            {canShowPrices(priceMode) && <CartItem.Price value={price} />}
             <Trash2Icon
               onClick={onClickRemove}
               className="cursor-pointer text-gray-400 hover:text-gray-600"

@@ -107,6 +107,7 @@ export default function CheckoutPage() {
                 removeCartItem={removeCartItem}
                 items={items}
                 loading={loading}
+                priceMode={priceMode}
               />
               <CheckoutPersonalForm className={cn({ 'pointer-events-none opacity-40': loading })} />
               <CheckoutAddressForm className={cn({ 'pointer-events-none opacity-40': loading })} />

@@ -4,6 +4,7 @@ import { CheckoutItem } from '../checkout-item';
 import { ProductThickness, SteelSizes } from '@/shared/constants/profile';
 import { getCartItemDetails } from '@/shared/lib';
 import { CartStateItem } from '@/shared/lib/get-cart-details';
+import { PriceMode } from '@/shared/lib/catalog-mode';
 
 import { CheckoutItemSkeleton } from '../checkout-item-skeleton';
 
@@ -11,11 +12,12 @@ interface Props {
   items: CartStateItem[];
   onClickCountButton: (id: number, quantity: number, type: 'plus' | 'minus') => void;
   removeCartItem: (id: number) => void;
+  priceMode?: PriceMode;
   loading?: boolean;
   className?: string;
 }
 
-export const CheckoutCart: React.FC<Props> = ({ items, onClickCountButton, removeCartItem, loading, className }) => {
+export const CheckoutCart: React.FC<Props> = ({ items, onClickCountButton, removeCartItem, priceMode, loading, className }) => {
   return (
     <WhiteBlock title="1. Заказ" className={className}>
       <div className="flex flex-col gap-3 sm:gap-5">
@@ -31,6 +33,7 @@ export const CheckoutCart: React.FC<Props> = ({ items, onClickCountButton, remov
                 name={item.name}
                 price={item.price ?? 0}
                 quantity={item.quantity}
+                priceMode={priceMode}
                 onClickCountButton={(type) => onClickCountButton(item.id, item.quantity, type)}
                 onClickRemove={() => removeCartItem(item.id)}
               />
