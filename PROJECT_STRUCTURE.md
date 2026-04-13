@@ -402,7 +402,9 @@ npm run prisma:push      # Push schema без миграций
 npm run prisma:preview   # Pull schema из БД
 
 # Seeding
-npm run seed             # Заполнение БД тестовыми данными
+# В этом репозитории сид отключен.
+# Используйте единый источник сидирования через admin-panel:
+#   cd ../admin-panel && npm run seed
 
 # Обновление
 npm run update           # PowerShell скрипт обновления зависимостей

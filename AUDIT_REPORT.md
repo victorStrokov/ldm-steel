@@ -180,7 +180,7 @@
 - ✅ Создан browser-safe клиентский логгер: `shared/lib/client-logger.ts` (console-враппер с labelling)
 - ✅ 9 серверных файлов (API routes, actions, auth-options) → `logger.child({ module })`
 - ✅ 8 клиентских файлов (компоненты, store, hooks) → `createClientLogger`
-- ✅ `prisma/seed.ts` оставлен с `console.log` (CLI-скрипт — уместно)
+- ✅ Для сидирования используется единый seed из admin-panel (в ldm-steel локальный seed не используется)
 - 📌 **Статус:** Готово
 
 #### 9. **Отсутствие API документации**

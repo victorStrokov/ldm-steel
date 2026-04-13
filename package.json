@@ -23,7 +23,6 @@
     "prisma:reset": "node scripts/block-prisma-migrations.cjs",
     "prisma:push": "prisma db push",
     "prisma:preview": "prisma db pull",
-    "seed": "tsx prisma/seed.ts",
     "update": "powershell -ExecutionPolicy Bypass -File ./update.ps1",
     "postinstall": "prisma generate"
   },
