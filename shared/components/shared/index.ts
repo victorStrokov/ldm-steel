@@ -32,6 +32,7 @@ export { Providers } from '@/shared/components/shared/providers';
 export { InfoBlock } from '@/shared/components/shared/info-block';
 export { ProfileForm } from './profile-form';
 export { Stories } from './stories';
+export { StoriesWrapper } from './stories-wrapper';
 export * from './email-templates';
 export * from './form';
 export * from './modals';

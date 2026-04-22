@@ -4,55 +4,97 @@ import { normalizeImageUrl } from '@/shared/lib/normalize-image-url';
 import { Api } from '@/shared/services/api-client';
 import { IStory } from '@/shared/services/stories';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Container } from './container';
 import { cn } from '@/shared/lib/utils';
-import { X } from 'lucide-react';
+import { Volume2, VolumeX, X } from 'lucide-react';
 import ReactStories from 'react-insta-stories';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay } from 'swiper/modules';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import 'swiper/css';
 
 interface Props {
   className?: string;
+}
+
+function isVideoUrl(value: string): boolean {
+  return /\.(mp4|webm|mov)(\?|$)/i.test(value);
 }
 
 export const Stories: React.FC<Props> = ({ className }) => {
   const [stories, setStories] = React.useState<IStory[]>([]);
   const [open, setOpen] = React.useState(false);
   const [selectedStory, setSelectedStory] = React.useState<IStory>();
+  const [isMuted, setIsMuted] = React.useState(false);
+  const isMutedRef = React.useRef(false);
+  const openedAtRef = React.useRef(0);
 
-  const selectedStorySlides = React.useMemo(() => {
-    if (!selectedStory) {
-      return [];
-    }
+  const closeStories = React.useCallback(() => {
+    setOpen(false);
+    setSelectedStory(undefined);
+  }, []);
 
-    return selectedStory.items
+  const buildSlides = React.useCallback((story: IStory) => {
+    return story.items
       .map((item) => {
         const normalized = normalizeImageUrl(item.sourceUrl) ?? item.sourceUrl;
-        if (!normalized) {
-          return null;
-        }
-
+        if (!normalized) return null;
         const trimmed = normalized.trim();
-        if (!trimmed) {
-          return null;
+        if (!trimmed) return null;
+
+        const isVideo = isVideoUrl(trimmed);
+
+        if (isVideo) {
+          let videoUrl: string | null = trimmed;
+          if (!trimmed.startsWith('/')) {
+            try {
+              const parsed = new URL(trimmed);
+              if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return null;
+              videoUrl = parsed.toString();
+            } catch {
+              return null;
+            }
+          }
+          if (!videoUrl) return null;
+
+          const url = videoUrl;
+          return {
+            url,
+            type: 'video' as const,
+            duration: 120000,
+            content: ({ action }: { action: (type: 'pause' | 'play' | 'next' | 'previous') => void }) => (
+              <video
+                src={url}
+                className="h-full w-full bg-black object-contain"
+                autoPlay
+                muted
+                playsInline
+                controls={false}
+                onEnded={() => action('next')}
+              />
+            ),
+          };
         }
 
-        if (trimmed.startsWith('/')) {
-          return { url: trimmed };
-        }
+        if (trimmed.startsWith('/')) return { url: trimmed };
 
         try {
           const parsed = new URL(trimmed);
-          // Avoid mixed-content failures in HTTPS by skipping insecure resources.
-          if (parsed.protocol !== 'https:') {
-            return null;
-          }
-
+          if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return null;
           return { url: parsed.toString() };
         } catch {
           return null;
         }
       })
-      .filter((slide): slide is { url: string } => slide !== null);
-  }, [selectedStory]);
+      .filter((slide): slide is NonNullable<typeof slide> => slide !== null);
+  }, []);
+
+  const selectedStorySlides = React.useMemo(() => {
+    if (!selectedStory) return [];
+    return buildSlides(selectedStory);
+  }, [selectedStory, buildSlides]);
 
   React.useEffect(() => {
     async function fetchStories() {
@@ -63,88 +105,163 @@ export const Stories: React.FC<Props> = ({ className }) => {
         setStories([]);
       }
     }
-
     fetchStories();
   }, []);
 
+  React.useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeStories();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [open, closeStories]);
+
+  React.useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
   const onClickStory = (story: IStory) => {
-    const hasPlayableSlide = story.items.some((item) => {
-      const normalized = normalizeImageUrl(item.sourceUrl) ?? item.sourceUrl;
-      if (!normalized) {
-        return false;
-      }
-
-      const trimmed = normalized.trim();
-      if (!trimmed) {
-        return false;
-      }
-
-      if (trimmed.startsWith('/')) {
-        return true;
-      }
-
-      try {
-        const parsed = new URL(trimmed);
-        return parsed.protocol === 'https:';
-      } catch {
-        return false;
-      }
-    });
-
-    if (!hasPlayableSlide) {
-      return;
-    }
-
+    const slides = buildSlides(story);
+    if (slides.length === 0) return;
+    openedAtRef.current = Date.now();
+    isMutedRef.current = false;
+    setIsMuted(false);
     setSelectedStory(story);
     setOpen(true);
   };
+
+  React.useEffect(() => {
+    if (!open) return;
+    const timer = setTimeout(() => {
+      const videoEl = document.querySelector<HTMLVideoElement>('video');
+      if (videoEl) videoEl.muted = false;
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [open]);
+
+  const handleBackdropClick = React.useCallback(() => {
+    if (Date.now() - openedAtRef.current < 300) return;
+    closeStories();
+  }, [closeStories]);
+
+  const handleStoriesEnd = React.useCallback(() => {
+    setTimeout(() => closeStories(), 0);
+  }, [closeStories]);
+
+  const isLoading = stories.length === 0;
+  const storySlideWidthClass = 'w-[120px]! sm:w-[160px]! lg:w-[200px]!';
+  const storyCardHeightClass = 'h-[180px] sm:h-[240px] lg:h-[300px]';
+
   return (
     <>
-      <Container
-        className={cn(
-          'my-3 md:my-5',
-          'overflow-x-auto',
-          'flex items-center gap-1 md:gap-2',
-          'flex-nowrap justify-start sm:justify-between',
-          className,
+      <Container className={cn('my-3 md:my-5 overflow-hidden', className)}>
+        {isLoading ? (
+          <div className="flex gap-2 overflow-x-hidden sm:gap-3 lg:gap-4">
+            {[...Array(8)].map((_, index) => (
+              <div
+                key={index}
+                className={cn(
+                  storySlideWidthClass,
+                  storyCardHeightClass,
+                  'shrink-0 animate-pulse rounded-2xl bg-gray-200',
+                )}
+              />
+            ))}
+          </div>
+        ) : (
+          <Swiper
+            modules={[Autoplay]}
+            spaceBetween={8}
+            breakpoints={{
+              640: { spaceBetween: 12 },
+              1024: { spaceBetween: 16 },
+            }}
+            slidesPerView="auto"
+            loop={stories.length > 1}
+            speed={3000}
+            allowTouchMove={true}
+            autoplay={{
+              delay: 0,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+          >
+            {stories.map((story, index) => (
+              <SwiperSlide key={story?.id ?? index} className={storySlideWidthClass}>
+                <div
+                  className={cn(
+                    storyCardHeightClass,
+                    'relative w-full shrink-0 cursor-pointer overflow-hidden rounded-2xl',
+                  )}
+                  onClick={() => onClickStory(story)}
+                >
+                  <img
+                    src={normalizeImageUrl(story.previewImageUrl) ?? '/no-image.png'}
+                    alt="сторис"
+                    draggable={false}
+                    className="h-full w-full object-cover object-center"
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         )}
-      >
-        {stories.length === 0 &&
-          [...Array(9)].map((_, index) => (
-            <div key={index} className="h-30 w-20 md:h-44 md:w-30 animate-pulse rounded-md bg-gray-200"></div>
-          ))}
-        {stories.map((story) => (
-          // eslint-disable-next-line jsx-a11y/alt-text
-          <img
-            key={story.id}
-            onClick={() => onClickStory(story)}
-            className="cursor-pointer rounded-md shrink-0"
-            height={120}
-            width={80}
-            src={normalizeImageUrl(story.previewImageUrl)}
-            style={{ height: '120px', width: '80px' }}
-            // на десктопе увеличим через md: классы
-          />
-        ))}
+      </Container>
 
-        {open && (
-          <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/80 px-2">
-            <div className="relative mx-auto max-h-150 w-full max-w-130">
-              <button className="absolute right-5 top-5 z-30" onClick={() => setOpen(false)}>
-                <X className="h-8 w-8 text-white/50" />
-              </button>
+      {open &&
+        selectedStorySlides.length > 0 &&
+        ReactDOM.createPortal(
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+            onClick={handleBackdropClick}
+          >
+            <div
+              className="relative shrink-0"
+              style={{ width: 'min(390px, 100vw)', height: 'min(692px, 100dvh)' }}
+              onClick={(e) => e.stopPropagation()}
+            >
               <ReactStories
-                onAllStoriesEnd={() => setOpen(false)}
+                onAllStoriesEnd={handleStoriesEnd}
                 stories={selectedStorySlides}
                 defaultInterval={3000}
                 preloadCount={0}
-                width={'100%'}
-                height={600}
+                width="100%"
+                height="100%"
               />
+
+              {/* Кнопка звука */}
+              <button
+                type="button"
+                className="absolute left-3 top-3 z-9999 rounded-full bg-black/45 p-2 text-white"
+                onClick={() => {
+                  const newMuted = !isMutedRef.current;
+                  isMutedRef.current = newMuted;
+                  setIsMuted(newMuted);
+                  const videoEl = document.querySelector<HTMLVideoElement>('video');
+                  if (videoEl) videoEl.muted = newMuted;
+                }}
+                aria-label={isMuted ? 'Включить звук' : 'Выключить звук'}
+              >
+                {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+              </button>
+
+              {/* Кнопка закрытия */}
+              <button
+                type="button"
+                className="absolute right-3 top-3 z-9999 rounded-full bg-black/45 p-2 text-white"
+                onClick={closeStories}
+                aria-label="Закрыть сторис"
+              >
+                <X className="h-5 w-5" />
+              </button>
             </div>
-          </div>
+          </div>,
+          document.body,
         )}
-      </Container>
     </>
   );
 };

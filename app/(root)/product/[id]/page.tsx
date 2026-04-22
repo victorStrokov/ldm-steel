@@ -13,13 +13,19 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       items: true,
       images: true, // ← изображения продукта
       relatedProducts: {
-        where: {
-          relatedProduct: {
-            status: 'ACTIVE',
-          },
-        },
         include: {
           relatedProduct: {
+            include: {
+              items: true,
+              images: true,
+            },
+          },
+        },
+        orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }],
+      },
+      relatedToProducts: {
+        include: {
+          product: {
             include: {
               items: true,
               images: true,
@@ -44,9 +50,31 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
   if (!product) return notFound();
 
+  const outgoingRelations = product.relatedProducts;
+  const incomingRelations = product.relatedToProducts.map((relation) => ({
+    ...relation,
+    relatedProductId: relation.productId,
+    relatedProduct: relation.product,
+  }));
+
+  const mergedRelationsMap = new Map<number, (typeof outgoingRelations)[number]>();
+
+  for (const relation of [...outgoingRelations, ...incomingRelations]) {
+    if (!mergedRelationsMap.has(relation.relatedProductId)) {
+      mergedRelationsMap.set(relation.relatedProductId, relation);
+    }
+  }
+
+  const mergedRelatedProducts = Array.from(mergedRelationsMap.values());
+
+  const productForView = {
+    ...product,
+    relatedProducts: mergedRelatedProducts,
+  };
+
   return (
     <Container className="w-full max-w-4xl mx-auto px-4 md:px-8 py-10 flex flex-col">
-      <ProductForm product={product} priceMode={catalogSettings.priceMode} />
+      <ProductForm product={productForView} priceMode={catalogSettings.priceMode} />
     </Container>
   );
 }

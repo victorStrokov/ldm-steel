@@ -13,6 +13,7 @@ import { ChooseProfileForm } from './choose-profile-form';
 import { ChooseProductForm } from './choose-product-form';
 import { normalizeImageUrl } from '@/shared/lib/normalize-image-url';
 import { Button } from '../ui';
+import { Check } from 'lucide-react';
 
 interface Props {
   product: ProductWithRelations;
@@ -27,7 +28,21 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, pri
   const addCartItem = useCartStore((state) => state.addCartItem);
   const loading = useCartStore((state) => state.loading);
 
-  const relatedProducts = (product.relatedProducts ?? []).filter((relation) => relation.relatedProduct?.items?.length);
+  const [selectedRelatedIds, setSelectedRelatedIds] = React.useState<Set<number>>(new Set());
+
+  const toggleRelated = (relatedProductId: number) => {
+    setSelectedRelatedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(relatedProductId)) {
+        next.delete(relatedProductId);
+      } else {
+        next.add(relatedProductId);
+      }
+      return next;
+    });
+  };
+
+  const relatedProducts = (product.relatedProducts ?? []).filter((relation) => Boolean(relation.relatedProduct));
   const relatedKinds: Array<'RECOMMENDED' | 'ACCESSORY' | 'COMPATIBLE'> = ['RECOMMENDED', 'ACCESSORY', 'COMPATIBLE'];
 
   const groupedRelatedProducts = React.useMemo(() => {
@@ -48,12 +63,28 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, pri
     try {
       const itemId = productItemId ?? firstItem?.id;
 
-      await addCartItem({
-        productItemId: itemId,
-      });
+      await addCartItem({ productItemId: itemId });
 
-      toast.success(product.name + '  добавлен в корзину');
+      // Добавляем выбранные сопутствующие товары вместе с основным
+      if (selectedRelatedIds.size > 0) {
+        const selectedRelations = relatedProducts.filter((r) => selectedRelatedIds.has(r.relatedProductId));
+        await Promise.all(
+          selectedRelations.map(async (relation) => {
+            const relatedItemId = relation.relatedProduct?.items?.[0]?.id;
+            if (relatedItemId) {
+              await addCartItem({ productItemId: relatedItemId });
+            }
+          }),
+        );
+        const addedNames = selectedRelations.map((r) => r.relatedProduct?.name).filter(Boolean);
+        toast.success(
+          `${product.name} + ${addedNames.length} доп. товар${addedNames.length > 1 ? 'а' : ''} добавлены в заявку`,
+        );
+      } else {
+        toast.success(product.name + ' добавлен в заявку');
+      }
 
+      setSelectedRelatedIds(new Set());
       _onSubmit?.();
     } catch (error) {
       toast.error('Не удалось добавить товар в корзину');
@@ -101,7 +132,10 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, pri
 
     return (
       <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-4 sm:p-6">
-        <h3 className="mb-4 text-lg font-semibold">С этим товаром берут</h3>
+        <h3 className="mb-1 text-lg font-semibold">С этим товаром берут</h3>
+        <p className="mb-4 text-xs text-gray-400">
+          Нажмите на товар, чтобы выбрать — он добавится в заявку вместе с основным.
+        </p>
 
         <div className="space-y-5">
           {relatedKinds.map((kind) => {
@@ -120,19 +154,35 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, pri
                     const related = relation.relatedProduct;
                     const relatedImage = normalizeImageUrl(related.images?.[0]?.url) ?? '/no-image.png';
                     const relatedPrice = related.items?.[0]?.price ?? 0;
+                    const isSelected = selectedRelatedIds.has(relation.relatedProductId);
 
                     return (
                       <div
                         key={relation.id}
-                        className="flex items-center gap-3 rounded-xl border border-gray-100 bg-[#f7f6f5] p-3"
+                        onClick={() => toggleRelated(relation.relatedProductId)}
+                        className={`relative flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-all select-none ${
+                          isSelected
+                            ? 'border-primary bg-primary/5 shadow-sm'
+                            : 'border-gray-100 bg-[#f7f6f5] hover:border-gray-300'
+                        }`}
                       >
+                        {/* Галочка выбора — только когда выбран */}
+                        {isSelected && (
+                          <div className="absolute left-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-white">
+                            <Check className="h-3 w-3" strokeWidth={3} />
+                          </div>
+                        )}
+
                         <img
                           src={relatedImage}
                           alt={related.name}
-                          className="h-16 w-16 shrink-0 rounded-lg object-contain bg-white"
+                          className="mt-3 h-16 w-16 shrink-0 rounded-lg object-contain bg-white"
+                          onError={(e) => {
+                            e.currentTarget.src = '/no-image.png';
+                          }}
                         />
 
-                        <div className="min-w-0 flex-1">
+                        <div className="min-w-0 flex-1 pr-5">
                           <p className="truncate text-sm font-medium">{related.name}</p>
                           <div className="mt-0.5 flex flex-wrap items-center gap-1">
                             <span className="rounded bg-gray-200 px-1.5 py-0.5 text-[10px] text-gray-700">
@@ -152,8 +202,11 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, pri
                         <Button
                           type="button"
                           loading={loading}
-                          onClick={() => handleAddRelated(relation.relatedProductId)}
-                          className="h-9 whitespace-nowrap rounded-lg px-3 text-xs"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddRelated(relation.relatedProductId);
+                          }}
+                          className="h-9 shrink-0 whitespace-nowrap rounded-lg px-3 text-xs"
                         >
                           {canShowPrices(effectivePriceMode)
                             ? `Добавить за ${relatedPrice} ₽`
@@ -195,6 +248,11 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, pri
           loading={loading}
           onClickImage={handleImageClick}
         />
+        {product.fullDesc && (
+          <div className="mt-4 rounded-2xl border border-gray-100 bg-white p-4 sm:p-6 space-y-2">
+            <p className="text-sm sm:text-base text-gray-500 whitespace-pre-line">{product.fullDesc}</p>
+          </div>
+        )}
         {renderRelatedProducts()}
       </>
     );
@@ -210,6 +268,11 @@ export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, pri
         loading={loading}
         onClickImage={handleImageClick}
       />
+      {product.fullDesc && (
+        <div className="mt-4 rounded-2xl border border-gray-100 bg-white p-4 sm:p-6 space-y-2">
+          <p className="text-sm sm:text-base text-gray-500 whitespace-pre-line">{product.fullDesc}</p>
+        </div>
+      )}
       {renderRelatedProducts()}
     </>
   );

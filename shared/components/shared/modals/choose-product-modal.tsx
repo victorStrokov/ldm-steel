@@ -21,14 +21,18 @@ export const ChooseProductModal: React.FC<Props> = ({ product, priceMode, classN
     <Dialog open={Boolean(product)} onOpenChange={() => router.back()}>
       <DialogContent
         className={cn(
-          'flex h-full max-h-[96dvh] sm:max-h-[90vh] w-full flex-col overflow-hidden rounded-none bg-white p-0 sm:p-6 md:h-auto md:max-w-265 md:rounded-2xl',
+          'flex h-[96dvh] max-h-[96dvh] w-full flex-col overflow-hidden rounded-none bg-white p-0 sm:h-[90vh] sm:max-h-[90vh] sm:p-6 md:max-w-265 md:rounded-2xl',
           className,
         )}
       >
         <DialogTitle className="sr-only">{product.name}</DialogTitle>
-        <DialogDescription>Настройте параметры товара перед добавлением в заказ</DialogDescription>
+        <DialogDescription className="shrink-0 px-3 pt-3 sm:px-0 sm:pt-0">
+          Настройте параметры товара перед добавлением в заказ
+        </DialogDescription>
 
-        <ProductForm product={product} priceMode={priceMode} onSubmit={() => router.back()} />
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <ProductForm product={product} priceMode={priceMode} onSubmit={() => router.back()} />
+        </div>
       </DialogContent>
     </Dialog>
   );

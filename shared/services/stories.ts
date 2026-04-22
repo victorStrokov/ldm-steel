@@ -5,6 +5,7 @@ export type IStory = Story & {
   items: StoryItem[];
 };
 
+// Fetch from the storefront API backed by the shared database
 export const getAll = async () => {
   const { data } = await axiosInstance.get<IStory[]>('/stories');
   return data;

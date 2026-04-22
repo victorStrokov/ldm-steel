@@ -51,7 +51,7 @@ export const ProductsGroupList: React.FC<Props> = ({
 
   return (
     <div
-      className={cn('px-2 py-4 sm:px-4 md:px-8', className)}
+      className={cn('px-2 py-4 sm:px-4 md:px-8 ', className)}
       id={title}
       ref={intersectionRef}
       style={{ scrollMarginTop: '120px' }}
@@ -65,8 +65,6 @@ export const ProductsGroupList: React.FC<Props> = ({
         className={cn(
           // Адаптивная сетка: 1 колонка на мобилках, 2 на планшетах, 3 на десктопах
           'grid grid-cols-1 items-stretch gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3',
-          // Горизонтальный скролл на очень маленьких экранах
-          'overflow-x-auto scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent',
           listClassName,
         )}
         style={{ minWidth: 0 }}
@@ -76,6 +74,7 @@ export const ProductsGroupList: React.FC<Props> = ({
             key={product.id}
             id={product.id}
             name={product.name || 'Без названия'}
+            shortDesc={product.shortDesc}
             imageUrl={product.images?.[0]?.url ?? '/no-image.png'}
             price={product.items?.[0]?.price ?? 0}
             priceMode={priceMode}

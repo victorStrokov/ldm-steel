@@ -13,6 +13,13 @@ const imageSourceAllowlist = [
   'https://home.imgsmail.ru',
   'https://ldm-steel.com',
   'https://pub-aa61297af29a479090855b2c8344706d.r2.dev',
+  ...(isDev ? ['http://localhost:3000', 'http://localhost:3001'] : []),
+];
+const mediaSourceAllowlist = [
+  "'self'",
+  'blob:',
+  'https://pub-aa61297af29a479090855b2c8344706d.r2.dev',
+  ...(isDev ? ['http://localhost:3000', 'http://localhost:3001'] : []),
 ];
 const connectSourceAllowlist = [
   "'self'",
@@ -20,6 +27,7 @@ const connectSourceAllowlist = [
   'https://cleaner.dadata.ru',
   'https://*.sentry.io',
   isDev ? 'ws:' : 'wss:',
+  ...(isDev ? ['http://localhost:3000', 'http://localhost:3001'] : []),
 ];
 const contentSecurityPolicy = [
   "default-src 'self'",
@@ -27,6 +35,7 @@ const contentSecurityPolicy = [
   "object-src 'none'",
   "frame-ancestors 'none'",
   `img-src ${imageSourceAllowlist.join(' ')}`,
+  `media-src ${mediaSourceAllowlist.join(' ')}`,
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
   isDev ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'" : "script-src 'self' 'unsafe-inline'",
@@ -101,6 +110,14 @@ const nextConfig: NextConfig = {
         hostname: 'pub-aa61297af29a479090855b2c8344706d.r2.dev',
       },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/images/:path*',
+        destination: '/assets/:path*',
+      },
+    ];
   },
   async headers() {
     return [
