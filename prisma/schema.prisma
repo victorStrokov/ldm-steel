@@ -189,14 +189,15 @@ model ProductItem {
   price     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  productColor     Int?
-  productLength    Int?
+  productColors    String[]
+  sizeDisplay      String?
+  widthDisplay     String?
+  heightDisplay    String?
+  lengthDisplay    String?
+  thicknessDisplay String?
+  materialDisplay  String?
   productMaterials ProductMaterial?
   productShape     Int?
-  productSizes     Int?
-  productThickness Int?
-  pvcSize          Int?
-  steelSize        Int?
   cartItem         CartItem[]       @relation("ProductItemToCartItem")
   inquiryItems     InquiryItem[]
 

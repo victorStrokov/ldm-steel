@@ -1,19 +1,18 @@
 import { ProductItem } from '@prisma/client';
-import { SteelSizes, ProductThickness } from '../constants/profile';
 import { PriceMode, canShowPrices } from './catalog-mode';
 
 /**
  * Вычисляет общую цену продукта по выбранному варианту.
- * @example calcTotalProductPrice(1, 1, items)
- * @param type - толщина профиля
- * @param size - размер продукта
+ * @example calcTotalProductPrice('2', '30x28', items)
+ * @param thickness - толщина профиля (display)
+ * @param size - размер продукта (display)
  * @param items - список вариантов продукта
  * @param priceMode - режим отображения цены
  * @returns - number общая цена продукта
  */
 export const calcTotalProductPrice = (
-  thickness: ProductThickness,
-  size: SteelSizes,
+  thickness: string,
+  size: string,
   items: ProductItem[],
   priceMode: PriceMode = 'visible',
 ) => {
@@ -22,7 +21,7 @@ export const calcTotalProductPrice = (
   }
 
   const productPrice =
-    items?.find((item) => item.steelSize === size && item.productThickness === thickness)?.price || 0;
+    items?.find((item) => item.sizeDisplay === size && item.thicknessDisplay === thickness)?.price || 0;
 
   return productPrice;
 };

@@ -70,8 +70,8 @@ export async function createOrder(data: CheckoutFormValues) {
         unitPrice,
         lineTotal: unitPrice * item.quantity,
         imageUrl: item.productItem.product.images?.[0]?.url ?? null,
-        steelSize: item.productItem.steelSize ?? null,
-        productThickness: item.productItem.productThickness ?? null,
+        sizeDisplay: item.productItem.sizeDisplay ?? null,
+        thicknessDisplay: item.productItem.thicknessDisplay ?? null,
       };
     });
 

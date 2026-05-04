@@ -22,10 +22,10 @@ export const ProductCard: React.FC<Props> = ({ id, name, shortDesc, price, image
   const effectivePriceMode: PriceMode = priceMode ?? 'visible';
 
   return (
-    <div className={cn('flex h-full min-h-80 sm:min-h-85 md:min-h-90 ', className)}>
+    <div className={cn('flex h-full min-h-80 min-w-0 sm:min-h-85 md:min-h-90', className)}>
       <Link
         href={`/product/${id}`}
-        className="flex h-full flex-col justify-between rounded-md sm:rounded-lg bg-white dark:bg-neutral-900 shadow-sm px-2 py-2 sm:px-4 sm:py-4 gap-2 sm:gap-3"
+        className="flex h-full w-full min-w-0 flex-col justify-between gap-2 rounded-md bg-white px-2 py-2 shadow-sm sm:gap-3 sm:rounded-lg sm:px-4 sm:py-4 dark:bg-neutral-900"
       >
         {/* Верхняя часть */}
         <div>
@@ -47,13 +47,13 @@ export const ProductCard: React.FC<Props> = ({ id, name, shortDesc, price, image
         {/* Нижняя часть */}
         <div className="mt-3">
           {canShowPrices(effectivePriceMode) ? (
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
               <span className="text-base sm:text-lg md:text-xl">
                 от <b>{price} ₽</b>
               </span>
               <Button
                 variant="default"
-                className="text-xs sm:text-sm md:text-base font-bold flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2"
+                className="flex w-full items-center justify-center gap-1 px-3 py-2 text-xs font-bold sm:gap-2 sm:px-4 sm:text-sm md:text-base xl:w-auto"
               >
                 <Plus size={18} />
                 Запросить цену

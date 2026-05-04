@@ -27,6 +27,6 @@ export interface OrderSnapshotItem {
   unitPrice: number;
   lineTotal: number;
   imageUrl: string | null;
-  steelSize: number | null;
-  productThickness: number | null;
+  sizeDisplay: string | null;
+  thicknessDisplay: string | null;
 }

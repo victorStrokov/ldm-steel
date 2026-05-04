@@ -16,8 +16,10 @@ export const useQueryFilters = (filters: Filters) => {
       const params = {
         ...filters.prices,
         sizes: Array.from(filters.sizes),
-        materialsTypes: Array.from(filters.materialsTypes),
+        materialTypes: Array.from(filters.materialsTypes),
         length: Array.from(filters.length),
+        thickness: Array.from(filters.thickness),
+        colors: Array.from(filters.colors),
       };
 
       const query = qs.stringify(params, {

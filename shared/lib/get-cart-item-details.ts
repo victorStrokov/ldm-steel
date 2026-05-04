@@ -1,12 +1,11 @@
-import { mapProductThickness, SteelSizes } from './../constants/profile';
-import { ProductThickness } from '@/shared/constants/profile';
-export const getCartItemDetails = (productThickness?: ProductThickness, steelSize?: SteelSizes): string => {
+export const getCartItemDetails = (thicknessDisplay?: string | null, sizeDisplay?: string | null): string => {
   const details = [];
 
-  if (steelSize && productThickness) {
-    const thiknessName = mapProductThickness[productThickness];
-
-    details.push(`${thiknessName} мм, ${steelSize} мм`);
+  if (sizeDisplay) {
+    details.push(sizeDisplay);
+  }
+  if (thicknessDisplay) {
+    details.push(`толщина ${thicknessDisplay}`);
   }
 
   return details.join(', ');

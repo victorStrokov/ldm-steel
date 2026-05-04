@@ -7,6 +7,8 @@ import { Title } from './title';
 // import { RangeSlider } from './range-slider';
 import { CheckboxFiltersGroup } from './checkbox-filters-group';
 import { useQueryFilters, useFilters } from '@/shared/hooks';
+import { useProductFilters } from '@/shared/hooks/use-product-filters';
+import { useCategoryStore } from '@/shared/store/category';
 // import { SortPopup } from './sort-popup';
 
 interface Props {
@@ -15,6 +17,8 @@ interface Props {
 
 export const Filters: React.FC<Props> = ({ className }) => {
   const filters = useFilters();
+  const activeCategoryId = useCategoryStore((state) => state.activeId);
+  const { filters: dynamicFilters, loading: filtersLoading } = useProductFilters(activeCategoryId);
 
   useQueryFilters(filters);
 
@@ -41,14 +45,22 @@ export const Filters: React.FC<Props> = ({ className }) => {
           onClickCheckbox={filters.setMaterialsTypes}
           selected={filters.materialsTypes}
           limit={5}
-          loading={false}
+          loading={filtersLoading}
           searchInputPlaceholder="Поиск материалов..."
-          items={[
-            { text: 'Армирование', value: '1' },
-            { text: 'Алюминий', value: '2' },
-            { text: 'Резина', value: '3' },
-            { text: 'Пластик', value: '4' },
-          ]}
+          items={dynamicFilters.materials.map((item) => ({ text: item.text, value: item.value }))}
+        />
+      </div>
+      <div className="flex flex-col gap-3 sm:gap-4">
+        <CheckboxFiltersGroup
+          name="colors"
+          className="mt-3 sm:mt-5"
+          title="Цвет"
+          onClickCheckbox={filters.setColors}
+          selected={filters.colors}
+          limit={5}
+          loading={filtersLoading}
+          searchInputPlaceholder="Поиск цвета..."
+          items={dynamicFilters.colors.map((item) => ({ text: item.text, value: item.value }))}
         />
       </div>
       <div className="flex flex-col gap-3 sm:gap-4">
@@ -59,34 +71,35 @@ export const Filters: React.FC<Props> = ({ className }) => {
           onClickCheckbox={filters.setSizes}
           selected={filters.sizes}
           limit={5}
-          loading={false}
+          loading={filtersLoading}
           searchInputPlaceholder="Поиск размеров..."
-          items={[
-            { text: '15×30', value: '1' },
-            { text: '30×28', value: '2' },
-            { text: '31×34', value: '3' },
-            { text: '35×20', value: '4' },
-            { text: '40×40', value: '5' },
-            { text: '40×50', value: '6' },
-            { text: '50×50', value: '7' },
-          ]}
+          items={dynamicFilters.sizes.map((item) => ({ text: item.text, value: item.value }))}
         />
       </div>
       <div className="flex flex-col gap-3 sm:gap-4">
         <CheckboxFiltersGroup
           name="lengths"
           className="mt-3 sm:mt-5"
-          title="Длинна"
+          title="Длина"
           onClickCheckbox={filters.setLength}
           selected={filters.length}
           limit={5}
-          loading={false}
-          searchInputPlaceholder="Поиск длинны..."
-          items={[
-            { text: '2 м', value: '1' },
-            { text: '6 м', value: '2' },
-            { text: '6.5 м', value: '3' },
-          ]}
+          loading={filtersLoading}
+          searchInputPlaceholder="Поиск длины..."
+          items={dynamicFilters.lengths.map((item) => ({ text: item.text, value: item.value }))}
+        />
+      </div>
+      <div className="flex flex-col gap-3 sm:gap-4">
+        <CheckboxFiltersGroup
+          name="thicknesses"
+          className="mt-3 sm:mt-5"
+          title="Толщина"
+          onClickCheckbox={filters.setThickness}
+          selected={filters.thickness}
+          limit={5}
+          loading={filtersLoading}
+          searchInputPlaceholder="Поиск толщины..."
+          items={dynamicFilters.thicknesses.map((item) => ({ text: item.text, value: item.value }))}
         />
       </div>
       {/* фильтр цен */}

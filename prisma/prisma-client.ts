@@ -1,11 +1,22 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaNeon } from '@prisma/adapter-neon';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 
 const prismaClientSingleton = () => {
-  const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL });
+  const connectionString = process.env.DATABASE_URL;
+  const useNeonAdapter = Boolean(connectionString && connectionString.includes('neon.tech'));
+  const usePgAdapter = Boolean(connectionString && !useNeonAdapter);
+
+  const adapter =
+    useNeonAdapter && connectionString
+      ? new PrismaNeon({ connectionString })
+      : usePgAdapter && connectionString
+        ? new PrismaPg(new Pool({ connectionString }))
+        : undefined;
 
   return new PrismaClient({
-    adapter,
+    ...(adapter ? { adapter } : {}),
     log: process.env.DATABASE_DEBUG === 'true' ? ['query', 'error', 'warn'] : ['error'],
   });
 };

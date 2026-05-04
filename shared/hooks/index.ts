@@ -4,3 +4,4 @@ export { useQueryFilters } from '@/shared/hooks/use-query-filters';
 export { useProductOptions } from '@/shared/hooks/use-product-options';
 export { useCart } from '@/shared/hooks/use-cart';
 export { useCatalogSettings } from '@/shared/hooks/use-catalog-settings';
+export { useProductFilters } from '@/shared/hooks/use-product-filters';

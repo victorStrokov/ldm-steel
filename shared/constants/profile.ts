@@ -1,52 +1,11 @@
-export const mapSteelSize = {
-  1: '15×30',
-  2: '30×28',
-  3: '31×34',
-  4: '35×20',
-  5: '40×40',
-  6: '40×50',
-  7: '50×50',
-} as const;
-export const mapPvcSize = {
-  1: '60',
-  2: '70',
-  3: '80',
-  4: '90',
-  5: '100',
-  6: '6.5',
-  7: '30×70',
-};
-export const mapAluminiumSize: Record<number, string> = {
-  // тут пока пусто
-};
-export const mapProductSize = {
-  1: '300',
-  2: '500',
-  3: '600',
-  4: '32х5',
-  5: '40х5',
-  6: '34х6',
-  7: '38х6',
-};
-
-export const mapProductLength = {
-  1: '2',
-  2: '6',
-  3: '6.5',
-};
-
-export const mapProductThickness = {
-  1: '1.5',
-  2: '1.8',
-  3: '2',
-  4: '6',
-} as const;
-
 export const mapProductColor = {
-  9016: 'Белый',
+  1: 'Белый',
   2: 'Коричневый',
   3: 'Антрацит',
   4: 'Черный',
+  5: 'Серебро',
+  6: 'Золото',
+  7: 'Неокрашенный',
 };
 
 export const mapProductShape = {
@@ -70,21 +29,6 @@ export const mapProductMaterial = {
 //   RUBBER: 'Резина',
 // };
 
-export const steelSize = Object.entries(mapSteelSize).map(([value, name]) => ({
-  name,
-  value,
-}));
-
-export const pvcSize = Object.entries(mapPvcSize).map(([value, name]) => ({
-  name,
-  value,
-}));
-
-export const productLength = Object.entries(mapProductLength).map(([value, name]) => ({
-  name,
-  value,
-}));
-
 export const productColor = Object.entries(mapProductColor).map(([value, name]) => ({
   name,
   value,
@@ -95,28 +39,13 @@ export const productShape = Object.entries(mapProductShape).map(([value, name]) 
   value,
 }));
 
-export const productThickness = Object.entries(mapProductThickness).map(([value, name]) => ({
-  name,
-  value,
-}));
-
-export const productSizes = Object.entries(mapProductSize).map(([value, name]) => ({
-  name,
-  value,
-}));
-
 export const productMaterials = Object.entries(mapProductMaterial).map(([value, name]) => ({
   name,
   value,
 }));
 
-export type SteelSizes = keyof typeof mapSteelSize;
-export type PvcSizes = keyof typeof mapPvcSize;
-export type ProductSizes = keyof typeof mapProductSize;
-export type ProductLength = keyof typeof mapProductLength;
 export type ProductColor = keyof typeof mapProductColor;
 export type ProductShape = keyof typeof mapProductShape;
-export type ProductThickness = keyof typeof mapProductThickness;
 export type ProductMaterial = keyof typeof mapProductMaterial;
 
 // import { ProductMaterial, VariantField } from '@/@types/product.types';

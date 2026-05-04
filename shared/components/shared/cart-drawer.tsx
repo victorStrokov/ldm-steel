@@ -18,7 +18,6 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { CartDrawerItem } from './cart-drawer-item';
 import { getCartItemDetails, productLengtRename } from '@/shared/lib';
-import { ProductThickness, SteelSizes } from '@/shared/constants/profile';
 import { Title } from './title';
 import { cn } from '@/shared/lib/utils';
 import { useCart } from '@/shared/hooks';
@@ -79,10 +78,7 @@ export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
                     <CartDrawerItem
                       id={item.id}
                       imageUrl={item.imageUrl}
-                      details={getCartItemDetails(
-                        item.productThickness as ProductThickness,
-                        item.steelSize as SteelSizes,
-                      )}
+                      details={getCartItemDetails(item.thicknessDisplay, item.sizeDisplay)}
                       disabled={item.disabled}
                       name={item.name}
                       price={item.price ?? 0}

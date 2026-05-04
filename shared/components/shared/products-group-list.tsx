@@ -64,7 +64,7 @@ export const ProductsGroupList: React.FC<Props> = ({
       <div
         className={cn(
           // Адаптивная сетка: 1 колонка на мобилках, 2 на планшетах, 3 на десктопах
-          'grid grid-cols-1 items-stretch gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3',
+          'grid grid-cols-1 items-stretch gap-4 sm:gap-6 sm:grid-cols-2 xl:grid-cols-3',
           listClassName,
         )}
         style={{ minWidth: 0 }}

@@ -8,9 +8,7 @@ import { Title } from './title';
 import { Button } from '../ui';
 import { PriceMode, canShowPrices, shouldShowPriceOnRequestLabel } from '@/shared/lib/catalog-mode';
 import { GroupVariants } from './group-variants';
-import { SteelSizes, ProductThickness } from '@/shared/constants/profile';
 import { cn } from '@/shared/lib/utils';
-import { getProductDetails } from '@/shared/lib/get-product-details';
 import { useProductOptions } from '@/shared/hooks';
 import { X } from 'lucide-react';
 // import { SIZE_MAP, LENGTH_MAP, COLOR_MAP, SHAPE_MAP, TYPE_MAP } from '@/shared/constants/profile';
@@ -39,12 +37,9 @@ export const ChooseProfileForm: React.FC<Props> = ({
   loading,
 }) => {
   const effectivePriceMode: PriceMode = priceMode ?? 'visible';
-  const { thickness, size, availableSizes, availableThicknesses, currentItemId, setSize, setThickness } =
-    useProductOptions(items);
-
-  // Разобраться с ценообразованием профилей
-
-  const { totalPrice, textDetails } = getProductDetails(thickness, size, items, effectivePriceMode);
+  const { optionGroups, currentItemId, textDetails, resetFilters } = useProductOptions(items);
+  const selectedItem = items.find((item) => item.id === currentItemId);
+  const totalPrice = selectedItem?.price ?? 0;
 
   const handleClickAdd = () => {
     if (currentItemId) {
@@ -54,8 +49,8 @@ export const ChooseProfileForm: React.FC<Props> = ({
 
   return (
     <div className={cn('flex flex-1 flex-col gap-4 sm:gap-6 md:flex-row', className)}>
-      {/* Левая часть: картинка */}
-      <div className="flex w-full items-center justify-center md:w-1/2 mb-4 md:mb-0">
+      {/* Левая часть: картинка + характеристики */}
+      <div className="flex w-full flex-col items-center md:w-1/2 mb-4 md:mb-0">
         <div className="flex h-55 sm:h-75 w-full max-w-55 sm:max-w-75 items-center justify-center rounded-lg bg-gray-50 p-2 sm:p-0">
           <ProductImage
             imageUrl={imageUrl}
@@ -63,6 +58,23 @@ export const ChooseProfileForm: React.FC<Props> = ({
             imgClassName="object-contain w-full h-full cursor-pointer"
           />
         </div>
+
+        {currentItemId && (
+          <div className="mt-3 w-full max-w-55 sm:max-w-75 rounded-lg bg-[#f7f6f5] px-3 py-2 text-sm text-gray-700 space-y-1">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Выбранные характеристики</p>
+            {optionGroups
+              .filter((g) => g.value)
+              .map((g) => {
+                const selectedOption = g.items.find((i) => i.value === g.value);
+                return (
+                  <div key={g.key} className="flex justify-between gap-2">
+                    <span className="text-gray-500">{g.title}:</span>
+                    <span className="font-medium text-right">{selectedOption?.name ?? g.value}</span>
+                  </div>
+                );
+              })}
+          </div>
+        )}
       </div>
 
       {/* Правая часть: текст + варианты + кнопка */}
@@ -72,7 +84,7 @@ export const ChooseProfileForm: React.FC<Props> = ({
         <div className="mb-3 sm:mb-4 flex items-center justify-end">
           <button
             type="button"
-            // onClick={resetFilters}
+            onClick={resetFilters}
             className="flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-red-600"
           >
             <X size={16} />
@@ -82,17 +94,12 @@ export const ChooseProfileForm: React.FC<Props> = ({
 
         {/* Контент с прокруткой */}
         <div className="flex-1 space-y-4 sm:space-y-5 overflow-y-auto pr-1 sm:pr-2">
-          <GroupVariants
-            items={availableSizes}
-            value={String(size)}
-            onClick={(value) => setSize(Number(value) as SteelSizes)}
-          />
-
-          <GroupVariants
-            items={availableThicknesses}
-            value={String(thickness)}
-            onClick={(value) => setThickness(Number(value) as ProductThickness)}
-          />
+          {optionGroups.map((group) => (
+            <div key={group.key} className="space-y-2">
+              <p className="text-sm font-semibold text-gray-700 sm:text-base">{group.title}</p>
+              <GroupVariants items={group.items} value={group.value} onClick={group.onChange} />
+            </div>
+          ))}
         </div>
 
         {/* Кнопка всегда внизу на md+ */}

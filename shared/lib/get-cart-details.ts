@@ -8,8 +8,8 @@ export type CartStateItem = {
   imageUrl: string | null;
   price: number | null;
   disabled?: boolean;
-  steelSize?: number | null;
-  productThickness?: number | null;
+  sizeDisplay?: string | null;
+  thicknessDisplay?: string | null;
 };
 
 interface ReturnProps {
@@ -24,8 +24,8 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
     name: item.productItem.product.name,
     imageUrl: item.productItem.product.images[0]?.url ?? null,
     price: calcCartItemTotalPrice(item),
-    steelSize: item.productItem.steelSize,
-    productThickness: item.productItem.productThickness,
+    sizeDisplay: item.productItem.sizeDisplay,
+    thicknessDisplay: item.productItem.thicknessDisplay,
     disabled: false,
   })) as CartStateItem[];
 

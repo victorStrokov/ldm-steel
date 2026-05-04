@@ -1,7 +1,6 @@
 import React from 'react';
 import { WhiteBlock } from '../white-block';
 import { CheckoutItem } from '../checkout-item';
-import { ProductThickness, SteelSizes } from '@/shared/constants/profile';
 import { getCartItemDetails } from '@/shared/lib';
 import { CartStateItem } from '@/shared/lib/get-cart-details';
 import { PriceMode } from '@/shared/lib/catalog-mode';
@@ -17,7 +16,14 @@ interface Props {
   className?: string;
 }
 
-export const CheckoutCart: React.FC<Props> = ({ items, onClickCountButton, removeCartItem, priceMode, loading, className }) => {
+export const CheckoutCart: React.FC<Props> = ({
+  items,
+  onClickCountButton,
+  removeCartItem,
+  priceMode,
+  loading,
+  className,
+}) => {
   return (
     <WhiteBlock title="1. Заказ" className={className}>
       <div className="flex flex-col gap-3 sm:gap-5">
@@ -28,7 +34,7 @@ export const CheckoutCart: React.FC<Props> = ({ items, onClickCountButton, remov
                 key={item.id}
                 id={item.id}
                 imageUrl={item.imageUrl}
-                details={getCartItemDetails(item.productThickness as ProductThickness, item.steelSize as SteelSizes)}
+                details={getCartItemDetails(item.thicknessDisplay, item.sizeDisplay)}
                 disabled={item.disabled}
                 name={item.name}
                 price={item.price ?? 0}

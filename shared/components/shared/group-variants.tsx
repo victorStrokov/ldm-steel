@@ -26,7 +26,7 @@ export const GroupVariants: React.FC<Props> = ({ items, value, onClick, classNam
     >
       {items.map((item) => (
         <button
-          key={item.name}
+          key={item.value}
           type="button"
           onClick={() => onClick?.(item.value)}
           className={cn(

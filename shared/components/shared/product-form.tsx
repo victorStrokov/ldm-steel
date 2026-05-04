@@ -23,7 +23,22 @@ interface Props {
 
 export const ProductForm: React.FC<Props> = ({ product, onSubmit: _onSubmit, priceMode }) => {
   const firstItem = product.items?.[0];
-  const isProfileForm = Boolean(firstItem?.steelSize);
+  const isProfileForm = React.useMemo(
+    () =>
+      product.items.some(
+        (item) =>
+          item.productMaterials != null ||
+          (item as { materialDisplay?: string | null }).materialDisplay != null ||
+          item.sizeDisplay != null ||
+          item.thicknessDisplay != null ||
+          item.lengthDisplay != null ||
+          item.productColors.length > 0 ||
+          item.productShape != null ||
+          (item as { widthDisplay?: string | null }).widthDisplay != null ||
+          (item as { heightDisplay?: string | null }).heightDisplay != null,
+      ),
+    [product.items],
+  );
   const effectivePriceMode: PriceMode = priceMode ?? 'visible';
   const addCartItem = useCartStore((state) => state.addCartItem);
   const loading = useCartStore((state) => state.loading);
