@@ -38,7 +38,7 @@ describe('findProducts', () => {
   });
 
   it('maps materialTypes filter into ProductMaterial enum values', async () => {
-    await findProducts({ materialTypes: '1,2', priceFrom: '100', priceTo: '500' });
+    await findProducts({ materialTypes: 'Сталь,ПВХ', priceFrom: '100', priceTo: '500' });
 
     expect(prisma.category.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -47,7 +47,10 @@ describe('findProducts', () => {
             where: expect.objectContaining({
               items: {
                 some: expect.objectContaining({
-                  productMaterials: { in: ['STEEL', 'PVC'] },
+                  OR: expect.arrayContaining([
+                    { materialDisplay: { in: ['Сталь', 'ПВХ'] } },
+                    { productMaterials: { in: ['STEEL', 'PVC'] } },
+                  ]),
                   price: { gte: 100, lte: 500 },
                 }),
               },
