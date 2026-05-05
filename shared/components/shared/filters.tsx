@@ -17,8 +17,8 @@ interface Props {
 
 export const Filters: React.FC<Props> = ({ className }) => {
   const filters = useFilters();
-  const activeCategoryId = useCategoryStore((state) => state.activeId);
-  const { filters: dynamicFilters, loading: filtersLoading } = useProductFilters(activeCategoryId);
+  const activeCategoryKey = useCategoryStore((state) => state.activeKey);
+  const { filters: dynamicFilters, loading: filtersLoading } = useProductFilters(activeCategoryKey);
 
   useQueryFilters(filters);
 

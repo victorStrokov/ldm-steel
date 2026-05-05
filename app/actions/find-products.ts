@@ -4,8 +4,9 @@ import { prisma } from '@/prisma/prisma-client';
 import { logger } from '@/shared/lib/logger';
 import { Prisma } from '@prisma/client';
 import { mapProductMaterial } from '@/shared/constants/profile';
+import { ProductWithRelations } from '@/@types/prisma';
 
-type CategoryWithProducts = Prisma.CategoryGetPayload<{
+type RawCategoryWithProducts = Prisma.CategoryGetPayload<{
   include: {
     products: {
       include: {
@@ -15,6 +16,12 @@ type CategoryWithProducts = Prisma.CategoryGetPayload<{
     };
   };
 }>;
+
+export interface StorefrontCategory {
+  id: string;
+  name: string;
+  products: ProductWithRelations[];
+}
 
 export interface GetSearchParams {
   query?: string;
@@ -72,7 +79,7 @@ const findCategoriesWithRetry = async <T extends Prisma.CategoryFindManyArgs>(
   return [] as Prisma.CategoryGetPayload<T>[];
 };
 
-export const findProducts = async (params: GetSearchParams): Promise<CategoryWithProducts[]> => {
+export const findProducts = async (params: GetSearchParams): Promise<StorefrontCategory[]> => {
   const sizeTokens = params.sizes?.split(',').filter(Boolean) ?? [];
   const sizesStr = sizeTokens;
 
@@ -186,7 +193,27 @@ export const findProducts = async (params: GetSearchParams): Promise<CategoryWit
       },
     });
 
-    return categories;
+    const groupedCategories = new Map<string, StorefrontCategory>();
+
+    for (const category of categories as RawCategoryWithProducts[]) {
+      const existingCategory = groupedCategories.get(category.name);
+
+      if (!existingCategory) {
+        groupedCategories.set(category.name, {
+          id: category.name,
+          name: category.name,
+          products: [...category.products],
+        });
+        continue;
+      }
+
+      existingCategory.products.push(...category.products);
+    }
+
+    return [...groupedCategories.values()].map((category) => ({
+      ...category,
+      products: [...category.products].sort((left, right) => right.id - left.id),
+    }));
   } catch (error) {
     log.error({ error }, 'find-products failed, returning empty category list');
     return [];

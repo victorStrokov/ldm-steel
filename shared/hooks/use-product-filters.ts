@@ -23,13 +23,14 @@ const EMPTY_FILTERS: ProductFilters = {
   thicknesses: [],
 };
 
-export const useProductFilters = (categoryId?: number | undefined) => {
+export const useProductFilters = (categoryName?: string | undefined) => {
   const [filters, setFilters] = React.useState<ProductFilters>(EMPTY_FILTERS);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    const url =
-      categoryId != null && categoryId > 0 ? `/api/products/filters?categoryId=${categoryId}` : '/api/products/filters';
+    const url = categoryName
+      ? `/api/products/filters?categoryName=${encodeURIComponent(categoryName)}`
+      : '/api/products/filters';
 
     setLoading(true);
     fetch(url)
@@ -37,7 +38,7 @@ export const useProductFilters = (categoryId?: number | undefined) => {
       .then((data: ProductFilters) => setFilters(data))
       .catch(() => setFilters(EMPTY_FILTERS))
       .finally(() => setLoading(false));
-  }, [categoryId]);
+  }, [categoryName]);
 
   return { filters, loading };
 };

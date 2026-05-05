@@ -3,10 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { mapProductColor, mapProductMaterial } from '@/shared/constants/profile';
 
 export async function GET(req: NextRequest) {
-  const categoryIdParam = req.nextUrl.searchParams.get('categoryId');
-  const categoryId = categoryIdParam ? Number(categoryIdParam) : undefined;
+  const categoryName = req.nextUrl.searchParams.get('categoryName')?.trim();
 
-  const where = categoryId ? { product: { categoryId } } : {};
+  const where = categoryName ? { product: { category: { name: categoryName } } } : {};
 
   const items = await prisma.productItem.findMany({
     where,

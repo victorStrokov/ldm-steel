@@ -4,10 +4,10 @@ import React from 'react';
 import { cn } from '@/shared/lib/utils';
 import { Container } from './container';
 import { Categories } from './categories';
-import { Category } from '@prisma/client';
+import { StorefrontCategory } from '@/app/actions/find-products';
 
 interface Props {
-  categories: Category[];
+  categories: StorefrontCategory[];
   className?: string;
 }
 

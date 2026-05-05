@@ -34,7 +34,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Get
                     <ProductsGroupList
                       key={category.id}
                       title={category.name}
-                      categoryId={category.id}
+                      categoryKey={category.id}
                       items={category.products}
                       priceMode={catalogSettings.priceMode}
                     />

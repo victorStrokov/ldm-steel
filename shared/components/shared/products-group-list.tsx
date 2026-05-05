@@ -13,7 +13,7 @@ import { PriceMode } from '@/shared/lib/catalog-mode';
 interface Props {
   title: string;
   items: ProductWithRelations[];
-  categoryId: number;
+  categoryKey: string;
   priceMode?: PriceMode;
   className?: string;
   listClassName?: string;
@@ -23,11 +23,11 @@ export const ProductsGroupList: React.FC<Props> = ({
   title,
   items,
   listClassName,
-  categoryId,
+  categoryKey,
   priceMode,
   className,
 }) => {
-  const setActiveCategoryId = useCategoryStore((state) => state.setActiveId);
+  const setActiveCategoryKey = useCategoryStore((state) => state.setActiveKey);
   const { order } = useSortStore();
   const intersectionRef = React.useRef<HTMLDivElement>(null);
   const intersection = useIntersection(intersectionRef as React.RefObject<HTMLElement>, {
@@ -37,9 +37,9 @@ export const ProductsGroupList: React.FC<Props> = ({
 
   React.useEffect(() => {
     if (intersection?.isIntersecting) {
-      setActiveCategoryId(categoryId);
+      setActiveCategoryKey(categoryKey);
     }
-  }, [categoryId, intersection?.isIntersecting, setActiveCategoryId, title]);
+  }, [categoryKey, intersection?.isIntersecting, setActiveCategoryKey, title]);
 
   const sortedItems = React.useMemo(() => {
     return [...items].sort((asc, desc) => {
