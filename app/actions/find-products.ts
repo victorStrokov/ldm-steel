@@ -165,11 +165,8 @@ export const findProducts = async (params: GetSearchParams): Promise<CategoryWit
 
   itemWhere.price = { gte: minPrice, lte: maxPrice };
 
-  const tenantId = Number(process.env.LDM_TENANT_ID) || undefined;
-
   try {
     const categories = await findCategoriesWithRetry({
-      where: tenantId ? { tenantId } : undefined,
       include: {
         products: {
           orderBy: { id: 'desc' },
