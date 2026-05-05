@@ -5,7 +5,7 @@ import { CheckoutFormValues, InquiryCreatedTemplate, InquiryManagerNotificationT
 import { sendEmail } from '@/shared/lib';
 import { logger } from '@/shared/lib/logger';
 import { InquiryStatus } from '@prisma/client';
-import { resolveInquiryManagerId } from '@/shared/lib/resolve-inquiry-manager';
+import { resolveInquiryRoutes } from '@/shared/lib/resolve-inquiry-routes';
 import { cookies } from 'next/headers';
 import React from 'react';
 
@@ -58,12 +58,17 @@ export async function createInquiry(data: CheckoutFormValues) {
       throw new Error('Tenant ID not found');
     }
 
+    // Build routing items with fulfillmentTenantId
     const routingItems = userCart.items.map((item) => ({
       productId: item.productItem.product.id,
       categoryId: item.productItem.product.categoryId,
+      fulfillmentTenantId: item.productItem.product.fulfillmentTenantId ?? item.productItem.product.tenantId,
     }));
-    const managerResolution = await resolveInquiryManagerId(tenantId, routingItems);
 
+    // Resolve multi-route: groups by fulfillmentTenantId
+    const routes = await resolveInquiryRoutes(routingItems);
+
+    // Create inquiry with routes snapshot
     const inquiry = await prisma.inquiry.create({
       data: {
         token: cartToken,
@@ -72,10 +77,19 @@ export async function createInquiry(data: CheckoutFormValues) {
         phone: data.phone,
         comment: buildInquiryComment(data.address, data.comment),
         status: InquiryStatus.NEW,
-        managerId: managerResolution.managerId,
-        routeModeSnapshot: managerResolution.mode,
-        routeCoveredCategoryIds: managerResolution.coveredCategoryIds,
-        routeMissingCategoryIds: managerResolution.missingCategoryIds,
+        // Set primary manager to first route's manager (for backward compat)
+        managerId: routes[0]?.managerId ?? null,
+        routeModeSnapshot: routes[0]?.managerMode ?? 'UNASSIGNED',
+        routeCoveredCategoryIds: routes[0]?.coveredCategoryIds ?? [],
+        routeMissingCategoryIds: routes[0]?.missingCategoryIds ?? [],
+        routesSnapshot: routes.map((route) => ({
+          tenantId: route.tenantId,
+          managerId: route.managerId,
+          managerMode: route.managerMode,
+          coveredCategoryIds: route.coveredCategoryIds,
+          missingCategoryIds: route.missingCategoryIds,
+          itemCount: route.items.length,
+        })),
         tenantId,
         items: {
           create: userCart.items.map((item) => ({
@@ -119,32 +133,68 @@ export async function createInquiry(data: CheckoutFormValues) {
       log.warn({ err: emailError, inquiryId: inquiry.id }, 'client inquiry email failed');
     }
 
-    if (managerResolution.managerId) {
-      const manager = await prisma.user.findUnique({
-        where: { id: managerResolution.managerId },
-        select: { email: true },
-      });
+    // Send notifications to managers for each route
+    for (const route of routes) {
+      if (route.managerId) {
+        const manager = await prisma.user.findUnique({
+          where: { id: route.managerId },
+          select: { email: true },
+        });
 
-      if (manager?.email) {
-        try {
-          await sendEmail(
-            manager.email,
-            'Next Steel / Новая заявка #' + inquiry.id,
-            React.createElement(InquiryManagerNotificationTemplate, {
-              inquiryId: inquiry.id,
-              clientName: inquiry.fullName,
-              clientPhone: inquiry.phone,
-              clientEmail: inquiry.email,
-              address: data.address,
-              itemsCount: userCart.items.length,
-            }),
-          );
-        } catch (emailError) {
-          log.warn(
-            { err: emailError, inquiryId: inquiry.id, managerId: managerResolution.managerId },
-            'manager inquiry email failed',
-          );
+        if (manager?.email) {
+          try {
+            await sendEmail(
+              manager.email,
+              'Next Steel / Новая заявка #' + inquiry.id,
+              React.createElement(InquiryManagerNotificationTemplate, {
+                inquiryId: inquiry.id,
+                clientName: inquiry.fullName,
+                clientPhone: inquiry.phone,
+                clientEmail: inquiry.email,
+                address: data.address,
+                itemsCount: route.items.length,
+              }),
+            );
+          } catch (emailError) {
+            log.warn(
+              { err: emailError, inquiryId: inquiry.id, managerId: route.managerId },
+              'manager inquiry email failed',
+            );
+          }
         }
+      }
+    }
+
+    // Send corporate copy to all notification emails for each tenant involved
+    for (const route of routes) {
+      try {
+        const tenantSettings = await prisma.tenantSettings.findUnique({
+          where: { tenantId: route.tenantId },
+          select: { notificationEmails: true },
+        });
+
+        if (tenantSettings?.notificationEmails && tenantSettings.notificationEmails.length > 0) {
+          for (const corpEmail of tenantSettings.notificationEmails) {
+            try {
+              await sendEmail(
+                corpEmail,
+                'Next Steel / Новая заявка #' + inquiry.id + ' (копия)',
+                React.createElement(InquiryManagerNotificationTemplate, {
+                  inquiryId: inquiry.id,
+                  clientName: inquiry.fullName,
+                  clientPhone: inquiry.phone,
+                  clientEmail: inquiry.email,
+                  address: data.address,
+                  itemsCount: route.items.length,
+                }),
+              );
+            } catch (emailError) {
+              log.warn({ err: emailError, inquiryId: inquiry.id, corpEmail }, 'corporate copy email failed');
+            }
+          }
+        }
+      } catch (err) {
+        log.warn({ err, inquiryId: inquiry.id, tenantId: route.tenantId }, 'failed to fetch tenant settings');
       }
     }
 

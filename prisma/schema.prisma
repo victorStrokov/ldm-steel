@@ -12,6 +12,7 @@ model Tenant {
   createdAt     DateTime       @default(now())
   users         User[]
   products      Product[]
+  fulfillmentProducts Product[] @relation("ProductFulfillment")
   productRelations ProductRelatedProduct[]
   orders        Order[]
   inquiries     Inquiry[]
@@ -34,13 +35,14 @@ enum CheckoutMode {
 }
 
 model TenantSettings {
-  id           Int          @id @default(autoincrement())
-  tenantId     Int          @unique
-  priceMode    PriceMode    @default(request)
-  checkoutMode CheckoutMode @default(inquiry)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  tenant       Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  id                    Int          @id @default(autoincrement())
+  tenantId              Int          @unique
+  priceMode             PriceMode    @default(request)
+  checkoutMode          CheckoutMode @default(inquiry)
+  notificationEmails    String[]     @default([])
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+  tenant                Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 model User {
@@ -141,6 +143,7 @@ model ManagerAssignment {
 model Product {
   id         Int           @id @default(autoincrement())
   tenantId   Int
+  fulfillmentTenantId Int?
   name       String
   slug       String        @unique
   shortDesc  String?
@@ -150,6 +153,7 @@ model Product {
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
   tenant      Tenant         @relation(fields: [tenantId], references: [id])
+  fulfillmentTenant Tenant? @relation("ProductFulfillment", fields: [fulfillmentTenantId], references: [id])
   category    Category       @relation(fields: [categoryId], references: [id])
   managerAssignments ManagerAssignment[]
   items       ProductItem[]
@@ -398,6 +402,7 @@ model Inquiry {
   routeModeSnapshot InquiryRouteMode?
   routeCoveredCategoryIds Json?
   routeMissingCategoryIds Json?
+  routesSnapshot Json?
   tenantId  Int
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
