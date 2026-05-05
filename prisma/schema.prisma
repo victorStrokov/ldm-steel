@@ -9,6 +9,8 @@ datasource db {
 model Tenant {
   id            Int            @id @default(autoincrement())
   name          String
+  isMain        Boolean        @default(false)
+  status        TenantStatus   @default(ACTIVE)
   createdAt     DateTime       @default(now())
   users         User[]
   products      Product[]
@@ -27,6 +29,11 @@ enum PriceMode {
   visible
   hidden
   request
+}
+
+enum TenantStatus {
+  ACTIVE
+  ARCHIVED
 }
 
 enum CheckoutMode {
