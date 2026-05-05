@@ -6,7 +6,12 @@ export async function GET(req: NextRequest) {
   const categoryIdParam = req.nextUrl.searchParams.get('categoryId');
   const categoryId = categoryIdParam ? Number(categoryIdParam) : undefined;
 
-  const where = categoryId ? { product: { categoryId } } : {};
+  const tenantId = Number(process.env.LDM_TENANT_ID) || undefined;
+
+  const productWhere: { categoryId?: number; category?: { tenantId: number } } = {};
+  if (categoryId) productWhere.categoryId = categoryId;
+  if (tenantId) productWhere.category = { tenantId };
+  const where = Object.keys(productWhere).length > 0 ? { product: productWhere } : {};
 
   const items = await prisma.productItem.findMany({
     where,
