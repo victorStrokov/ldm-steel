@@ -100,6 +100,20 @@ export async function createInquiry(data: CheckoutFormValues) {
       },
     });
 
+    // Create InquiryManagerTask for each route that has an assigned manager
+    const tasksToCreate = routes
+      .filter((route) => route.managerId !== null)
+      .map((route) => ({
+        inquiryId: inquiry.id,
+        managerId: route.managerId as number,
+        tenantId: route.tenantId,
+        status: 'NEW' as const,
+      }));
+
+    if (tasksToCreate.length > 0) {
+      await prisma.inquiryManagerTask.createMany({ data: tasksToCreate });
+    }
+
     await prisma.cart.update({
       where: {
         token: cartToken,
