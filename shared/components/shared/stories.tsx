@@ -5,6 +5,7 @@ import { Api } from '@/shared/services/api-client';
 import { IStory } from '@/shared/services/stories';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Image from 'next/image';
 import { Container } from './container';
 import { cn } from '@/shared/lib/utils';
 import { Volume2, VolumeX, X } from 'lucide-react';
@@ -72,6 +73,7 @@ export const Stories: React.FC<Props> = ({ className }) => {
                 muted
                 playsInline
                 controls={false}
+                preload="metadata"
                 onEnded={() => action('next')}
               />
             ),
@@ -199,11 +201,15 @@ export const Stories: React.FC<Props> = ({ className }) => {
                   )}
                   onClick={() => onClickStory(story)}
                 >
-                  <img
+                  <Image
                     src={normalizeImageUrl(story.previewImageUrl) ?? '/no-image.png'}
                     alt="сторис"
+                    fill
+                    sizes="(max-width: 640px) 120px, (max-width: 1024px) 160px, 200px"
+                    quality={90}
                     draggable={false}
-                    className="h-full w-full object-cover object-center"
+                    className="object-cover object-center"
+                    priority={index < 4}
                   />
                 </div>
               </SwiperSlide>
