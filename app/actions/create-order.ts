@@ -2,7 +2,8 @@
 
 import { prisma } from '@/prisma/prisma-client';
 import { CheckoutFormValues, PayOrderTemplate } from '@/shared/components';
-import { createPayment, sendEmail } from '@/shared/lib';
+import { createPayment } from '@/shared/lib';
+import { sendEmail } from '@/shared/lib/sendEmail';
 import { logger } from '@/shared/lib/logger';
 import { OrderStatus, Prisma } from '@prisma/client';
 import { cookies } from 'next/headers';

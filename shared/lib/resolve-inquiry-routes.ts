@@ -3,7 +3,12 @@ import { UserRole } from '@prisma/client';
 
 export interface InquiryRoutingItem {
   productId: number;
+  productItemId?: number;
   categoryId: number;
+  categoryName?: string;
+  productName?: string;
+  quantity?: number;
+  sku?: string;
   fulfillmentTenantId: number;
 }
 
@@ -31,6 +36,7 @@ function sortManagers(left: CandidateManager, right: CandidateManager): number {
   if (left.managedInquiriesCount !== right.managedInquiriesCount) {
     return left.managedInquiriesCount - right.managedInquiriesCount;
   }
+
   return left.createdAt.getTime() - right.createdAt.getTime();
 }
 
@@ -42,8 +48,9 @@ function sortWithPriority(
   const leftPriority = getPriority(left);
   const rightPriority = getPriority(right);
 
-  if (leftPriority && !rightPriority) return -1;
-  if (!leftPriority && rightPriority) return 1;
+  if (leftPriority !== rightPriority) {
+    return leftPriority ? -1 : 1;
+  }
 
   return sortManagers(left, right);
 }
@@ -52,17 +59,14 @@ function pickBestCandidate(
   managers: CandidateManager[],
   getPriority: (manager: CandidateManager) => boolean,
 ): CandidateManager | null {
-  const sorted = managers.slice().sort((left, right) => sortWithPriority(left, right, getPriority));
-  return sorted[0] ?? null;
+  return managers.slice().sort((left, right) => sortWithPriority(left, right, getPriority))[0] ?? null;
 }
 
-async function resolveManagerForTenant(
-  tenantId: number,
-  items: InquiryRoutingItem[],
-): Promise<Omit<InquiryRouteGroup, 'items'>> {
-  const normalizedItems = items.filter((item) => Number.isInteger(item.productId) && Number.isInteger(item.categoryId));
-  const uniqueCategoryIds = [...new Set(normalizedItems.map((item) => item.categoryId))];
+function getUniqueCategoryIds(items: InquiryRoutingItem[]) {
+  return [...new Set(items.map((item) => item.categoryId))];
+}
 
+async function getTenantManagers(tenantId: number): Promise<CandidateManager[]> {
   const managers = await prisma.user.findMany({
     where: {
       tenantId,
@@ -88,17 +92,7 @@ async function resolveManagerForTenant(
     },
   });
 
-  if (managers.length === 0) {
-    return {
-      tenantId,
-      managerId: null,
-      managerMode: 'UNASSIGNED',
-      coveredCategoryIds: [],
-      missingCategoryIds: uniqueCategoryIds,
-    };
-  }
-
-  const candidates: CandidateManager[] = managers.map((manager) => ({
+  return managers.map((manager) => ({
     id: manager.id,
     createdAt: manager.createdAt,
     handlesAllCategories: manager.handlesAllCategories,
@@ -124,132 +118,138 @@ async function resolveManagerForTenant(
         .map((assignment) => [assignment.productId as number, assignment.isPrimary]),
     ),
   }));
+}
 
-  const universalManagers = candidates.filter((candidate) => candidate.handlesAllCategories).sort(sortManagers);
-  const resolvedManagers = normalizedItems
-    .map((item) => {
-      const productCandidates = candidates.filter((candidate) => candidate.products.has(item.productId));
-      if (productCandidates.length > 0) {
-        return pickBestCandidate(
-          productCandidates,
-          (candidate) => candidate.productPriorities.get(item.productId) === true,
-        );
-      }
+function assignManagerToItem(
+  item: InquiryRoutingItem,
+  candidates: CandidateManager[],
+  universalManagers: CandidateManager[],
+  fallbackManager: CandidateManager | null,
+) {
+  const productCandidates = candidates.filter((candidate) => candidate.products.has(item.productId));
+  if (productCandidates.length > 0) {
+    return pickBestCandidate(
+      productCandidates,
+      (candidate) => candidate.productPriorities.get(item.productId) === true,
+    );
+  }
 
-      const categoryCandidates = candidates.filter((candidate) => candidate.categories.has(item.categoryId));
-      if (categoryCandidates.length > 0) {
-        return pickBestCandidate(
-          categoryCandidates,
-          (candidate) => candidate.categoryPriorities.get(item.categoryId) === true,
-        );
-      }
+  const categoryCandidates = candidates.filter((candidate) => candidate.categories.has(item.categoryId));
+  if (categoryCandidates.length > 0) {
+    return pickBestCandidate(
+      categoryCandidates,
+      (candidate) => candidate.categoryPriorities.get(item.categoryId) === true,
+    );
+  }
 
-      return null;
-    })
-    .filter((manager): manager is CandidateManager => Boolean(manager));
+  if (universalManagers.length > 0) {
+    return universalManagers[0];
+  }
 
-  const uniqueResolvedManagerIds = [...new Set(resolvedManagers.map((manager) => manager.id))];
+  return fallbackManager;
+}
 
-  if (uniqueResolvedManagerIds.length === 1 && resolvedManagers.length === normalizedItems.length) {
+function buildRouteGroup(
+  tenantId: number,
+  manager: CandidateManager | null,
+  items: InquiryRoutingItem[],
+): InquiryRouteGroup {
+  const categoryIds = getUniqueCategoryIds(items);
+
+  if (!manager) {
     return {
       tenantId,
-      managerId: uniqueResolvedManagerIds[0],
-      managerMode: 'FULL',
-      coveredCategoryIds: uniqueCategoryIds,
-      missingCategoryIds: [],
+      managerId: null,
+      managerMode: 'UNASSIGNED',
+      coveredCategoryIds: [],
+      missingCategoryIds: categoryIds,
+      items,
     };
   }
 
-  if (
-    universalManagers.length > 0 &&
-    (uniqueResolvedManagerIds.length > 1 || resolvedManagers.length < normalizedItems.length)
-  ) {
+  if (manager.handlesAllCategories) {
     return {
       tenantId,
-      managerId: universalManagers[0].id,
+      managerId: manager.id,
       managerMode: 'UNIVERSAL',
-      coveredCategoryIds: uniqueCategoryIds,
+      coveredCategoryIds: categoryIds,
       missingCategoryIds: [],
+      items,
     };
   }
 
-  if (uniqueCategoryIds.length > 0) {
-    const fullCoverageManagers = candidates
-      .filter((candidate) => uniqueCategoryIds.every((categoryId) => candidate.categories.has(categoryId)))
-      .sort(sortManagers);
+  const coveredCategoryIds = [
+    ...new Set(
+      items
+        .filter((item) => manager.products.has(item.productId) || manager.categories.has(item.categoryId))
+        .map((item) => item.categoryId),
+    ),
+  ];
+  const missingCategoryIds = categoryIds.filter((categoryId) => !coveredCategoryIds.includes(categoryId));
 
-    if (fullCoverageManagers.length > 0) {
-      return {
-        tenantId,
-        managerId: fullCoverageManagers[0].id,
-        managerMode: 'FULL',
-        coveredCategoryIds: uniqueCategoryIds,
-        missingCategoryIds: [],
-      };
-    }
-
-    const partialCoverageManagers = candidates
-      .map((candidate) => ({
-        candidate,
-        coverage: uniqueCategoryIds.filter((categoryId) => candidate.categories.has(categoryId)).length,
-      }))
-      .filter((item) => item.coverage > 0)
-      .sort((left, right) => {
-        if (left.coverage !== right.coverage) {
-          return right.coverage - left.coverage;
-        }
-        return sortManagers(left.candidate, right.candidate);
-      });
-
-    if (partialCoverageManagers.length > 0) {
-      const winner = partialCoverageManagers[0].candidate;
-      const coveredCategoryIds = uniqueCategoryIds.filter((categoryId) => winner.categories.has(categoryId));
-      const missingCategoryIds = uniqueCategoryIds.filter((categoryId) => !winner.categories.has(categoryId));
-
-      return {
-        tenantId,
-        managerId: winner.id,
-        managerMode: 'PARTIAL',
-        coveredCategoryIds,
-        missingCategoryIds,
-      };
-    }
+  let managerMode: InquiryRouteGroup['managerMode'] = 'FALLBACK';
+  if (missingCategoryIds.length === 0) {
+    managerMode = 'FULL';
+  } else if (coveredCategoryIds.length > 0) {
+    managerMode = 'PARTIAL';
   }
 
-  const fallbackManager = candidates.sort(sortManagers)[0];
   return {
     tenantId,
-    managerId: fallbackManager?.id ?? null,
-    managerMode: fallbackManager ? 'FALLBACK' : 'UNASSIGNED',
-    coveredCategoryIds: [],
-    missingCategoryIds: uniqueCategoryIds,
+    managerId: manager.id,
+    managerMode,
+    coveredCategoryIds,
+    missingCategoryIds,
+    items,
   };
 }
 
-/**
- * Разбивает товары по tenantId (исполняющей компании) и маршрутизирует в каждой группе независимо
- */
+async function resolveTenantRoutes(tenantId: number, items: InquiryRoutingItem[]): Promise<InquiryRouteGroup[]> {
+  const candidates = await getTenantManagers(tenantId);
+  if (candidates.length === 0) {
+    return [
+      {
+        tenantId,
+        managerId: null,
+        managerMode: 'UNASSIGNED',
+        coveredCategoryIds: [],
+        missingCategoryIds: getUniqueCategoryIds(items),
+        items,
+      },
+    ];
+  }
+
+  const universalManagers = candidates.filter((candidate) => candidate.handlesAllCategories).sort(sortManagers);
+  const fallbackManager = candidates.slice().sort(sortManagers)[0] ?? null;
+  const managerById = new Map(candidates.map((candidate) => [candidate.id, candidate]));
+  const groupedItems = new Map<number | null, InquiryRoutingItem[]>();
+
+  for (const item of items) {
+    const manager = assignManagerToItem(item, candidates, universalManagers, fallbackManager);
+    const key = manager?.id ?? null;
+    const bucket = groupedItems.get(key) ?? [];
+    bucket.push(item);
+    groupedItems.set(key, bucket);
+  }
+
+  return [...groupedItems.entries()].map(([managerId, routeItems]) =>
+    buildRouteGroup(tenantId, managerId === null ? null : (managerById.get(managerId) ?? null), routeItems),
+  );
+}
+
 export async function resolveInquiryRoutes(items: InquiryRoutingItem[]): Promise<InquiryRouteGroup[]> {
-  // Группируем по tenantId (исполняющей компании)
   const groupsByTenant = new Map<number, InquiryRoutingItem[]>();
 
   for (const item of items) {
-    const tenantId = item.fulfillmentTenantId;
-    if (!groupsByTenant.has(tenantId)) {
-      groupsByTenant.set(tenantId, []);
-    }
-    groupsByTenant.get(tenantId)!.push(item);
+    const bucket = groupsByTenant.get(item.fulfillmentTenantId) ?? [];
+    bucket.push(item);
+    groupsByTenant.set(item.fulfillmentTenantId, bucket);
   }
 
-  // Для каждой группы находим менеджера в этом тенанте
   const routes: InquiryRouteGroup[] = [];
-
-  for (const [tenantId, groupItems] of groupsByTenant) {
-    const resolution = await resolveManagerForTenant(tenantId, groupItems);
-    routes.push({
-      ...resolution,
-      items: groupItems,
-    });
+  for (const [tenantId, tenantItems] of groupsByTenant) {
+    const tenantRoutes = await resolveTenantRoutes(tenantId, tenantItems);
+    routes.push(...tenantRoutes);
   }
 
   return routes;

@@ -2,7 +2,7 @@ import { PaymentCallbackData } from '@/@types/youkassa';
 import { prisma } from '@/prisma/prisma-client';
 import { OrderFailedTemplate } from '@/shared/components/shared/email-templates/order-failed';
 import { OrderSuccessTemplate } from '@/shared/components/shared/email-templates/order-success';
-import { sendEmail } from '@/shared/lib';
+import { sendEmail } from '@/shared/lib/sendEmail';
 import { logger } from '@/shared/lib/logger';
 import { CartItemDTO, OrderSnapshotItem } from '@/shared/services/dto/cart.dto';
 

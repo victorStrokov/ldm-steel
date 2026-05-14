@@ -1,10 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/shared/lib', () => ({
+vi.mock('../../../../shared/lib/sendEmail', () => ({
   sendEmail: vi.fn(),
 }));
 
-vi.mock('@/prisma/prisma-client', () => ({
+vi.mock('../../../../prisma/prisma-client', () => ({
   prisma: {
     user: {
       findFirst: vi.fn(),
@@ -16,9 +16,9 @@ vi.mock('@/prisma/prisma-client', () => ({
   },
 }));
 
-import { registerUser } from '@/app/actions/register-user';
-import { prisma } from '@/prisma/prisma-client';
-import { sendEmail } from '@/shared/lib';
+import { registerUser } from '../../../../app/actions/register-user';
+import { prisma } from '../../../../prisma/prisma-client';
+import { sendEmail } from '../../../../shared/lib/sendEmail';
 
 describe('registerUser', () => {
   beforeEach(() => {

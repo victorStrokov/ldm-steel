@@ -4,12 +4,15 @@ vi.mock('next/headers', () => ({
   cookies: vi.fn(),
 }));
 
-vi.mock('@/shared/lib', () => ({
+vi.mock('../../shared/lib', () => ({
   createPayment: vi.fn(),
+}));
+
+vi.mock('../../shared/lib/sendEmail', () => ({
   sendEmail: vi.fn(),
 }));
 
-vi.mock('@/prisma/prisma-client', () => ({
+vi.mock('../../prisma/prisma-client', () => ({
   prisma: {
     cart: {
       findFirst: vi.fn(),
@@ -27,10 +30,11 @@ vi.mock('@/prisma/prisma-client', () => ({
 }));
 
 import { cookies } from 'next/headers';
-import { createOrder } from '@/app/actions/create-order';
-import { POST as checkoutCallback } from '@/app/api/checkout/callback/route';
-import { createPayment, sendEmail } from '@/shared/lib';
-import { prisma } from '@/prisma/prisma-client';
+import { createOrder } from '../../app/actions/create-order';
+import { POST as checkoutCallback } from '../../app/api/checkout/callback/route';
+import { createPayment } from '../../shared/lib';
+import { sendEmail } from '../../shared/lib/sendEmail';
+import { prisma } from '../../prisma/prisma-client';
 import { OrderStatus } from '@prisma/client';
 
 describe('checkout order lifecycle integration', () => {

@@ -3,7 +3,7 @@
 import { prisma } from '@/prisma/prisma-client';
 
 import { VerificationUserTemplate } from '@/shared/components/shared/email-templates/verification-user';
-import { sendEmail } from '@/shared/lib';
+import { sendEmail } from '@/shared/lib/sendEmail';
 import { logger } from '@/shared/lib/logger';
 import { hashSync } from 'bcryptjs';
 import React from 'react';

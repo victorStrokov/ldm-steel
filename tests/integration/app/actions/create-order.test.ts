@@ -1,15 +1,18 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/headers', () => ({
   cookies: vi.fn(),
 }));
 
-vi.mock('@/shared/lib', () => ({
+vi.mock('../../../../shared/lib', () => ({
   createPayment: vi.fn(),
+}));
+
+vi.mock('../../../../shared/lib/sendEmail', () => ({
   sendEmail: vi.fn(),
 }));
 
-vi.mock('@/prisma/prisma-client', () => ({
+vi.mock('../../../../prisma/prisma-client', () => ({
   prisma: {
     cart: {
       findFirst: vi.fn(),
@@ -26,9 +29,10 @@ vi.mock('@/prisma/prisma-client', () => ({
 }));
 
 import { cookies } from 'next/headers';
-import { createOrder } from '@/app/actions/create-order';
-import { createPayment, sendEmail } from '@/shared/lib';
-import { prisma } from '@/prisma/prisma-client';
+import { createOrder } from '../../../../app/actions/create-order';
+import { createPayment } from '../../../../shared/lib';
+import { sendEmail } from '../../../../shared/lib/sendEmail';
+import { prisma } from '../../../../prisma/prisma-client';
 
 describe('createOrder', () => {
   beforeEach(() => {
